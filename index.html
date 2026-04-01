@@ -4,39 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Як стати успішним сканером</title>
-
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/gray-matter/dist/gray-matter.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
 <style>
-:root { --bg: #fafaf8; --surface: #f4f3ef; --text: #1a1917; --muted: #6b6963; --accent: #2d5a27; --accent-light: #e8f0e6; --border: #e2e1db; --max: 680px; }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
-header { border-bottom: 1px solid var(--border); padding: 2rem 1.5rem; }
-.header-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-.site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; }
-.site-title span { color: var(--accent); }
-nav { display: flex; gap: 1.5rem; }
-nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; }
-main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
-.page { display: none; }
-.page.active { display: block; }
-.hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
-.hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem; }
-.hero h1 { font-size: 2.4rem; font-weight: 300; line-height: 1.25; margin-bottom: 1.2rem; }
-.hero h1 em { font-style: italic; color: var(--accent); }
-.post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; text-decoration: none; color: inherit; }
-.post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
-.post-title { font-size: 1.05rem; font-weight: 400; margin-bottom: 0.4rem; }
-.post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; margin-top: 0.5rem; cursor:pointer; }
-.back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; text-transform: uppercase; }
-.post-content img { max-width: 100%; height: auto; }
-footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
-#tag-filter { margin-bottom: 1rem; }
-@media (max-width: 600px) { .post-item { grid-template-columns: 1fr; } }
+  :root { --bg: #fafaf8; --surface: #f4f3ef; --text: #1a1917; --muted: #6b6963; --accent: #2d5a27; --accent-light: #e8f0e6; --border: #e2e1db; --max: 680px; }
+  body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
+  header { border-bottom: 1px solid var(--border); padding: 2rem 1.5rem; }
+  .header-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; }
+  .site-title span { color: var(--accent); }
+  nav { display: flex; gap: 1.5rem; }
+  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; }
+  nav a.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+  main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem; }
+  .hero h1 { font-size: 2.4rem; font-weight: 300; line-height: 1.25; margin-bottom: 1.2rem; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; text-decoration: none; color: inherit; }
+  .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+  .post-title { font-size: 1.05rem; font-weight: 400; margin-bottom: 0.4rem; }
+  .post-excerpt { font-size: 0.85rem; color: var(--muted); }
+  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; margin-top: 0.5rem; cursor: pointer; }
+  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; text-transform: uppercase; }
+  .post-content img { max-width: 100%; height: auto; }
+  footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
 </style>
 </head>
 <body>
@@ -45,8 +42,8 @@ footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: 
   <div class="header-inner">
     <a class="site-title" href="#" onclick="showPage('home')">Як стати <span>успішним сканером</span></a>
     <nav>
-      <a onclick="showPage('home')">Дописи</a>
-      <a onclick="showPage('about')">Про мене</a>
+      <a id="nav-home" onclick="showPage('home')">Дописи</a>
+      <a id="nav-about" onclick="showPage('about')">Про мене</a>
     </nav>
   </div>
 </header>
@@ -58,8 +55,6 @@ footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: 
       <h1>Нотатки людини з <em>широкими інтересами</em></h1>
       <p>Про PKM, автоматизацію та життя сканера.</p>
     </div>
-
-    <div id="tag-filter"></div>
     <div id="posts-container">
       <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted);">Завантаження дописів...</p>
     </div>
@@ -79,86 +74,55 @@ footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: 
 <footer><p>Успішний Сканер &copy; 2026</p></footer>
 
 <script>
-const REPO="Bov888/my-scanner-blog";
-let posts=[], pages={}, activeTag=null;
+  let postsCache = {};
 
-async function load() {
-  try {
-    const [p, pg]=await Promise.all([
-      loadFolder("posts"),
-      loadFolder("pages").catch(()=>[])
-    ]);
-    posts=p.sort((a,b)=>new Date(b.meta.date||0)-new Date(a.meta.date||0));
-    pages=Object.fromEntries(pg.map(x=>[x.slug,x]));
-    render();
-  } catch(e){
-    document.getElementById("posts-container").innerHTML="<p>Помилка завантаження дописів</p>";
-    console.error(e);
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('nav-' + pageId)?.classList.add('active');
+    window.scrollTo(0, 0);
   }
-}
 
-async function loadFolder(folder){
-  const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${folder}`);
-  if(!res.ok) throw new Error("Folder not found: "+folder);
-  const files=await res.json();
-  if(!Array.isArray(files)) throw new Error("Invalid response");
+  async function openPost(downloadUrl) {
+    const container = document.getElementById('full-post-content');
+    container.innerHTML = "Завантаження тексту...";
+    showPage('post-view');
 
-  return (await Promise.all(files.map(async f=>{
-    if(!f.name.endsWith(".md")) return null;
-    const r=await fetch(f.download_url);
-    if(!r.ok) return null;
-    const raw=await r.text();
-    const fm=raw.match(/^---([\s\S]*?)---/);
-    let meta={}, body=raw;
-    if(fm){ meta=jsyaml.load(fm[1])||{}; body=raw.replace(/^---[\s\S]*?---\s*/,""); }
-    return { slug:f.name.replace(".md",""), meta, body };
-  }))).filter(Boolean);
-}
+    if (postsCache[downloadUrl]) {
+      container.innerHTML = marked.parse(postsCache[downloadUrl].content);
+      return;
+    }
 
-// ===== RENDER =====
-function render(){
-  renderTags();
-  renderPosts();
-}
+    try {
+      const response = await fetch(downloadUrl);
+      let text = await response.text();
+      const parsed = matter(text);
+      postsCache[downloadUrl] = { meta: parsed.data, content: parsed.content };
+      container.innerHTML = marked.parse(parsed.content);
+    } catch (e) {
+      container.innerHTML = "Помилка завантаження тексту.";
+    }
+  }
 
-function renderTags(){
-  const el=document.getElementById("tag-filter");
-  const set=new Set();
-  posts.forEach(p=>(p.meta.tags||[]).forEach(t=>set.add(t)));
-  el.innerHTML="<b>Теги:</b> " + `<span class="post-tag" onclick="filterTag(null)">всі</span>` + [...set].map(t=>`<span class="post-tag" onclick="filterTag('${t}')">${t}</span>`).join("");
-}
+  async function loadPosts(filterTag = null) {
+    const container = document.querySelector('#posts-container');
+    try {
+      const response = await fetch('https://api.github.com/repos/Bov888/my-scanner-blog/contents/posts');
+      if (!response.ok) throw new Error();
+      const files = await response.json();
+      container.innerHTML = '';
+      files.reverse();
 
-function filterTag(tag){ activeTag=tag; renderPosts(); }
+      const monthNames = ["СІЧ", "ЛЮТ", "БЕР", "КВІТ", "ТРА", "ЧЕР", "ЛИП", "СЕР", "ВЕР", "ЖОВ", "ЛИС", "ГРУ"];
 
-function renderPosts(){
-  const el=document.getElementById("posts-container");
-  const filtered=activeTag?posts.filter(p=>(p.meta.tags||[]).includes(activeTag)):posts;
-  el.innerHTML=filtered.map(p=>`<div class="post-item" onclick="openPost('${p.slug}')">
-    <div class="post-date">${p.meta.date||"НОВЕ"}</div>
-    <div>
-      <div class="post-title">${p.meta.title||"Без назви"}</div>
-      <span class="post-tag">${(p.meta.tags||[]).join(", ")}</span>
-    </div>
-  </div>`).join("");
-}
+      for (const file of files) {
+        if (file.name.endsWith('.md')) {
+          const contentRes = await fetch(file.download_url);
+          const text = await contentRes.text();
+          const parsed = matter(text);
+          const meta = parsed.data;
 
-function openPost(slug){
-  const post=posts.find(p=>p.slug===slug);
-  if(!post) return;
-  document.getElementById("page-home").classList.remove("active");
-  document.getElementById("page-post-view").classList.add("active");
-  document.getElementById("full-post-content").innerHTML=marked.parse(post.body);
-  window.scrollTo(0,0);
-}
-
-function showPage(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById("page-"+page).classList.add("active");
-  window.scrollTo(0,0);
-}
-
-load();
-</script>
-
-</body>
-</html>
+          const title = meta.title || "Без назви";
+          const excerpt = meta.excerpt || parsed.content.split('.').slice(0,2).join('.') + "...";
+          const
