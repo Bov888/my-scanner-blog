@@ -6,6 +6,21 @@
 <title>Як стати успішним сканером</title>
 <meta name="description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  marked.use({
+    breaks: true,
+    gfm: true,
+    hooks: {
+      preprocess(src) { return src; },
+      postprocess(html) { return html; }
+    },
+    renderer: (() => {
+      const r = new marked.Renderer();
+      r.html = (html) => html; // не екранувати HTML
+      return r;
+    })()
+  });
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -87,6 +102,11 @@
   .about-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
   .about-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; }
 
+  .tag-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+  .tag-filter { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
+  .tag-filter:hover { border-color: var(--accent); color: var(--accent); }
+  .tag-filter.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
   .loading { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
 
   footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; }
@@ -122,6 +142,7 @@
       <p>Про PKM, ШІ, автоматизацію, спорт і все що зацікавило цього тижня. Без графіку і перфекціонізму.</p>
     </div>
     <div class="posts-label">Дописи</div>
+    <div id="tag-filters"></div>
     <div id="posts-container">
       <p class="loading">Завантаження дописів...</p>
     </div>
@@ -179,8 +200,9 @@
 
   const MONTHS = ["СІЧ","ЛЮТ","БЕР","КВІ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
 
-  // Зберігаємо завантажені пости щоб не качати двічі
   let postsCache = {};
+  let allPosts = [];
+  let activeTag = null;
 
   // --- Навігація через хеш ---
   function navigateTo(page, slug) {
@@ -193,13 +215,11 @@
 
   function handleRoute() {
     const hash = window.location.hash.replace('#', '');
-
     if (!hash || hash === 'home') {
       showPage('home');
     } else if (hash === 'about') {
       showPage('about');
     } else {
-      // Це slug допису
       openPostBySlug(hash);
     }
   }
@@ -211,9 +231,44 @@
     window.scrollTo(0, 0);
   }
 
+  // --- Фільтр по тегу ---
+  function filterByTag(tag) {
+    activeTag = activeTag === tag ? null : tag;
+    document.querySelectorAll('.tag-filter').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tag === activeTag);
+    });
+    renderPostsList();
+  }
+
+  function renderPostsList() {
+    const container = document.getElementById('posts-container');
+    const filtered = activeTag
+      ? allPosts.filter(p => p.tag === activeTag)
+      : allPosts;
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<p class="loading">Немає дописів у цій категорії.</p>';
+      return;
+    }
+
+    container.innerHTML = filtered.map(p => `
+      <div class="post-item" onclick="navigateTo('post','${p.slug}')">
+        <div class="post-date">${p.displayDate}</div>
+        <div>
+          <div class="post-title">${p.title}</div>
+          <div class="post-excerpt">${p.excerpt}</div>
+          <span class="post-tag">${p.tag}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
   // --- Завантаження списку постів ---
   async function loadPosts() {
     const container = document.getElementById('posts-container');
+    const filtersEl = document.getElementById('tag-filters');
+    container.innerHTML = '<p class="loading">Завантаження дописів...</p>';
+
     try {
       const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
       if (!res.ok) throw new Error();
@@ -225,15 +280,14 @@
         return;
       }
 
-      container.innerHTML = '';
+      allPosts = [];
+      const tags = new Set();
 
       for (const file of mdFiles) {
         const res2 = await fetch(file.download_url);
         const text = await res2.text();
-
-        // Зберігаємо в кеш
         const slug = file.name.replace('.md', '');
-        postsCache[slug] = { text, downloadUrl: file.download_url };
+        postsCache[slug] = { text };
 
         const title    = parseMeta(text, 'title') || 'Без назви';
         const excerpt  = parseMeta(text, 'excerpt') || '';
@@ -244,17 +298,17 @@
           ? 'НОВЕ'
           : `${MONTHS[date.getMonth()]}<br>${date.getFullYear()}`;
 
-        container.insertAdjacentHTML('beforeend', `
-          <div class="post-item" onclick="navigateTo('post','${slug}')">
-            <div class="post-date">${displayDate}</div>
-            <div>
-              <div class="post-title">${title}</div>
-              <div class="post-excerpt">${excerpt}</div>
-              <span class="post-tag">${tag}</span>
-            </div>
-          </div>
-        `);
+        tags.add(tag);
+        allPosts.push({ slug, title, excerpt, tag, displayDate });
       }
+
+      // Рендеримо кнопки тегів
+      filtersEl.className = 'tag-filters';
+      filtersEl.innerHTML = [...tags].map(tag =>
+        `<button class="tag-filter" data-tag="${tag}" onclick="filterByTag('${tag}')">${tag}</button>`
+      ).join('');
+
+      renderPostsList();
     } catch(e) {
       container.innerHTML = '<p class="loading">Не вдалось завантажити дописи.</p>';
     }
@@ -263,16 +317,15 @@
   // --- Відкрити допис за slug ---
   async function openPostBySlug(slug) {
     showPage('post');
-
     const titleEl   = document.getElementById('post-title-display');
     const dateEl    = document.getElementById('post-date-display');
     const tagEl     = document.getElementById('post-tag-display');
     const contentEl = document.getElementById('post-content-display');
 
-    titleEl.textContent   = 'Завантаження...';
-    dateEl.textContent    = '';
-    tagEl.textContent     = '';
-    contentEl.innerHTML   = '';
+    titleEl.textContent = 'Завантаження...';
+    dateEl.textContent = '';
+    tagEl.textContent = '';
+    contentEl.innerHTML = '';
 
     try {
       let text;
@@ -290,7 +343,8 @@
       const dateStr = parseMeta(text, 'date') || '';
       const tag     = parseMeta(text, 'tag') || '';
       const date    = new Date(dateStr);
-      const displayDate = isNaN(date.getTime()) ? '' : `${date.getDate()} ${['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'][date.getMonth()]} ${date.getFullYear()}`;
+      const months  = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+      const displayDate = isNaN(date.getTime()) ? '' : `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 
       titleEl.textContent = title;
       dateEl.textContent  = displayDate;
@@ -299,16 +353,27 @@
       // Прибираємо frontmatter
       const body = text.replace(/^---[\s\S]*?---\n?/, '');
 
-      // Перетворюємо [[назва допису]] на посилання
+      // [[вікі посилання]] → markdown посилання
       const withLinks = body.replace(/\[\[([^\]]+)\]\]/g, (match, linkText) => {
-        const linkSlug = linkText.toLowerCase().replace(/\s+/g, '-').replace(/[^a-zа-яіїєґ0-9-]/gi, '');
+        const linkSlug = linkText.toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^a-zа-яіїєґ0-9-]/gi, '');
         return `[${linkText}](#${linkSlug})`;
       });
 
-      // Рендеримо Markdown
+      // Рендеримо Markdown (HTML в тексті збережеться)
       contentEl.innerHTML = marked.parse(withLinks);
 
-      // Перехоплюємо кліки на посилання всередині допису
+      // Додаємо скрипт Amplenote якщо є embed
+      if (body.includes('amplenote-embed') && !document.getElementById('amplenote-script')) {
+        const script = document.createElement('script');
+        script.id = 'amplenote-script';
+        script.defer = true;
+        script.src = 'https://public.amplenote.com/embed.js';
+        document.body.appendChild(script);
+      }
+
+      // Перехоплюємо внутрішні посилання
       contentEl.querySelectorAll('a[href^="#"]').forEach(link => {
         const href = link.getAttribute('href').replace('#', '');
         if (href && href !== 'home' && href !== 'about') {
@@ -321,7 +386,7 @@
 
     } catch(e) {
       titleEl.textContent = 'Допис не знайдено';
-      contentEl.innerHTML = '<p>Не вдалось завантажити допис. Перевірте що файл існує в репозиторії.</p>';
+      contentEl.innerHTML = '<p>Не вдалось завантажити допис.</p>';
     }
   }
 
@@ -331,7 +396,6 @@
     return match ? match[1].trim() : null;
   }
 
-  // --- Слухаємо зміни хешу ---
   window.addEventListener('hashchange', handleRoute);
   window.addEventListener('DOMContentLoaded', () => {
     loadPosts();
