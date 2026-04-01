@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Як стати успішним сканером</title>
+<meta name="description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf8;
+    --surface: #f4f3ef;
+    --text: #1a1917;
+    --muted: #6b6963;
+    --accent: #2d5a27;
+    --accent-light: #e8f0e6;
+    --border: #e2e1db;
+    --max: 680px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 18px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Literata', Georgia, serif;
+    font-weight: 300;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+  }
+
+  .header-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .site-title {
+    font-family: 'Literata', serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .site-title span {
+    color: var(--accent);
+  }
+
+  nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--accent); }
+
+  /* Main layout */
+  main {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+  }
+
+  /* Page sections */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Hero (головна) */
+  .hero {
+    padding: 3rem 0 4rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3.5rem;
+  }
+
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+  }
+
+  .hero h1 {
+    font-size: 2.4rem;
+    font-weight: 300;
+    line-height: 1.25;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.2rem;
+    max-width: 520px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    max-width: 460px;
+    line-height: 1.7;
+  }
+
+  /* Posts list */
+  .posts-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  .post-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1.2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-item:first-of-type { border-top: 1px solid var(--border); }
+  .post-item:hover { opacity: 0.7; }
+
+  .post-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+    padding-top: 0.3rem;
+    line-height: 1.4;
+  }
+
+  .post-title {
+    font-size: 1.05rem;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+  }
+
+  .post-excerpt {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .post-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+  }
+
+  /* Single post */
+  .post-header {
+    padding: 2.5rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+  }
+
+  .back-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s;
+  }
+
+  .back-btn:hover { color: var(--accent); }
+
+  .post-header h2 {
+    font-size: 1.9rem;
+    font-weight: 300;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+    margin-bottom: 1rem;
+  }
+
+  .post-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  /* Amplenote embed area */
+  .amplenote-embed-wrapper {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  /* Placeholder для embed */
+  .embed-placeholder {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .embed-placeholder code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    background: var(--border);
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    display: block;
+    margin-top: 1rem;
+    color: var(--text);
+    word-break: break-all;
+  }
+
+  /* Про мене */
+  .about-section {
+    padding: 2rem 0;
+  }
+
+  .about-section h2 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-section p {
+    color: var(--muted);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .about-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  .about-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.3rem 0.7rem;
+    border-radius: 2px;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+
+  footer p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  @media (max-width: 600px) {
+    html { font-size: 16px; }
+    .hero h1 { font-size: 1.8rem; }
+    .post-item { grid-template-columns: 1fr; gap: 0.3rem; }
+    .post-date { padding-top: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="site-title" href="#" onclick="showPage('home')">
+      Як стати <span>успішним сканером</span>
+    </a>
+    <nav>
+      <a href="#" onclick="showPage('home')">Пости</a>
+      <a href="#" onclick="showPage('about')">Про мене</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ГОЛОВНА СТОРІНКА -->
+  <div id="page-home" class="page active">
+    <div class="hero">
+      <div class="hero-label">Блог</div>
+      <h1>Нотатки людини з <em>широкими інтересами</em></h1>
+      <p>Пишу про PKM, ШІ, продуктивність, спорт і все що мене зацікавило цього тижня. Без графіку і без перфекціонізму.</p>
+    </div>
+
+    <div class="posts-label">Останні пости</div>
+
+    <!-- ===== СПИСОК ПОСТІВ =====
+         Щоб додати новий пост:
+         1. Скопіюй один блок <a class="post-item"> нижче
+         2. Заміни дату, заголовок, опис і тег
+         3. В onclick вкажи id поста: showPost('post-2')
+         4. Створи відповідний блок в розділі ПОСТИ нижче
+    -->
+
+    <a class="post-item" href="#" onclick="showPost('post-1'); return false;">
+      <div class="post-date">Квіт<br>2025</div>
+      <div>
+        <div class="post-title">Чому я використовую 5 додатків для нотаток одночасно</div>
+        <div class="post-excerpt">Більшість людей вважають це проблемою. Я вважаю це системою.</div>
+        <span class="post-tag">PKM</span>
+      </div>
+    </a>
+
+    <a class="post-item" href="#" onclick="showPost('post-2'); return false;">
+      <div class="post-date">Квіт<br>2025</div>
+      <div>
+        <div class="post-title">Як я скинув 13 кг за 100 днів без дієти</div>
+        <div class="post-excerpt">Інтервальне голодування, дисципліна і трохи сканерського підходу до харчування.</div>
+        <span class="post-tag">Спорт</span>
+      </div>
+    </a>
+
+    <a class="post-item" href="#" onclick="showPost('post-3'); return false;">
+      <div class="post-date">Квіт<br>2025</div>
+      <div>
+        <div class="post-title">Як я автоматизував своє життя через Zapier</div>
+        <div class="post-excerpt">Google Tasks, Evernote, Any.do — все синхронізується автоматично.</div>
+        <span class="post-tag">ШІ та автоматизація</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ===== ПОСТИ =====
+       Для кожного поста:
+       - id має співпадати з тим що в onclick вище
+       - Заміни embed-код Amplenote на свій реальний
+  -->
+
+  <div id="page-post-1" class="page">
+    <div class="post-header">
+      <button class="back-btn" onclick="showPage('home')">← назад</button>
+      <h2>Чому я використовую 5 додатків для нотаток одночасно</h2>
+      <div class="post-meta">
+        <span>Квітень 2025</span>
+        <span>PKM</span>
+      </div>
+    </div>
+    <div class="amplenote-embed-wrapper">
+      <!-- ВСТАВТЕ SEM EMBED-КОД З AMPLENOTE -->
+      <div class="embed-placeholder">
+        <p>Тут буде вміст з Amplenote.</p>
+        <p>Опублікуйте нотатку в Amplenote і вставте embed-код замість цього блоку.</p>
+        <code>&lt;div class="amplenote-embed" data-note-token="ВАШ_ТОКЕН"&gt;...&lt;/div&gt;</code>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-post-2" class="page">
+    <div class="post-header">
+      <button class="back-btn" onclick="showPage('home')">← назад</button>
+      <h2>Як я скинув 13 кг за 100 днів без дієти</h2>
+      <div class="post-meta">
+        <span>Квітень 2025</span>
+        <span>Спорт</span>
+      </div>
+    </div>
+    <div class="amplenote-embed-wrapper">
+      <div class="embed-placeholder">
+        <p>Тут буде вміст з Amplenote.</p>
+        <code>&lt;div class="amplenote-embed" data-note-token="ВАШ_ТОКЕН"&gt;...&lt;/div&gt;</code>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-post-3" class="page">
+    <div class="post-header">
+      <button class="back-btn" onclick="showPage('home')">← назад</button>
+      <h2>Як я автоматизував своє життя через Zapier</h2>
+      <div class="post-meta">
+        <span>Квітень 2025</span>
+        <span>ШІ та автоматизація</span>
+      </div>
+    </div>
+    <div class="amplenote-embed-wrapper">
+      <div class="embed-placeholder">
+        <p>Тут буде вміст з Amplenote.</p>
+        <code>&lt;div class="amplenote-embed" data-note-token="ВАШ_ТОКЕН"&gt;...&lt;/div&gt;</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРО МЕНЕ -->
+  <div id="page-about" class="page">
+    <div class="about-section">
+      <h2>Про мене</h2>
+      <p>Людина-сканер з Коломиї. Захоплююсь PKM, ШІ, автоматизацією, спортом і ще багатьма речами одночасно.</p>
+      <p>7+ років в роздрібній торгівлі та телекомі. Колись керував чотирма магазинами. Зараз шукаю своє місце в дистанційному світі.</p>
+      <p>Цей блог — мої нотатки вголос. Пишу коли є що сказати, а не за графіком.</p>
+      <div class="about-tags">
+        <span class="about-tag">PKM</span>
+        <span class="about-tag">Obsidian</span>
+        <span class="about-tag">Amplenote</span>
+        <span class="about-tag">Logseq</span>
+        <span class="about-tag">Zapier</span>
+        <span class="about-tag">ШІ</span>
+        <span class="about-tag">Біг</span>
+        <span class="about-tag">Силові</span>
+        <span class="about-tag">Інтервальне голодування</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Як стати успішним сканером &nbsp;·&nbsp; <a href="https://t.me/YOUR_CHANNEL" target="_blank">Telegram</a></p>
+</footer>
+
+<script>
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const el = document.getElementById('page-' + pageId);
+    if (el) { el.classList.add('active'); window.scrollTo(0, 0); }
+  }
+
+  function showPost(postId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const el = document.getElementById('page-' + postId);
+    if (el) { el.classList.add('active'); window.scrollTo(0, 0); }
+  }
+</script>
+
+</body>
+</html>
