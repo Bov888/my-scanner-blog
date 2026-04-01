@@ -5,18 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Як стати успішним сканером</title>
 <meta name="description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
   marked.use({
     breaks: true,
     gfm: true,
-    hooks: {
-      preprocess(src) { return src; },
-      postprocess(html) { return html; }
-    },
     renderer: (() => {
       const r = new marked.Renderer();
-      r.html = (html) => html; // не екранувати HTML
+      r.html = (html) => html;
       return r;
     })()
   });
@@ -56,33 +53,37 @@
   .hero h1 em { font-style: italic; color: var(--accent); }
   .hero p { color: var(--muted); font-size: 0.95rem; max-width: 460px; }
 
-  .posts-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; }
+  .posts-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem; }
 
-  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; text-decoration: none; color: inherit; transition: opacity 0.2s; }
+  .tag-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+  .tag-filter { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
+  .tag-filter:hover { border-color: var(--accent); color: var(--accent); }
+  .tag-filter.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: opacity 0.2s; }
   .post-item:first-of-type { border-top: 1px solid var(--border); }
   .post-item:hover { opacity: 0.7; }
   .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); padding-top: 0.3rem; line-height: 1.4; }
   .post-title { font-size: 1.05rem; font-weight: 400; line-height: 1.4; margin-bottom: 0.4rem; }
   .post-excerpt { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 2px; margin-top: 0.5rem; }
+  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 2px; margin-top: 0.5rem; cursor: pointer; transition: opacity 0.2s; }
+  .post-tag:hover { opacity: 0.7; }
 
   .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
   .back-btn:hover { color: var(--accent); }
 
   .post-header { padding: 0 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2.5rem; }
   .post-header h2 { font-size: 1.9rem; font-weight: 300; line-height: 1.3; letter-spacing: -0.025em; margin-bottom: 1rem; }
-  .post-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.05em; display: flex; gap: 1.5rem; }
+  .post-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.05em; display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+  .post-meta-tag { background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 2px; cursor: pointer; transition: opacity 0.2s; }
+  .post-meta-tag:hover { opacity: 0.7; }
 
-  /* Стилі для вмісту допису */
   .post-content { font-size: 1rem; line-height: 1.8; }
-  .post-content h1,
-  .post-content h2,
-  .post-content h3 { font-weight: 400; line-height: 1.3; margin: 2rem 0 0.8rem; letter-spacing: -0.02em; }
+  .post-content h1, .post-content h2, .post-content h3 { font-weight: 400; line-height: 1.3; margin: 2rem 0 0.8rem; letter-spacing: -0.02em; }
   .post-content h2 { font-size: 1.4rem; }
   .post-content h3 { font-size: 1.15rem; }
   .post-content p { margin-bottom: 1.2rem; }
-  .post-content ul,
-  .post-content ol { margin: 0 0 1.2rem 1.5rem; }
+  .post-content ul, .post-content ol { margin: 0 0 1.2rem 1.5rem; }
   .post-content li { margin-bottom: 0.4rem; }
   .post-content blockquote { border-left: 3px solid var(--accent); padding-left: 1.2rem; color: var(--muted); font-style: italic; margin: 1.5rem 0; }
   .post-content code { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; background: var(--surface); padding: 0.15rem 0.4rem; border-radius: 2px; }
@@ -90,22 +91,14 @@
   .post-content pre code { background: none; padding: 0; }
   .post-content img { max-width: 100%; height: auto; border-radius: 4px; margin: 1rem 0; }
   .post-content hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-
-  /* Посилання між постами */
   .post-content a { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent-light); text-underline-offset: 3px; transition: text-decoration-color 0.2s; }
   .post-content a:hover { text-decoration-color: var(--accent); }
-  .post-content a[data-post] { font-style: italic; }
 
-  /* Про мене */
   .about-section h2 { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
   .about-section p { color: var(--muted); margin-bottom: 1rem; font-size: 0.95rem; }
   .about-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
-  .about-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; }
-
-  .tag-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
-  .tag-filter { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
-  .tag-filter:hover { border-color: var(--accent); color: var(--accent); }
-  .tag-filter.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .about-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
+  .about-tag:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
   .loading { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
 
@@ -117,6 +110,7 @@
     html { font-size: 16px; }
     .hero h1 { font-size: 1.8rem; }
     .post-item { grid-template-columns: 1fr; gap: 0.3rem; }
+    .post-date { padding-top: 0; }
   }
 </style>
 </head>
@@ -142,7 +136,7 @@
       <p>Про PKM, ШІ, автоматизацію, спорт і все що зацікавило цього тижня. Без графіку і перфекціонізму.</p>
     </div>
     <div class="posts-label">Дописи</div>
-    <div id="tag-filters"></div>
+    <div id="tag-filters" class="tag-filters"></div>
     <div id="posts-container">
       <p class="loading">Завантаження дописів...</p>
     </div>
@@ -155,7 +149,7 @@
       <h2 id="post-title-display"></h2>
       <div class="post-meta">
         <span id="post-date-display"></span>
-        <span id="post-tag-display"></span>
+        <span id="post-tag-display" class="post-meta-tag"></span>
       </div>
     </div>
     <article id="post-content-display" class="post-content"></article>
@@ -169,16 +163,12 @@
       <p>Захоплююсь PKM, ШІ, автоматизацією, бігом і ще купою речей. Цей блог — мої нотатки вголос. Пишу коли є що сказати.</p>
       <p>Пробіг півмарафон. Скинув 13 кг за 100 днів. Маю більше акаунтів у застосунках для нотаток ніж треба.</p>
       <div class="about-tags">
-        <span class="about-tag">PKM</span>
-        <span class="about-tag">Obsidian</span>
-        <span class="about-tag">Amplenote</span>
-        <span class="about-tag">Logseq</span>
-        <span class="about-tag">Zapier</span>
-        <span class="about-tag">ШІ</span>
-        <span class="about-tag">Біг</span>
-        <span class="about-tag">Силові</span>
-        <span class="about-tag">Інтервальне голодування</span>
-        <span class="about-tag">Людина-сканер</span>
+        <span class="about-tag" onclick="filterFromAbout('PKM')">PKM</span>
+        <span class="about-tag" onclick="filterFromAbout('ШІ та автоматизація')">ШІ та автоматизація</span>
+        <span class="about-tag" onclick="filterFromAbout('Спорт та дисципліна')">Спорт та дисципліна</span>
+        <span class="about-tag" onclick="filterFromAbout('Життя сканера')">Життя сканера</span>
+        <span class="about-tag" onclick="filterFromAbout('Інструменти')">Інструменти</span>
+        <span class="about-tag" onclick="filterFromAbout('Нотатки')">Нотатки</span>
       </div>
     </div>
   </div>
@@ -190,26 +180,24 @@
 </footer>
 
 <script>
-  // ============================
-  // НАЛАШТУВАННЯ — змінюй тут
-  // ============================
   const GITHUB_USER = 'Bov888';
   const GITHUB_REPO = 'my-scanner-blog';
   const POSTS_FOLDER = 'posts';
-  // ============================
 
-  const MONTHS = ["СІЧ","ЛЮТ","БЕР","КВІ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
+  const MONTHS     = ["СІЧ","ЛЮТ","БЕР","КВІ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
+  const MONTHS_UA  = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
 
   let postsCache = {};
-  let allPosts = [];
-  let activeTag = null;
+  let allPosts   = [];
+  let activeTag  = null;
 
-  // --- Навігація через хеш ---
   function navigateTo(page, slug) {
     if (slug) {
-      window.location.hash = '#' + slug;
+      window.location.hash = slug;
+    } else if (page === 'home') {
+      window.location.hash = '';
     } else {
-      window.location.hash = page === 'home' ? '' : '#' + page;
+      window.location.hash = page;
     }
   }
 
@@ -231,20 +219,33 @@
     window.scrollTo(0, 0);
   }
 
-  // --- Фільтр по тегу ---
   function filterByTag(tag) {
     activeTag = activeTag === tag ? null : tag;
+    syncTagButtons();
+    renderPostsList();
+  }
+
+  function filterFromAbout(tag) {
+    activeTag = tag;
+    navigateTo('home');
+    setTimeout(() => { syncTagButtons(); renderPostsList(); }, 80);
+  }
+
+  function filterByTagFromPost(tag) {
+    activeTag = tag;
+    navigateTo('home');
+    setTimeout(() => { syncTagButtons(); renderPostsList(); }, 80);
+  }
+
+  function syncTagButtons() {
     document.querySelectorAll('.tag-filter').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tag === activeTag);
     });
-    renderPostsList();
   }
 
   function renderPostsList() {
     const container = document.getElementById('posts-container');
-    const filtered = activeTag
-      ? allPosts.filter(p => p.tag === activeTag)
-      : allPosts;
+    const filtered  = activeTag ? allPosts.filter(p => p.tag === activeTag) : allPosts;
 
     if (filtered.length === 0) {
       container.innerHTML = '<p class="loading">Немає дописів у цій категорії.</p>';
@@ -257,22 +258,19 @@
         <div>
           <div class="post-title">${p.title}</div>
           <div class="post-excerpt">${p.excerpt}</div>
-          <span class="post-tag">${p.tag}</span>
+          <span class="post-tag" onclick="event.stopPropagation(); filterByTag('${p.tag}')">${p.tag}</span>
         </div>
       </div>
     `).join('');
   }
 
-  // --- Завантаження списку постів ---
   async function loadPosts() {
     const container = document.getElementById('posts-container');
     const filtersEl = document.getElementById('tag-filters');
-    container.innerHTML = '<p class="loading">Завантаження дописів...</p>';
-
     try {
       const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
       if (!res.ok) throw new Error();
-      const files = await res.json();
+      const files   = await res.json();
       const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
 
       if (mdFiles.length === 0) {
@@ -284,16 +282,16 @@
       const tags = new Set();
 
       for (const file of mdFiles) {
-        const res2 = await fetch(file.download_url);
-        const text = await res2.text();
+        const r2   = await fetch(file.download_url);
+        const text = await r2.text();
         const slug = file.name.replace('.md', '');
         postsCache[slug] = { text };
 
-        const title    = parseMeta(text, 'title') || 'Без назви';
-        const excerpt  = parseMeta(text, 'excerpt') || '';
-        const dateStr  = parseMeta(text, 'date') || '';
-        const tag      = parseMeta(text, 'tag') || 'Допис';
-        const date     = new Date(dateStr);
+        const title       = parseMeta(text, 'title')   || 'Без назви';
+        const excerpt     = parseMeta(text, 'excerpt') || '';
+        const dateStr     = parseMeta(text, 'date')    || '';
+        const tag         = parseMeta(text, 'tag')     || 'Допис';
+        const date        = new Date(dateStr);
         const displayDate = isNaN(date.getTime())
           ? 'НОВЕ'
           : `${MONTHS[date.getMonth()]}<br>${date.getFullYear()}`;
@@ -302,8 +300,6 @@
         allPosts.push({ slug, title, excerpt, tag, displayDate });
       }
 
-      // Рендеримо кнопки тегів
-      filtersEl.className = 'tag-filters';
       filtersEl.innerHTML = [...tags].map(tag =>
         `<button class="tag-filter" data-tag="${tag}" onclick="filterByTag('${tag}')">${tag}</button>`
       ).join('');
@@ -314,7 +310,6 @@
     }
   }
 
-  // --- Відкрити допис за slug ---
   async function openPostBySlug(slug) {
     showPage('post');
     const titleEl   = document.getElementById('post-title-display');
@@ -323,8 +318,8 @@
     const contentEl = document.getElementById('post-content-display');
 
     titleEl.textContent = 'Завантаження...';
-    dateEl.textContent = '';
-    tagEl.textContent = '';
+    dateEl.textContent  = '';
+    tagEl.textContent   = '';
     contentEl.innerHTML = '';
 
     try {
@@ -339,41 +334,35 @@
         postsCache[slug] = { text };
       }
 
-      const title   = parseMeta(text, 'title') || 'Без назви';
-      const dateStr = parseMeta(text, 'date') || '';
-      const tag     = parseMeta(text, 'tag') || '';
+      const title   = parseMeta(text, 'title')   || 'Без назви';
+      const dateStr = parseMeta(text, 'date')    || '';
+      const tag     = parseMeta(text, 'tag')     || '';
       const date    = new Date(dateStr);
-      const months  = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
-      const displayDate = isNaN(date.getTime()) ? '' : `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+      const dispDate = isNaN(date.getTime())
+        ? ''
+        : `${date.getDate()} ${MONTHS_UA[date.getMonth()]} ${date.getFullYear()}`;
 
       titleEl.textContent = title;
-      dateEl.textContent  = displayDate;
+      dateEl.textContent  = dispDate;
       tagEl.textContent   = tag;
+      tagEl.onclick       = () => filterByTagFromPost(tag);
 
-      // Прибираємо frontmatter
-      const body = text.replace(/^---[\s\S]*?---\n?/, '');
-
-      // [[вікі посилання]] → markdown посилання
-      const withLinks = body.replace(/\[\[([^\]]+)\]\]/g, (match, linkText) => {
-        const linkSlug = linkText.toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^a-zа-яіїєґ0-9-]/gi, '');
-        return `[${linkText}](#${linkSlug})`;
+      const body      = text.replace(/^---[\s\S]*?---\n?/, '');
+      const withLinks = body.replace(/\[\[([^\]]+)\]\]/g, (_, lt) => {
+        const s = lt.toLowerCase().replace(/\s+/g, '-').replace(/[^a-zа-яіїєґ0-9-]/gi, '');
+        return `[${lt}](#${s})`;
       });
 
-      // Рендеримо Markdown (HTML в тексті збережеться)
       contentEl.innerHTML = marked.parse(withLinks);
 
-      // Додаємо скрипт Amplenote якщо є embed
       if (body.includes('amplenote-embed') && !document.getElementById('amplenote-script')) {
-        const script = document.createElement('script');
-        script.id = 'amplenote-script';
-        script.defer = true;
-        script.src = 'https://public.amplenote.com/embed.js';
-        document.body.appendChild(script);
+        const s = document.createElement('script');
+        s.id    = 'amplenote-script';
+        s.defer = true;
+        s.src   = 'https://public.amplenote.com/embed.js';
+        document.body.appendChild(s);
       }
 
-      // Перехоплюємо внутрішні посилання
       contentEl.querySelectorAll('a[href^="#"]').forEach(link => {
         const href = link.getAttribute('href').replace('#', '');
         if (href && href !== 'home' && href !== 'about') {
@@ -390,10 +379,19 @@
     }
   }
 
-  // --- Парсинг frontmatter ---
   function parseMeta(text, key) {
-    const match = text.match(new RegExp(`${key}:\\s*"?([^"\\n]+)"?`));
-    return match ? match[1].trim() : null;
+    const m = text.match(new RegExp(`${key}:\\s*"?([^"\\n]+)"?`));
+    return m ? m[1].trim() : null;
+  }
+
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
   }
 
   window.addEventListener('hashchange', handleRoute);
