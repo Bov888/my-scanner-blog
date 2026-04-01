@@ -36,8 +36,7 @@
 </style>
 </head>
 <body>
-
-<header>
+  <header>
   <div class="header-inner">
     <a class="site-title" href="#" onclick="showPage('home')">Як стати <span>успішним сканером</span></a>
     <nav>
@@ -55,7 +54,9 @@
       <p>Про PKM, автоматизацію та життя сканера.</p>
     </div>
     <div id="posts-container">
-      <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted);">Завантаження дописів...</p>
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted);">
+        Завантаження дописів...
+      </p>
     </div>
   </div>
 
@@ -70,8 +71,7 @@
   </div>
 </main>
 
-<footer><p>Успішний Сканер &copy; 2026</p></footer>
-
+<footer><p>Успішний Сканер &copy; 2026</p></footer
 <script>
   let postsCache = {};
 
@@ -89,7 +89,7 @@
     showPage('post-view');
 
     if (postsCache[downloadUrl]) {
-      container.innerHTML = marked.parse(postsCache[downloadUrl].content);
+      container.innerHTML = marked.parse(postsCache[downloadUrl]);
       return;
     }
 
@@ -98,7 +98,7 @@
       let text = await response.text();
       // видаляємо frontmatter
       const cleanText = text.replace(/^---[\s\S]*?---/, '');
-      postsCache[downloadUrl] = { content: cleanText };
+      postsCache[downloadUrl] = cleanText;
       container.innerHTML = marked.parse(cleanText);
     } catch (e) {
       container.innerHTML = "Помилка завантаження тексту.";
@@ -114,11 +114,50 @@
       container.innerHTML = '';
       files.reverse();
 
-      const monthNames = ["СІЧ", "ЛЮТ", "БЕР", "КВІТ", "ТРА", "ЧЕР", "ЛИП", "СЕР", "ВЕР", "ЖОВ", "ЛИС", "ГРУ"];
+      const monthNames = ["СІЧ","ЛЮТ","БЕР","КВІТ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
 
       for (const file of files) {
         if (file.name.endsWith('.md')) {
           const contentRes = await fetch(file.download_url);
           const text = await contentRes.text();
 
-          const title = text.match(/title:\s*"(.*)"/)?.[1] || text.match(/title:\s*(.*)/)?.[1] || "Без наз
+          const title = text.match(/title:\s*"(.*)"/)?.[1] || text.match(/title:\s*(.*)/)?.[1] || "Без назви";
+          const excerpt = text.match(/excerpt:\s*"(.*)"/)?.[1] || text.split('.').slice(0,2).join('.') + "...";
+          const dateStr = text.match(/date:\s*(.*)/)?.[1] || "";
+          const tag = text.match(/tag:\s*"(.*)"/)?.[1] || "ДОПИС";
+
+          const date = new Date(dateStr);
+          const displayDate = isNaN(date.getTime()) ? "НОВЕ" : `${monthNames[date.getMonth()]}<br>${date.getFullYear()}`;
+
+          const postHTML = `
+            <div class="post-item" onclick="openPost('${file.download_url}')">
+              <div class="post-date">${displayDate}</div>
+              <div>
+                <div class="post-title">${title}</div>
+                <div class="post-excerpt">${excerpt}</div>
+                <span class="post-tag">${tag}</span>
+              </div>
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', postHTML);
+        }
+      }
+    } catch (e) {
+      container.innerHTML = '<p>Поки що дописів немає.</p>';
+    }
+  }
+
+  loadPosts();
+
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
+</script>
+</body>
+</html>                                            
