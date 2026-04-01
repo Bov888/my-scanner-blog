@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: Bov888/my-scanner-blog
+  name: git-gateway
   branch: main
 
 media_folder: "images"
@@ -26,4 +25,14 @@ collections:
           - { label: "Життя сканера", value: "Життя сканера" }
           - { label: "Інструменти", value: "Інструменти" }
           - { label: "Нотатки", value: "Нотатки" }
+      - { label: "Вміст", name: "body", widget: "markdown" }
+
+  - name: "pages"
+    label: "Сторінки"
+    folder: "pages"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Опис", name: "description", widget: "string", required: false }
       - { label: "Вміст", name: "body", widget: "markdown" }
