@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Як стати успішним сканером</title>
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -28,6 +29,8 @@
   .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
   .post-title { font-size: 1.05rem; font-weight: 400; margin-bottom: 0.4rem; }
   .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; margin-top: 0.5rem; }
+  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; text-transform: uppercase; }
+  .post-content img { max-width: 100%; height: auto; }
   footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
   @media (max-width: 600px) { .post-item { grid-template-columns: 1fr; } }
 </style>
@@ -56,6 +59,12 @@
     </div>
   </div>
 
+  <div id="page-post-view" class="page">
+    <button class="back-btn" onclick="showPage('home')">← до списку</button>
+    <article id="full-post-content" class="post-content">
+      </article>
+  </div>
+
   <div id="page-about" class="page">
     <h2>Про мене</h2>
     <p>7+ років у телекомі. Захоплююсь PKM, ШІ та бігом. Цей блог — мої нотатки вголос.</p>
@@ -71,19 +80,33 @@
     window.scrollTo(0, 0);
   }
 
-  // ФУНКЦІЯ АВТОМАТИЧНОГО ЗАВАНТАЖЕННЯ ДОПИСІВ
+  // Функція для завантаження конкретного тексту допису
+  async function openPost(downloadUrl) {
+    const container = document.getElementById('full-post-content');
+    container.innerHTML = "Завантаження тексту...";
+    showPage('post-view');
+
+    try {
+      const response = await fetch(downloadUrl);
+      let text = await response.text();
+      
+      // Видаляємо Frontmatter (те, що між ---)
+      const cleanText = text.replace(/^---[\s\S]*?---/, '');
+      
+      // Перетворюємо Markdown у HTML за допомогою Marked
+      container.innerHTML = marked.parse(cleanText);
+    } catch (e) {
+      container.innerHTML = "Помилка завантаження тексту.";
+    }
+  }
+
   async function loadPosts() {
     const container = document.querySelector('#posts-container');
-    
     try {
-      // Запит до вашого репозиторію
       const response = await fetch('https://api.github.com/repos/Bov888/my-scanner-blog/contents/posts');
-      if (!response.ok) throw new Error('Поки що дописів немає');
-      
+      if (!response.ok) throw new Error();
       const files = await response.json();
-      container.innerHTML = ''; // Очищуємо текст завантаження
-
-      // Сортуємо файли, щоб нові були зверху (за назвою файлу, де є дата)
+      container.innerHTML = '';
       files.reverse();
 
       for (const file of files) {
@@ -91,38 +114,36 @@
           const contentRes = await fetch(file.download_url);
           const text = await contentRes.text();
           
-          // Парсинг заголовка, опису та дати
           const title = text.match(/title:\s*"(.*)"/)?.[1] || text.match(/title:\s*(.*)/)?.[1] || "Без назви";
-          const excerpt = text.match(/excerpt:\s*"(.*)"/)?.[1] || text.match(/excerpt:\s*(.*)/)?.[1] || "Натисніть, щоб прочитати...";
+          const excerpt = text.match(/excerpt:\s*"(.*)"/)?.[1] || "Натисніть, щоб прочитати...";
           const dateStr = text.match(/date:\s*(.*)/)?.[1] || "";
-          const tag = text.match(/tag:\s*"(.*)"/)?.[1] || text.match(/tag:\s*(.*)/)?.[1] || "ДОПИС";
+          const tag = text.match(/tag:\s*"(.*)"/)?.[1] || "ДОПИС";
           
           const date = new Date(dateStr);
           const monthNames = ["СІЧ", "ЛЮТ", "БЕР", "КВІТ", "ТРА", "ЧЕР", "ЛИП", "СЕР", "ВЕР", "ЖОВ", "ЛИС", "ГРУ"];
           const displayDate = isNaN(date.getTime()) ? "НОВЕ" : `${monthNames[date.getMonth()]}<br>${date.getFullYear()}`;
 
+          // ЗМІНЕНО: тепер замість посилання на GitHub ми викликаємо функцію openPost
           const postHTML = `
-            <a class="post-item" href="${file.html_url}" target="_blank">
+            <div class="post-item" onclick="openPost('${file.download_url}')">
               <div class="post-date">${displayDate}</div>
               <div>
                 <div class="post-title">${title}</div>
                 <div class="post-excerpt">${excerpt}</div>
                 <span class="post-tag">${tag}</span>
               </div>
-            </a>
+            </div>
           `;
           container.insertAdjacentHTML('beforeend', postHTML);
         }
       }
     } catch (e) {
-      container.innerHTML = '<p style="font-family: \'JetBrains Mono\', monospace; font-size: 0.7rem; color: var(--muted);">Поки що тут порожньо. Створіть перший допис в адмінці!</p>';
+      container.innerHTML = '<p>Поки що дописів немає.</p>';
     }
   }
 
-  // Запуск
   loadPosts();
 
-  // Логіка для входу в адмінку
   if (window.netlifyIdentity) {
     window.netlifyIdentity.on("init", user => {
       if (!user) {
