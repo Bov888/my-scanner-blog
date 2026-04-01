@@ -6,6 +6,7 @@
 <title>Як стати успішним сканером</title>
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gray-matter/dist/gray-matter.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -18,9 +19,10 @@
   .site-title span { color: var(--accent); }
   nav { display: flex; gap: 1.5rem; }
   nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; }
+  nav a.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
   main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
-  .page { display: none; }
-  .page.active { display: block; }
+  .page { display: none; opacity: 0; transition: opacity 0.4s ease; }
+  .page.active { display: block; opacity: 1; }
   .hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
   .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem; }
   .hero h1 { font-size: 2.4rem; font-weight: 300; line-height: 1.25; margin-bottom: 1.2rem; }
@@ -28,7 +30,8 @@
   .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; text-decoration: none; color: inherit; }
   .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
   .post-title { font-size: 1.05rem; font-weight: 400; margin-bottom: 0.4rem; }
-  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; margin-top: 0.5rem; }
+  .post-excerpt { font-size: 0.85rem; color: var(--muted); }
+  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; margin-top: 0.5rem; cursor: pointer; }
   .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; text-transform: uppercase; }
   .post-content img { max-width: 100%; height: auto; }
   footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
@@ -41,8 +44,8 @@
   <div class="header-inner">
     <a class="site-title" href="#" onclick="showPage('home')">Як стати <span>успішним сканером</span></a>
     <nav>
-      <a onclick="showPage('home')">Дописи</a>
-      <a onclick="showPage('about')">Про мене</a>
+      <a id="nav-home" onclick="showPage('home')">Дописи</a>
+      <a id="nav-about" onclick="showPage('about')">Про мене</a>
     </nav>
   </div>
 </header>
@@ -61,8 +64,7 @@
 
   <div id="page-post-view" class="page">
     <button class="back-btn" onclick="showPage('home')">← до списку</button>
-    <article id="full-post-content" class="post-content">
-      </article>
+    <article id="full-post-content" class="post-content"></article>
   </div>
 
   <div id="page-about" class="page">
@@ -74,33 +76,38 @@
 <footer><p>Успішний Сканер &copy; 2026</p></footer>
 
 <script>
+  let postsCache = [];
+
   function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + pageId).classList.add('active');
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('nav-' + pageId)?.classList.add('active');
     window.scrollTo(0, 0);
   }
 
-  // Функція для завантаження конкретного тексту допису
   async function openPost(downloadUrl) {
     const container = document.getElementById('full-post-content');
     container.innerHTML = "Завантаження тексту...";
     showPage('post-view');
 
+    if (postsCache[downloadUrl]) {
+      container.innerHTML = marked.parse(postsCache[downloadUrl].content);
+      return;
+    }
+
     try {
       const response = await fetch(downloadUrl);
       let text = await response.text();
-      
-      // Видаляємо Frontmatter (те, що між ---)
-      const cleanText = text.replace(/^---[\s\S]*?---/, '');
-      
-      // Перетворюємо Markdown у HTML за допомогою Marked
-      container.innerHTML = marked.parse(cleanText);
+      const parsed = matter(text);
+      postsCache[downloadUrl] = { meta: parsed.data, content: parsed.content };
+      container.innerHTML = marked.parse(parsed.content);
     } catch (e) {
       container.innerHTML = "Помилка завантаження тексту.";
     }
   }
 
-  async function loadPosts() {
+  async function loadPosts(filterTag = null) {
     const container = document.querySelector('#posts-container');
     try {
       const response = await fetch('https://api.github.com/repos/Bov888/my-scanner-blog/contents/posts');
@@ -113,46 +120,10 @@
         if (file.name.endsWith('.md')) {
           const contentRes = await fetch(file.download_url);
           const text = await contentRes.text();
-          
-          const title = text.match(/title:\s*"(.*)"/)?.[1] || text.match(/title:\s*(.*)/)?.[1] || "Без назви";
-          const excerpt = text.match(/excerpt:\s*"(.*)"/)?.[1] || "Натисніть, щоб прочитати...";
-          const dateStr = text.match(/date:\s*(.*)/)?.[1] || "";
-          const tag = text.match(/tag:\s*"(.*)"/)?.[1] || "ДОПИС";
-          
-          const date = new Date(dateStr);
-          const monthNames = ["СІЧ", "ЛЮТ", "БЕР", "КВІТ", "ТРА", "ЧЕР", "ЛИП", "СЕР", "ВЕР", "ЖОВ", "ЛИС", "ГРУ"];
-          const displayDate = isNaN(date.getTime()) ? "НОВЕ" : `${monthNames[date.getMonth()]}<br>${date.getFullYear()}`;
+          const parsed = matter(text);
+          const meta = parsed.data;
 
-          // ЗМІНЕНО: тепер замість посилання на GitHub ми викликаємо функцію openPost
-          const postHTML = `
-            <div class="post-item" onclick="openPost('${file.download_url}')">
-              <div class="post-date">${displayDate}</div>
-              <div>
-                <div class="post-title">${title}</div>
-                <div class="post-excerpt">${excerpt}</div>
-                <span class="post-tag">${tag}</span>
-              </div>
-            </div>
-          `;
-          container.insertAdjacentHTML('beforeend', postHTML);
-        }
-      }
-    } catch (e) {
-      container.innerHTML = '<p>Поки що дописів немає.</p>';
-    }
-  }
-
-  loadPosts();
-
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
-        });
-      }
-    });
-  }
-</script>
-</body>
-</html>
+          const title = meta.title || "Без назви";
+          const excerpt = meta.excerpt || parsed.content.split('.').slice(0,2).join('.') + "...";
+          const dateStr = meta.date || "";
+          const tag = meta
