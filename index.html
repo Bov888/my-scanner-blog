@@ -6,7 +6,6 @@
 <title>Як стати успішним сканером</title>
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gray-matter/dist/gray-matter.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -97,15 +96,16 @@
     try {
       const response = await fetch(downloadUrl);
       let text = await response.text();
-      const parsed = matter(text);
-      postsCache[downloadUrl] = { meta: parsed.data, content: parsed.content };
-      container.innerHTML = marked.parse(parsed.content);
+      // видаляємо frontmatter
+      const cleanText = text.replace(/^---[\s\S]*?---/, '');
+      postsCache[downloadUrl] = { content: cleanText };
+      container.innerHTML = marked.parse(cleanText);
     } catch (e) {
       container.innerHTML = "Помилка завантаження тексту.";
     }
   }
 
-  async function loadPosts(filterTag = null) {
+  async function loadPosts() {
     const container = document.querySelector('#posts-container');
     try {
       const response = await fetch('https://api.github.com/repos/Bov888/my-scanner-blog/contents/posts');
@@ -120,10 +120,5 @@
         if (file.name.endsWith('.md')) {
           const contentRes = await fetch(file.download_url);
           const text = await contentRes.text();
-          const parsed = matter(text);
-          const meta = parsed.data;
 
-          const title = meta.title || "Без назви";
-          const excerpt = meta.excerpt || parsed.content.split('.').slice(0,2).join('.') + "...";
-          const dateStr = meta.date || "";
-          const tag = meta
+          const title = text.match(/title:\s*"(.*)"/)?.[1] || text.match(/title:\s*(.*)/)?.[1] || "Без наз
