@@ -4,155 +4,339 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Як стати успішним сканером</title>
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<meta name="description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root { --bg: #fafaf8; --surface: #f4f3ef; --text: #1a1917; --muted: #6b6963; --accent: #2d5a27; --accent-light: #e8f0e6; --border: #e2e1db; --max: 680px; }
+  :root {
+    --bg: #fafaf8;
+    --surface: #f4f3ef;
+    --text: #1a1917;
+    --muted: #6b6963;
+    --accent: #2d5a27;
+    --accent-light: #e8f0e6;
+    --border: #e2e1db;
+    --max: 680px;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 18px; }
   body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
+
   header { border-bottom: 1px solid var(--border); padding: 2rem 1.5rem; }
   .header-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; }
+  .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; cursor: pointer; }
   .site-title span { color: var(--accent); }
   nav { display: flex; gap: 1.5rem; }
-  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; }
+  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; transition: color 0.2s; }
+  nav a:hover { color: var(--accent); }
+
   main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
   .page { display: none; }
   .page.active { display: block; }
+
   .hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
-  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem; }
-  .hero h1 { font-size: 2.4rem; font-weight: 300; line-height: 1.25; margin-bottom: 1.2rem; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.2rem; }
+  .hero h1 { font-size: 2.4rem; font-weight: 300; line-height: 1.25; letter-spacing: -0.03em; margin-bottom: 1.2rem; max-width: 520px; }
   .hero h1 em { font-style: italic; color: var(--accent); }
-  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; text-decoration: none; color: inherit; }
-  .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
-  .post-title { font-size: 1.05rem; font-weight: 400; margin-bottom: 0.4rem; }
-  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; margin-top: 0.5rem; }
-  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; text-transform: uppercase; }
-  .post-content img { max-width: 100%; height: auto; }
-  footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
-  @media (max-width: 600px) { .post-item { grid-template-columns: 1fr; } }
+  .hero p { color: var(--muted); font-size: 0.95rem; max-width: 460px; }
+
+  .posts-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; }
+
+  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; text-decoration: none; color: inherit; transition: opacity 0.2s; }
+  .post-item:first-of-type { border-top: 1px solid var(--border); }
+  .post-item:hover { opacity: 0.7; }
+  .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); padding-top: 0.3rem; line-height: 1.4; }
+  .post-title { font-size: 1.05rem; font-weight: 400; line-height: 1.4; margin-bottom: 0.4rem; }
+  .post-excerpt { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 2px; margin-top: 0.5rem; }
+
+  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
+  .back-btn:hover { color: var(--accent); }
+
+  .post-header { padding: 0 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2.5rem; }
+  .post-header h2 { font-size: 1.9rem; font-weight: 300; line-height: 1.3; letter-spacing: -0.025em; margin-bottom: 1rem; }
+  .post-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.05em; display: flex; gap: 1.5rem; }
+
+  /* Стилі для вмісту допису */
+  .post-content { font-size: 1rem; line-height: 1.8; }
+  .post-content h1,
+  .post-content h2,
+  .post-content h3 { font-weight: 400; line-height: 1.3; margin: 2rem 0 0.8rem; letter-spacing: -0.02em; }
+  .post-content h2 { font-size: 1.4rem; }
+  .post-content h3 { font-size: 1.15rem; }
+  .post-content p { margin-bottom: 1.2rem; }
+  .post-content ul,
+  .post-content ol { margin: 0 0 1.2rem 1.5rem; }
+  .post-content li { margin-bottom: 0.4rem; }
+  .post-content blockquote { border-left: 3px solid var(--accent); padding-left: 1.2rem; color: var(--muted); font-style: italic; margin: 1.5rem 0; }
+  .post-content code { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; background: var(--surface); padding: 0.15rem 0.4rem; border-radius: 2px; }
+  .post-content pre { background: var(--surface); padding: 1.2rem; border-radius: 4px; overflow-x: auto; margin-bottom: 1.2rem; }
+  .post-content pre code { background: none; padding: 0; }
+  .post-content img { max-width: 100%; height: auto; border-radius: 4px; margin: 1rem 0; }
+  .post-content hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+  /* Посилання між постами */
+  .post-content a { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent-light); text-underline-offset: 3px; transition: text-decoration-color 0.2s; }
+  .post-content a:hover { text-decoration-color: var(--accent); }
+  .post-content a[data-post] { font-style: italic; }
+
+  /* Про мене */
+  .about-section h2 { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+  .about-section p { color: var(--muted); margin-bottom: 1rem; font-size: 0.95rem; }
+  .about-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+  .about-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; }
+
+  .loading { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+
+  footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; }
+  footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    html { font-size: 16px; }
+    .hero h1 { font-size: 1.8rem; }
+    .post-item { grid-template-columns: 1fr; gap: 0.3rem; }
+  }
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-inner">
-    <a class="site-title" href="#" onclick="showPage('home')">Як стати <span>успішним сканером</span></a>
+    <span class="site-title" onclick="navigateTo('home')">Як стати <span>успішним сканером</span></span>
     <nav>
-      <a onclick="showPage('home')">Дописи</a>
-      <a onclick="showPage('about')">Про мене</a>
+      <a onclick="navigateTo('home')">Дописи</a>
+      <a onclick="navigateTo('about')">Про мене</a>
     </nav>
   </div>
 </header>
 
 <main>
+
+  <!-- ГОЛОВНА -->
   <div id="page-home" class="page active">
     <div class="hero">
-      <div class="hero-label">Дописи</div>
+      <div class="hero-label">Блог</div>
       <h1>Нотатки людини з <em>широкими інтересами</em></h1>
-      <p>Про PKM, автоматизацію та життя сканера.</p>
+      <p>Про PKM, ШІ, автоматизацію, спорт і все що зацікавило цього тижня. Без графіку і перфекціонізму.</p>
     </div>
+    <div class="posts-label">Дописи</div>
     <div id="posts-container">
-      <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted);">Завантаження дописів...</p>
+      <p class="loading">Завантаження дописів...</p>
     </div>
   </div>
 
-  <div id="page-post-view" class="page">
-    <button class="back-btn" onclick="showPage('home')">← до списку</button>
-    <article id="full-post-content" class="post-content">
-      </article>
+  <!-- ДОПИС -->
+  <div id="page-post" class="page">
+    <button class="back-btn" onclick="navigateTo('home')">← до списку</button>
+    <div class="post-header">
+      <h2 id="post-title-display"></h2>
+      <div class="post-meta">
+        <span id="post-date-display"></span>
+        <span id="post-tag-display"></span>
+      </div>
+    </div>
+    <article id="post-content-display" class="post-content"></article>
   </div>
 
+  <!-- ПРО МЕНЕ -->
   <div id="page-about" class="page">
-    <h2>Про мене</h2>
-    <p>7+ років у телекомі. Захоплююсь PKM, ШІ та бігом. Цей блог — мої нотатки вголос.</p>
+    <div class="about-section">
+      <h2>Про мене</h2>
+      <p>Людина-сканер з Коломиї. 7+ років у роздрібній торгівлі та телекомі. Колись керував чотирма магазинами одночасно.</p>
+      <p>Захоплююсь PKM, ШІ, автоматизацією, бігом і ще купою речей. Цей блог — мої нотатки вголос. Пишу коли є що сказати.</p>
+      <p>Пробіг півмарафон. Скинув 13 кг за 100 днів. Маю більше акаунтів у застосунках для нотаток ніж треба.</p>
+      <div class="about-tags">
+        <span class="about-tag">PKM</span>
+        <span class="about-tag">Obsidian</span>
+        <span class="about-tag">Amplenote</span>
+        <span class="about-tag">Logseq</span>
+        <span class="about-tag">Zapier</span>
+        <span class="about-tag">ШІ</span>
+        <span class="about-tag">Біг</span>
+        <span class="about-tag">Силові</span>
+        <span class="about-tag">Інтервальне голодування</span>
+        <span class="about-tag">Людина-сканер</span>
+      </div>
+    </div>
   </div>
+
 </main>
 
-<footer><p>Успішний Сканер &copy; 2026</p></footer>
+<footer>
+  <p>Успішний сканер &nbsp;·&nbsp; <a href="https://t.me/YOUR_CHANNEL" target="_blank">Telegram</a></p>
+</footer>
 
 <script>
+  // ============================
+  // НАЛАШТУВАННЯ — змінюй тут
+  // ============================
+  const GITHUB_USER = 'Bov888';
+  const GITHUB_REPO = 'my-scanner-blog';
+  const POSTS_FOLDER = 'posts';
+  // ============================
+
+  const MONTHS = ["СІЧ","ЛЮТ","БЕР","КВІ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
+
+  // Зберігаємо завантажені пости щоб не качати двічі
+  let postsCache = {};
+
+  // --- Навігація через хеш ---
+  function navigateTo(page, slug) {
+    if (slug) {
+      window.location.hash = '#' + slug;
+    } else {
+      window.location.hash = page === 'home' ? '' : '#' + page;
+    }
+  }
+
+  function handleRoute() {
+    const hash = window.location.hash.replace('#', '');
+
+    if (!hash || hash === 'home') {
+      showPage('home');
+    } else if (hash === 'about') {
+      showPage('about');
+    } else {
+      // Це slug допису
+      openPostBySlug(hash);
+    }
+  }
+
   function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + pageId).classList.add('active');
+    const el = document.getElementById('page-' + pageId);
+    if (el) el.classList.add('active');
     window.scrollTo(0, 0);
   }
 
-  // Функція для завантаження конкретного тексту допису
-  async function openPost(downloadUrl) {
-    const container = document.getElementById('full-post-content');
-    container.innerHTML = "Завантаження тексту...";
-    showPage('post-view');
-
-    try {
-      const response = await fetch(downloadUrl);
-      let text = await response.text();
-      
-      // Видаляємо Frontmatter (те, що між ---)
-      const cleanText = text.replace(/^---[\s\S]*?---/, '');
-      
-      // Перетворюємо Markdown у HTML за допомогою Marked
-      container.innerHTML = marked.parse(cleanText);
-    } catch (e) {
-      container.innerHTML = "Помилка завантаження тексту.";
-    }
-  }
-
+  // --- Завантаження списку постів ---
   async function loadPosts() {
-    const container = document.querySelector('#posts-container');
+    const container = document.getElementById('posts-container');
     try {
-      const response = await fetch('https://api.github.com/repos/Bov888/my-scanner-blog/contents/posts');
-      if (!response.ok) throw new Error();
-      const files = await response.json();
-      container.innerHTML = '';
-      files.reverse();
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
+      if (!res.ok) throw new Error();
+      const files = await res.json();
+      const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
 
-      for (const file of files) {
-        if (file.name.endsWith('.md')) {
-          const contentRes = await fetch(file.download_url);
-          const text = await contentRes.text();
-          
-          const title = text.match(/title:\s*"(.*)"/)?.[1] || text.match(/title:\s*(.*)/)?.[1] || "Без назви";
-          const excerpt = text.match(/excerpt:\s*"(.*)"/)?.[1] || "Натисніть, щоб прочитати...";
-          const dateStr = text.match(/date:\s*(.*)/)?.[1] || "";
-          const tag = text.match(/tag:\s*"(.*)"/)?.[1] || "ДОПИС";
-          
-          const date = new Date(dateStr);
-          const monthNames = ["СІЧ", "ЛЮТ", "БЕР", "КВІТ", "ТРА", "ЧЕР", "ЛИП", "СЕР", "ВЕР", "ЖОВ", "ЛИС", "ГРУ"];
-          const displayDate = isNaN(date.getTime()) ? "НОВЕ" : `${monthNames[date.getMonth()]}<br>${date.getFullYear()}`;
-
-          // ЗМІНЕНО: тепер замість посилання на GitHub ми викликаємо функцію openPost
-          const postHTML = `
-            <div class="post-item" onclick="openPost('${file.download_url}')">
-              <div class="post-date">${displayDate}</div>
-              <div>
-                <div class="post-title">${title}</div>
-                <div class="post-excerpt">${excerpt}</div>
-                <span class="post-tag">${tag}</span>
-              </div>
-            </div>
-          `;
-          container.insertAdjacentHTML('beforeend', postHTML);
-        }
+      if (mdFiles.length === 0) {
+        container.innerHTML = '<p class="loading">Поки що дописів немає.</p>';
+        return;
       }
-    } catch (e) {
-      container.innerHTML = '<p>Поки що дописів немає.</p>';
+
+      container.innerHTML = '';
+
+      for (const file of mdFiles) {
+        const res2 = await fetch(file.download_url);
+        const text = await res2.text();
+
+        // Зберігаємо в кеш
+        const slug = file.name.replace('.md', '');
+        postsCache[slug] = { text, downloadUrl: file.download_url };
+
+        const title    = parseMeta(text, 'title') || 'Без назви';
+        const excerpt  = parseMeta(text, 'excerpt') || '';
+        const dateStr  = parseMeta(text, 'date') || '';
+        const tag      = parseMeta(text, 'tag') || 'Допис';
+        const date     = new Date(dateStr);
+        const displayDate = isNaN(date.getTime())
+          ? 'НОВЕ'
+          : `${MONTHS[date.getMonth()]}<br>${date.getFullYear()}`;
+
+        container.insertAdjacentHTML('beforeend', `
+          <div class="post-item" onclick="navigateTo('post','${slug}')">
+            <div class="post-date">${displayDate}</div>
+            <div>
+              <div class="post-title">${title}</div>
+              <div class="post-excerpt">${excerpt}</div>
+              <span class="post-tag">${tag}</span>
+            </div>
+          </div>
+        `);
+      }
+    } catch(e) {
+      container.innerHTML = '<p class="loading">Не вдалось завантажити дописи.</p>';
     }
   }
 
-  loadPosts();
+  // --- Відкрити допис за slug ---
+  async function openPostBySlug(slug) {
+    showPage('post');
 
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
-        });
+    const titleEl   = document.getElementById('post-title-display');
+    const dateEl    = document.getElementById('post-date-display');
+    const tagEl     = document.getElementById('post-tag-display');
+    const contentEl = document.getElementById('post-content-display');
+
+    titleEl.textContent   = 'Завантаження...';
+    dateEl.textContent    = '';
+    tagEl.textContent     = '';
+    contentEl.innerHTML   = '';
+
+    try {
+      let text;
+      if (postsCache[slug]) {
+        text = postsCache[slug].text;
+      } else {
+        const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_FOLDER}/${slug}.md`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error();
+        text = await res.text();
+        postsCache[slug] = { text };
       }
-    });
+
+      const title   = parseMeta(text, 'title') || 'Без назви';
+      const dateStr = parseMeta(text, 'date') || '';
+      const tag     = parseMeta(text, 'tag') || '';
+      const date    = new Date(dateStr);
+      const displayDate = isNaN(date.getTime()) ? '' : `${date.getDate()} ${['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'][date.getMonth()]} ${date.getFullYear()}`;
+
+      titleEl.textContent = title;
+      dateEl.textContent  = displayDate;
+      tagEl.textContent   = tag;
+
+      // Прибираємо frontmatter
+      const body = text.replace(/^---[\s\S]*?---\n?/, '');
+
+      // Перетворюємо [[назва допису]] на посилання
+      const withLinks = body.replace(/\[\[([^\]]+)\]\]/g, (match, linkText) => {
+        const linkSlug = linkText.toLowerCase().replace(/\s+/g, '-').replace(/[^a-zа-яіїєґ0-9-]/gi, '');
+        return `[${linkText}](#${linkSlug})`;
+      });
+
+      // Рендеримо Markdown
+      contentEl.innerHTML = marked.parse(withLinks);
+
+      // Перехоплюємо кліки на посилання всередині допису
+      contentEl.querySelectorAll('a[href^="#"]').forEach(link => {
+        const href = link.getAttribute('href').replace('#', '');
+        if (href && href !== 'home' && href !== 'about') {
+          link.addEventListener('click', e => {
+            e.preventDefault();
+            navigateTo('post', href);
+          });
+        }
+      });
+
+    } catch(e) {
+      titleEl.textContent = 'Допис не знайдено';
+      contentEl.innerHTML = '<p>Не вдалось завантажити допис. Перевірте що файл існує в репозиторії.</p>';
+    }
   }
+
+  // --- Парсинг frontmatter ---
+  function parseMeta(text, key) {
+    const match = text.match(new RegExp(`${key}:\\s*"?([^"\\n]+)"?`));
+    return match ? match[1].trim() : null;
+  }
+
+  // --- Слухаємо зміни хешу ---
+  window.addEventListener('hashchange', handleRoute);
+  window.addEventListener('DOMContentLoaded', () => {
+    loadPosts();
+    handleRoute();
+  });
 </script>
 </body>
 </html>
