@@ -116,12 +116,10 @@
       container.innerHTML = '';
       files.reverse();
 
+      const monthNames = ["СІЧ", "ЛЮТ", "БЕР", "КВІТ", "ТРА", "ЧЕР", "ЛИП", "СЕР", "ВЕР", "ЖОВ", "ЛИС", "ГРУ"];
+
       for (const file of files) {
         if (file.name.endsWith('.md')) {
           const contentRes = await fetch(file.download_url);
           const text = await contentRes.text();
-          const parsed = matter(text);
-          const meta = parsed.data;
-
-          const title = meta.title || "Без назви";
-          const excerpt = meta.excerpt || parsed.content.split
+          const parsed = matter
