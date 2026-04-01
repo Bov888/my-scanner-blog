@@ -1,48 +1,117 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Успішний Сканер</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f7f6; }
-        header { text-align: center; padding: 40px 0; }
-        .post-item { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #3498db; margin-bottom: 30px; }
-        .post-date { font-size: 0.85em; color: #95a5a6; text-transform: uppercase; margin-bottom: 10px; }
-        .post-title { font-size: 1.4em; font-weight: bold; margin-bottom: 10px; color: #2c3e50; }
-        .post-excerpt { color: #5d6d7e; margin-bottom: 15px; }
-        .post-tag { display: inline-block; background: #e1f0fa; color: #3498db; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: bold; margin-bottom: 10px; }
-        .read-more { display: inline-block; color: #3498db; text-decoration: none; font-weight: bold; border: 1px solid #3498db; padding: 8px 15px; border-radius: 6px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Як стати успішним сканером</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #fafaf8; --surface: #f4f3ef; --text: #1a1917; --muted: #6b6963; --accent: #2d5a27; --accent-light: #e8f0e6; --border: #e2e1db; --max: 680px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
+  header { border-bottom: 1px solid var(--border); padding: 2rem 1.5rem; }
+  .header-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; }
+  .site-title span { color: var(--accent); }
+  nav { display: flex; gap: 1.5rem; }
+  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; }
+  main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem; }
+  .hero h1 { font-size: 2.4rem; font-weight: 300; line-height: 1.25; margin-bottom: 1.2rem; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; text-decoration: none; color: inherit; }
+  .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+  .post-title { font-size: 1.05rem; font-weight: 400; margin-bottom: 0.4rem; }
+  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; margin-top: 0.5rem; }
+  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; }
+  footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+  @media (max-width: 600px) { .post-item { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
 
 <header>
-    <h1>Успішний Сканер</h1>
-    <p style="color: #7f8c8d; font-style: italic;">Система нотаток, проектів та думок</p>
+  <div class="header-inner">
+    <a class="site-title" href="#" onclick="showPage('home')">Як стати <span>успішним сканером</span></a>
+    <nav>
+      <a href="#" onclick="showPage('home')">Пости</a>
+      <a href="#" onclick="showPage('about')">Про мене</a>
+    </nav>
+  </div>
 </header>
 
-<div class="post-item">
-    <div class="post-date">Квітень 2026</div>
-    <div class="post-title">Чому я використовую 5 додатків одночасно</div>
-    <div class="post-excerpt">Мій "зоопарк" інструментів: Evernote, Amplenote, Logseq та Any.do. Як працює ця система.</div>
-    <span class="post-tag">PKM</span>
-    <br>
-    <a href="ВАШЕ_ПОСИЛАННЯ_З_AMPLENOTE" class="read-more">Читати в Amplenote →</a>
-</div>
+<main>
+  <div id="page-home" class="page active">
+    <div class="hero">
+      <div class="hero-label">Блог</div>
+      <h1>Нотатки людини з <em>широкими інтересами</em></h1>
+      <p>Про PKM, автоматизацію, саморозвиток та життя сканера. Без перфекціонізму.</p>
+    </div>
 
-<div class="post-item">
-    <div class="post-date">Квітень 2026</div>
-    <div class="post-title">Атомарні нотатки (Atomic Note-Taking)</div>
-    <div class="post-excerpt">Методологія декомпозиції складної інформації на мінімальні, самодостатні одиниці змісту.</div>
-    <span class="post-tag">Методи</span>
-    <br>
-    <a href="ВАШЕ_ПОСИЛАННЯ_З_AMPLENOTE" class="read-more">Читати в Amplenote →</a>
-</div>
+    <a class="post-item" href="#" onclick="showPost('post-1'); return false;">
+      <div class="post-date">КВІТ<br>2026</div>
+      <div>
+        <div class="post-title">Чому я використовую 5 додатків для нотаток одночасно</div>
+        <div class="post-excerpt">Мій "зоопарк" інструментів: Evernote, Amplenote, Logseq та Any.do.</div>
+        <span class="post-tag">PKM</span>
+      </div>
+    </a>
 
-<footer>
-    <p style="text-align: center; color: #bdc3c7; margin-top: 50px;">&copy; 2026 Успішний Сканер</p>
-</footer>
+    <a class="post-item" href="#" onclick="showPost('post-2'); return false;">
+      <div class="post-date">КВІТ<br>2026</div>
+      <div>
+        <div class="post-title">Атомарні нотатки та декомпозиція</div>
+        <div class="post-excerpt">Як розділяти складні ідеї на прості елементи.</div>
+        <span class="post-tag">Методи</span>
+      </div>
+    </a>
+  </div>
 
+  <div id="page-post-1" class="page">
+    <div class="post-header">
+      <button class="back-btn" onclick="showPage('home')">← назад</button>
+      <h2>Чому я використовую 5 додатків одночасно</h2>
+    </div>
+    <div class="content">
+        <p style="color: var(--muted); text-align: center; padding: 2rem; border: 1px dashed var(--border);">
+            Вставте публічне посилання на нотатку тут.
+        </p>
+    </div>
+  </div>
+
+  <div id="page-post-2" class="page">
+    <div class="post-header">
+      <button class="back-btn" onclick="showPage('home')">← назад</button>
+      <h2>Атомарні нотатки</h2>
+    </div>
+    <div class="content">
+        <p>Тут буде контент про Atomic Note-taking.</p>
+    </div>
+  </div>
+
+  <div id="page-about" class="page">
+    <h2>Про мене</h2>
+    <p>Людина-сканер. 7+ років у телекомі. Захоплююсь PKM, ШІ та бігом.</p>
+  </div>
+</main>
+
+<footer><p>Успішний Сканер &copy; 2026</p></footer>
+
+<script>
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+  function showPost(postId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + postId).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+</script>
 </body>
 </html>
