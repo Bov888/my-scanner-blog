@@ -16,7 +16,7 @@
   .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; }
   .site-title span { color: var(--accent); }
   nav { display: flex; gap: 1.5rem; }
-  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; }
+  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; }
   main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
   .page { display: none; }
   .page.active { display: block; }
@@ -28,8 +28,6 @@
   .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
   .post-title { font-size: 1.05rem; font-weight: 400; margin-bottom: 0.4rem; }
   .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; margin-top: 0.5rem; }
-  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; }
-  .content-frame { width: 100%; min-height: 600px; border: none; margin-top: 1rem; }
   footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
   @media (max-width: 600px) { .post-item { grid-template-columns: 1fr; } }
 </style>
@@ -40,8 +38,8 @@
   <div class="header-inner">
     <a class="site-title" href="#" onclick="showPage('home')">Як стати <span>успішним сканером</span></a>
     <nav>
-      <a href="#" onclick="showPage('home')">Пости</a>
-      <a href="#" onclick="showPage('about')">Про мене</a>
+      <a onclick="showPage('home')">Дописи</a>
+      <a onclick="showPage('about')">Про мене</a>
     </nav>
   </div>
 </header>
@@ -49,48 +47,13 @@
 <main>
   <div id="page-home" class="page active">
     <div class="hero">
-      <div class="hero-label">Блог</div>
+      <div class="hero-label">Дописи</div>
       <h1>Нотатки людини з <em>широкими інтересами</em></h1>
       <p>Про PKM, автоматизацію та життя сканера.</p>
     </div>
-
-    <a class="post-item" href="#" onclick="showPost('1'); return false;">
-      <div class="post-date">КВІТ<br>2026</div>
-      <div>
-        <div class="post-title">Атомарні нотатки</div>
-        <div class="post-excerpt">Методологія декомпозиції складної інформації.</div>
-        <span class="post-tag">PKM</span>
-      </div>
-    </a>
-
-    <a class="post-item" href="#" onclick="showPost('2'); return false;">
-      <div class="post-date">КВІТ<br>2026</div>
-      <div>
-        <div class="post-title">Чернетка: Новий пост №2</div>
-        <div class="post-excerpt">Натисніть, щоб додати опис...</div>
-        <span class="post-tag">ІДЕЯ</span>
-      </div>
-    </a>
-
-  </div>
-
-  <div id="page-post-1" class="page">
-    <button class="back-btn" onclick="showPage('home')">← назад</button>
-    <h2>Атомарні нотатки</h2>
-    <div class="content-area">
-      <div class="amplenote-embed" data-note-token="jgE9wJ7nv6zVSMWgdEM2pQyD">
-        <iframe frameborder="0" src="https://public.amplenote.com/embed/jgE9wJ7nv6zVSMWgdEM2pQyD"></iframe>
-      </div>
-      <script defer src="https://public.amplenote.com/embed.js"></script>
-      </div>
-  </div>
-
-  <div id="page-post-2" class="page">
-    <button class="back-btn" onclick="showPage('home')">← назад</button>
-    <h2>Назва посту №2</h2>
-    <div class="content-area">
-      <p>Тут буде ваша наступна нотатка...</p>
-      </div>
+    <div id="posts-container">
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted);">Завантаження дописів...</p>
+    </div>
   </div>
 
   <div id="page-about" class="page">
@@ -107,13 +70,59 @@
     document.getElementById('page-' + pageId).classList.add('active');
     window.scrollTo(0, 0);
   }
-  function showPost(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-post-' + id).classList.add('active');
-    window.scrollTo(0, 0);
+
+  // ФУНКЦІЯ АВТОМАТИЧНОГО ЗАВАНТАЖЕННЯ ДОПИСІВ
+  async function loadPosts() {
+    const container = document.querySelector('#posts-container');
+    
+    try {
+      // Запит до вашого репозиторію
+      const response = await fetch('https://api.github.com/repos/uspishnyskaner/uspishnyskaner.github.io/contents/posts');
+      if (!response.ok) throw new Error('Поки що дописів немає');
+      
+      const files = await response.json();
+      container.innerHTML = ''; // Очищуємо текст завантаження
+
+      // Сортуємо файли, щоб нові були зверху (за назвою файлу, де є дата)
+      files.reverse();
+
+      for (const file of files) {
+        if (file.name.endsWith('.md')) {
+          const contentRes = await fetch(file.download_url);
+          const text = await contentRes.text();
+          
+          // Парсинг заголовка, опису та дати
+          const title = text.match(/title:\s*"(.*)"/)?.[1] || text.match(/title:\s*(.*)/)?.[1] || "Без назви";
+          const excerpt = text.match(/excerpt:\s*"(.*)"/)?.[1] || text.match(/excerpt:\s*(.*)/)?.[1] || "Натисніть, щоб прочитати...";
+          const dateStr = text.match(/date:\s*(.*)/)?.[1] || "";
+          const tag = text.match(/tag:\s*"(.*)"/)?.[1] || text.match(/tag:\s*(.*)/)?.[1] || "ДОПИС";
+          
+          const date = new Date(dateStr);
+          const monthNames = ["СІЧ", "ЛЮТ", "БЕР", "КВІТ", "ТРА", "ЧЕР", "ЛИП", "СЕР", "ВЕР", "ЖОВ", "ЛИС", "ГРУ"];
+          const displayDate = isNaN(date.getTime()) ? "НОВЕ" : `${monthNames[date.getMonth()]}<br>${date.getFullYear()}`;
+
+          const postHTML = `
+            <a class="post-item" href="${file.html_url}" target="_blank">
+              <div class="post-date">${displayDate}</div>
+              <div>
+                <div class="post-title">${title}</div>
+                <div class="post-excerpt">${excerpt}</div>
+                <span class="post-tag">${tag}</span>
+              </div>
+            </a>
+          `;
+          container.insertAdjacentHTML('beforeend', postHTML);
+        }
+      }
+    } catch (e) {
+      container.innerHTML = '<p style="font-family: \'JetBrains Mono\', monospace; font-size: 0.7rem; color: var(--muted);">Поки що тут порожньо. Створіть перший допис в адмінці!</p>';
+    }
   }
 
-  /* СКРИПТ ПЕРЕНАПРАВЛЕННЯ В АДМІНКУ */
+  // Запуск
+  loadPosts();
+
+  // Логіка для входу в адмінку
   if (window.netlifyIdentity) {
     window.netlifyIdentity.on("init", user => {
       if (!user) {
