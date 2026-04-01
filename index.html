@@ -116,9 +116,34 @@ async function loadFolder(folder){
 }
 
 // ===== RENDER =====
-function render(){
-  renderTags();
-  renderPosts();
+function renderPosts(){
+  const el=document.getElementById("posts-container");
+  const filtered=activeTag ? posts.filter(p=>(p.meta.tags||[]).includes(activeTag)) : posts;
+  
+  el.innerHTML = filtered.map(p=>{
+    // Дата
+    let displayDate = "НОВЕ";
+    if(p.meta.date){
+      const d = new Date(p.meta.date);
+      if(!isNaN(d.getTime())){
+        const months = ["СІЧ","ЛЮТ","БЕР","КВІТ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
+        displayDate = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+      }
+    }
+    
+    // Теги
+    const tags = (p.meta.tags||[]).map(t=>`<span class="post-tag">${t}</span>`).join(" ");
+
+    return `
+      <div class="post-item" onclick="openPost('${p.slug}')">
+        <div class="post-date">${displayDate}</div>
+        <div>
+          <div class="post-title">${p.meta.title||"Без назви"}</div>
+          <div class="post-tags">${tags}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
 }
 
 function renderTags(){
