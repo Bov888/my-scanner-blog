@@ -8,99 +8,33 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
 <style>
-  :root { 
-    --bg: #fafaf8; 
-    --surface: #f4f3ef; 
-    --text: #1a1917; 
-    --muted: #6b6963; 
-    --accent: #2d5a27; 
-    --accent-light: #e8f0e6; 
-    --border: #e2e1db; 
-    --max: 680px; 
-  }
-
+  :root { --bg: #fafaf8; --surface: #f4f3ef; --text: #1a1917; --muted: #6b6963; --accent: #2d5a27; --accent-light: #e8f0e6; --border: #e2e1db; --max: 680px; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  
-  body { 
-    background: var(--bg); 
-    color: var(--text); 
-    font-family: 'Literata', Georgia, serif; 
-    font-weight: 300; 
-    line-height: 1.75; 
-    min-height: 100vh; 
-  }
-
+  body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
   header { border-bottom: 1px solid var(--border); padding: 2rem 1.5rem; }
   .header-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  
   .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; }
   .site-title span { color: var(--accent); }
-  
   nav { display: flex; gap: 1.5rem; }
   nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; }
-
   main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
   .page { display: none; }
   .page.active { display: block; }
-
-  /* Головна сторінка */
   .hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
   .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem; }
   .hero h1 { font-size: 2.4rem; font-weight: 300; line-height: 1.25; margin-bottom: 1.2rem; }
   .hero h1 em { font-style: italic; color: var(--accent); }
-
-  /* Список дописів */
-  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
-  .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); padding-top: 0.3rem; }
-  .post-title { font-size: 1.2rem; font-weight: 400; margin-bottom: 0.4rem; color: var(--text); }
-  .post-excerpt { font-size: 0.95rem; color: var(--muted); margin-bottom: 0.8rem; }
-  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; text-transform: uppercase; }
-
-  /* Сторінка читання допису */
-  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; text-transform: uppercase; display: block; }
-  
-  /* СТИЛІ ДЛЯ ТЕКСТУ ДОПИСУ */
-  .post-content h2, .post-content h3 { font-weight: 400; margin: 2rem 0 1rem; color: var(--text); }
-  .post-content p { margin-bottom: 1.5rem; }
-
-  /* Налаштування для картинок з можливістю ресайзу */
-  .post-content img {
-    display: block;
-    max-width: 100%;
-    height: auto;
-    margin: 2.5rem auto;
-    border-radius: 8px;
-    resize: both; /* Дозволяє тягнути за кут */
-    overflow: auto; /* Потрібно для роботи resize */
-    border: 1px solid transparent;
-    transition: border 0.3s;
-  }
-  .post-content img:hover {
-    border: 1px dashed var(--accent);
-    cursor: nwse-resize;
-  }
-
-  /* СТИЛІ ДЛЯ СПИСКІВ (БУЛЕТІВ) */
-  .post-content ul, .post-content ol {
-    margin-bottom: 2rem;
-    padding-left: 2rem;
-  }
-  .post-content ul li, .post-content ol li {
-    margin-bottom: 1.2rem; /* Великий відступ між пунктами, як ви хотіли */
-    padding-left: 0.5rem;
-  }
-
+  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; text-decoration: none; color: inherit; }
+  .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+  .post-title { font-size: 1.05rem; font-weight: 400; margin-bottom: 0.4rem; }
+  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; margin-top: 0.5rem; }
+  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; text-transform: uppercase; }
+  .post-content img { max-width: 100%; height: auto; }
   footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
-
-  @media (max-width: 600px) {
-    .post-item { grid-template-columns: 1fr; }
-    .hero h1 { font-size: 1.8rem; }
-  }
+  @media (max-width: 600px) { .post-item { grid-template-columns: 1fr; } }
 </style>
 </head>
-
 <body>
 
 <header>
@@ -130,3 +64,95 @@
     <article id="full-post-content" class="post-content">
       </article>
   </div>
+
+  <div id="page-about" class="page">
+    <h2>Про мене</h2>
+    <p>7+ років у телекомі. Захоплююсь PKM, ШІ та бігом. Цей блог — мої нотатки вголос.</p>
+  </div>
+</main>
+
+<footer><p>Успішний Сканер &copy; 2026</p></footer>
+
+<script>
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // Функція для завантаження конкретного тексту допису
+  async function openPost(downloadUrl) {
+    const container = document.getElementById('full-post-content');
+    container.innerHTML = "Завантаження тексту...";
+    showPage('post-view');
+
+    try {
+      const response = await fetch(downloadUrl);
+      let text = await response.text();
+      
+      // Видаляємо Frontmatter (те, що між ---)
+      const cleanText = text.replace(/^---[\s\S]*?---/, '');
+      
+      // Перетворюємо Markdown у HTML за допомогою Marked
+      container.innerHTML = marked.parse(cleanText);
+    } catch (e) {
+      container.innerHTML = "Помилка завантаження тексту.";
+    }
+  }
+
+  async function loadPosts() {
+    const container = document.querySelector('#posts-container');
+    try {
+      const response = await fetch('https://api.github.com/repos/Bov888/my-scanner-blog/contents/posts');
+      if (!response.ok) throw new Error();
+      const files = await response.json();
+      container.innerHTML = '';
+      files.reverse();
+
+      for (const file of files) {
+        if (file.name.endsWith('.md')) {
+          const contentRes = await fetch(file.download_url);
+          const text = await contentRes.text();
+          
+          const title = text.match(/title:\s*"(.*)"/)?.[1] || text.match(/title:\s*(.*)/)?.[1] || "Без назви";
+          const excerpt = text.match(/excerpt:\s*"(.*)"/)?.[1] || "Натисніть, щоб прочитати...";
+          const dateStr = text.match(/date:\s*(.*)/)?.[1] || "";
+          const tag = text.match(/tag:\s*"(.*)"/)?.[1] || "ДОПИС";
+          
+          const date = new Date(dateStr);
+          const monthNames = ["СІЧ", "ЛЮТ", "БЕР", "КВІТ", "ТРА", "ЧЕР", "ЛИП", "СЕР", "ВЕР", "ЖОВ", "ЛИС", "ГРУ"];
+          const displayDate = isNaN(date.getTime()) ? "НОВЕ" : `${monthNames[date.getMonth()]}<br>${date.getFullYear()}`;
+
+          // ЗМІНЕНО: тепер замість посилання на GitHub ми викликаємо функцію openPost
+          const postHTML = `
+            <div class="post-item" onclick="openPost('${file.download_url}')">
+              <div class="post-date">${displayDate}</div>
+              <div>
+                <div class="post-title">${title}</div>
+                <div class="post-excerpt">${excerpt}</div>
+                <span class="post-tag">${tag}</span>
+              </div>
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', postHTML);
+        }
+      }
+    } catch (e) {
+      container.innerHTML = '<p>Поки що дописів немає.</p>';
+    }
+  }
+
+  loadPosts();
+
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
+</script>
+</body>
+</html>
