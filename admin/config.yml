@@ -1,19 +1,29 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Bov888/my-scanner-blog
   branch: main
 
 media_folder: "images"
 public_folder: "/images"
 
 collections:
-  - name: "blog"
+  - name: "posts"
     label: "Дописи"
     folder: "posts"
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    slug: "{{slug}}"
     fields:
-      - {label: "Заголовок", name: "title", widget: "string"}
-      - {label: "Дата", name: "date", widget: "datetime"}
-      - {label: "Опис", name: "excerpt", widget: "text"}
-      - {label: "Тег", name: "tag", widget: "string"}
-      - {label: "Текст", name: "body", widget: "markdown"}
+      - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Короткий опис", name: "excerpt", widget: "string" }
+      - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      - label: "Тег"
+        name: "tag"
+        widget: "select"
+        options:
+          - { label: "PKM", value: "PKM" }
+          - { label: "ШІ та автоматизація", value: "ШІ та автоматизація" }
+          - { label: "Спорт та дисципліна", value: "Спорт та дисципліна" }
+          - { label: "Життя сканера", value: "Життя сканера" }
+          - { label: "Інструменти", value: "Інструменти" }
+          - { label: "Нотатки", value: "Нотатки" }
+      - { label: "Вміст", name: "body", widget: "markdown" }
