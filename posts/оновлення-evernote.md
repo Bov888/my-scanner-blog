@@ -4,4 +4,4 @@ excerpt: Свіже оновлення evernote за березень 2026 рл�
 date: 2026-04-01
 tag: Нотатки
 ---
-`https://youtu.be/lzoKM8fUqmc?si=aTfhC-_I6NqMP_HT`
+\[оновлення evernote]([https://youtu.be/lzoKM8fUqmc?si=aTfhC-_I6NqMP_HT)](https://youtu.be/lzoKM8fUqmc?si=aTfhC-_I6NqMP_HT)
