@@ -4,228 +4,111 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Як стати успішним сканером</title>
-<meta name="description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --bg: #fafaf8;
-    --surface: #f4f3ef;
-    --header-bg: #f1f1ee; /* Трохи темніший фон для шапки */
-    --text: #1a1917;
-    --muted: #6b6963;
-    --accent: #2d5a27;
-    --accent-light: #e8f0e6;
-    --border: #e2e1db;
-    --max: 680px;
+  :root { 
+    --bg: #fafaf8; 
+    --surface: #f4f3ef; 
+    --text: #1a1917; 
+    --muted: #6b6963; 
+    --accent: #2d5a27; 
+    --accent-light: #e8f0e6; 
+    --border: #e2e1db; 
+    --max: 680px; 
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 18px; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Literata', Georgia, serif;
-    font-weight: 300;
-    line-height: 1.75;
-    min-height: 100vh;
+  
+  body { 
+    background: var(--bg); 
+    color: var(--text); 
+    font-family: 'Literata', Georgia, serif; 
+    font-weight: 300; 
+    line-height: 1.75; 
+    min-height: 100vh; 
   }
 
-  /* --- ОНОВЛЕНА ВИРАЗНА ШАПКА --- */
-  header {
-    background: var(--header-bg);
-    border-bottom: 3px solid var(--accent); /* Товста акцентна лінія */
-    padding: 1.5rem 1.5rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+  header { border-bottom: 1px solid var(--border); padding: 2rem 1.5rem; }
+  .header-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  
+  .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; }
+  .site-title span { color: var(--accent); }
+  
+  nav { display: flex; gap: 1.5rem; }
+  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; }
 
-  .header-inner {
-    max-width: var(--max);
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .site-title {
-    font-family: 'Literata', serif;
-    font-weight: 900; /* Максимальна вага для виразності */
-    font-size: 1.3rem;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    text-decoration: none;
-    line-height: 1;
-  }
-
-  .site-title span {
-    color: var(--accent);
-  }
-
-  nav {
-    display: flex;
-    gap: 1.2rem;
-  }
-
-  nav a {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-
-  nav a:hover { color: var(--accent); }
-
-  /* Layout */
-  main {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 2rem 1.5rem 6rem;
-  }
-
+  main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
   .page { display: none; }
   .page.active { display: block; }
 
-  /* Hero */
-  .hero {
-    padding: 2rem 0 3rem;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 3rem;
+  /* Головна сторінка */
+  .hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem; }
+  .hero h1 { font-size: 2.4rem; font-weight: 300; line-height: 1.25; margin-bottom: 1.2rem; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+
+  /* Список дописів */
+  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); padding-top: 0.3rem; }
+  .post-title { font-size: 1.2rem; font-weight: 400; margin-bottom: 0.4rem; color: var(--text); }
+  .post-excerpt { font-size: 0.95rem; color: var(--muted); margin-bottom: 0.8rem; }
+  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; text-transform: uppercase; }
+
+  /* Сторінка читання допису */
+  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; text-transform: uppercase; display: block; }
+  
+  /* СТИЛІ ДЛЯ ТЕКСТУ ДОПИСУ */
+  .post-content h2, .post-content h3 { font-weight: 400; margin: 2rem 0 1rem; color: var(--text); }
+  .post-content p { margin-bottom: 1.5rem; }
+
+  /* Налаштування для картинок з можливістю ресайзу */
+  .post-content img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 2.5rem auto;
+    border-radius: 8px;
+    resize: both; /* Дозволяє тягнути за кут */
+    overflow: auto; /* Потрібно для роботи resize */
+    border: 1px solid transparent;
+    transition: border 0.3s;
+  }
+  .post-content img:hover {
+    border: 1px dashed var(--accent);
+    cursor: nwse-resize;
   }
 
-  .hero-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1rem;
-    font-weight: 700;
+  /* СТИЛІ ДЛЯ СПИСКІВ (БУЛЕТІВ) */
+  .post-content ul, .post-content ol {
+    margin-bottom: 2rem;
+    padding-left: 2rem;
+  }
+  .post-content ul li, .post-content ol li {
+    margin-bottom: 1.2rem; /* Великий відступ між пунктами, як ви хотіли */
+    padding-left: 0.5rem;
   }
 
-  .hero h1 {
-    font-size: 2.2rem;
-    font-weight: 300;
-    line-height: 1.2;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.2rem;
-  }
-
-  .hero h1 em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .hero p {
-    color: var(--muted);
-    font-size: 0.95rem;
-    max-width: 480px;
-  }
-
-  /* Списки постів */
-  .posts-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1.5rem;
-  }
-
-  .post-item {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 1.5rem;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .post-item:hover .post-title { color: var(--accent); }
-
-  .post-date {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    padding-top: 0.4rem;
-  }
-
-  .post-title {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 0.3rem;
-    transition: color 0.2s;
-  }
-
-  .post-excerpt {
-    font-size: 0.85rem;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  .post-tag {
-    display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    background: var(--accent-light);
-    color: var(--accent);
-    padding: 0.1rem 0.4rem;
-    border-radius: 2px;
-    margin-top: 0.5rem;
-    font-weight: 700;
-  }
-
-  /* Про мене */
-  .about-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-  }
-
-  .about-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 0.2rem 0.6rem;
-    border-radius: 2px;
-  }
-
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2rem;
-    text-align: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-  }
+  footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
 
   @media (max-width: 600px) {
-    .hero h1 { font-size: 1.7rem; }
-    .post-item { grid-template-columns: 1fr; gap: 0.5rem; }
-    header { padding: 1rem; }
+    .post-item { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.8rem; }
   }
 </style>
 </head>
+
 <body>
 
 <header>
   <div class="header-inner">
-    <a class="site-title" href="#" onclick="showPage('home')">
-      Як стати <span>успішним сканером</span>
-    </a>
+    <a class="site-title" href="#" onclick="showPage('home')">Як стати <span>успішним сканером</span></a>
     <nav>
-      <a href="#" onclick="showPage('home')">Пости</a>
-      <a href="#" onclick="showPage('about')">Про мене</a>
+      <a onclick="showPage('home')">Дописи</a>
+      <a onclick="showPage('about')">Про мене</a>
     </nav>
   </div>
 </header>
@@ -233,83 +116,17 @@
 <main>
   <div id="page-home" class="page active">
     <div class="hero">
-      <div class="hero-label">Digital Garden</div>
+      <div class="hero-label">Дописи</div>
       <h1>Нотатки людини з <em>широкими інтересами</em></h1>
-      <p>Про PKM системи, автоматизацію рутини, музику для фокусу та спроби впорядкувати хаос у голові сканера.</p>
+      <p>Про PKM, автоматизацію та життя сканера.</p>
     </div>
-
-    <div class="posts-label">Останні думки</div>
-
-    <a class="post-item" href="#" onclick="showPost('post-1'); return false;">
-      <div class="post-date">КВІТ<br>2026</div>
-      <div>
-        <div class="post-title">Мій "зоопарк" додатків: Evernote, Amplenote та Logseq</div>
-        <div class="post-excerpt">Чому один додаток ніколи не задовольнить сканера і як я розділив їх за ролями.</div>
-        <span class="post-tag">PKM</span>
-      </div>
-    </a>
-
-    <a class="post-item" href="#" onclick="showPost('post-2'); return false;">
-      <div class="post-date">БЕР<br>2026</div>
-      <div>
-        <div class="post-title">AutoHotkey для телемаркетингу: як економити 2 години на день</div>
-        <div class="post-excerpt">Автоматизація звітів, скриптів та заповнення CRM за допомогою простих макросів.</div>
-        <span class="post-tag">Автоматизація</span>
-      </div>
-    </a>
-  </div>
-
-  <div id="page-about" class="page">
-    <div class="hero" style="border:none; margin-bottom:1rem;">
-        <h1>Про автора</h1>
-    </div>
-    <p>Привіт, я — сканер (мультипотенціал). Працюю в телекомі, але мій справжній драйв — це побудова систем, що працюють самі по собі.</p>
-    <br>
-    <p>Використовую <strong>PARA</strong> та <strong>GTD</strong>, щоб не потонути в ідеях. Люблю Progressive House (Marsh, Luttrell), тренуюся з гирями та практикую інтервальне голодування.</p>
-    
-    <div class="about-tags">
-      <span class="about-tag">AutoHotkey</span>
-      <span class="about-tag">PARA Method</span>
-      <span class="about-tag">Evernote</span>
-      <span class="about-tag">Amplenote</span>
-      <span class="about-tag">MacroDroid</span>
-      <span class="about-tag">Melodic Techno</span>
-      <span class="about-tag">BlackBerry Fan</span>
+    <div id="posts-container">
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted);">Завантаження дописів...</p>
     </div>
   </div>
 
-  <div id="page-post-1" class="page">
-    <div style="margin-bottom: 2rem;">
-        <button onclick="showPage('home')" style="background:none; border:none; color:var(--muted); cursor:pointer; font-family:'JetBrains Mono'; font-size:0.7rem;">← НАЗАД ДО СПИСКУ</button>
-    </div>
-    <h1 style="font-weight:300; margin-bottom:1rem;">Мій "зоопарк" додатків</h1>
-    <div style="font-family:'JetBrains Mono'; font-size:0.7rem; color:var(--accent); margin-bottom:2rem;">КВІТЕНЬ 2026 / PKM</div>
-    
-    <div class="embed-placeholder">
-        <p>Тут підключено контент з Amplenote через embed.</p>
-        <code>&lt;div class="amplenote-embed" data-note-token="YOUR_TOKEN"&gt;&lt;/div&gt;</code>
-    </div>
+  <div id="page-post-view" class="page">
+    <button class="back-btn" onclick="showPage('home')">← до списку</button>
+    <article id="full-post-content" class="post-content">
+      </article>
   </div>
-
-</main>
-
-<footer>
-  <p>© 2026 ЯК СТАТИ УСПІШНИМ СКАНЕРОМ · <a href="#">TELEGRAM</a></p>
-</footer>
-
-<script>
-  function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + pageId).classList.add('active');
-    window.scrollTo(0, 0);
-  }
-
-  function showPost(postId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + postId).classList.add('active');
-    window.scrollTo(0, 0);
-  }
-</script>
-
-</body>
-</html>
