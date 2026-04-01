@@ -3,156 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Як стати успішним сканером</title>
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<title>Сканер Блог</title>
+
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+
 <style>
-  :root { --bg: #fafaf8; --surface: #f4f3ef; --text: #1a1917; --muted: #6b6963; --accent: #2d5a27; --accent-light: #e8f0e6; --border: #e2e1db; --max: 680px; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
-  header { border-bottom: 1px solid var(--border); padding: 2rem 1.5rem; }
-  .header-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; }
-  .site-title span { color: var(--accent); }
-  nav { display: flex; gap: 1.5rem; }
-  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; }
-  main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
-  .page { display: none; }
-  .page.active { display: block; }
-  .hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
-  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem; }
-  .hero h1 { font-size: 2.4rem; font-weight: 300; line-height: 1.25; margin-bottom: 1.2rem; }
-  .hero h1 em { font-style: italic; color: var(--accent); }
-  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; text-decoration: none; color: inherit; }
-  .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
-  .post-title { font-size: 1.05rem; font-weight: 400; margin-bottom: 0.4rem; }
-  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; margin-top: 0.5rem; }
-  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: none; border: none; cursor: pointer; margin-bottom: 2rem; text-transform: uppercase; }
-  .post-content img { max-width: 100%; height: auto; }
-  footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
-  @media (max-width: 600px) { .post-item { grid-template-columns: 1fr; } }
+body {
+  font-family: system-ui;
+  max-width: 720px;
+  margin: auto;
+  padding: 20px;
+  background: #fafaf8;
+}
+
+h1 { margin-bottom: 20px; }
+
+.post {
+  border-bottom: 1px solid #ddd;
+  padding: 12px 0;
+  cursor: pointer;
+}
+
+.tag {
+  display:inline-block;
+  background:#eee;
+  padding:2px 6px;
+  margin-right:4px;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.nav a {
+  margin-right: 10px;
+  cursor: pointer;
+  color: #444;
+}
+
+.hidden { display:none; }
+
+button {
+  margin-bottom: 15px;
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <a class="site-title" href="#" onclick="showPage('home')">Як стати <span>успішним сканером</span></a>
-    <nav>
-      <a onclick="showPage('home')">Дописи</a>
-      <a onclick="showPage('about')">Про мене</a>
-    </nav>
-  </div>
-</header>
+<h1>Блог</h1>
 
-<main>
-  <div id="page-home" class="page active">
-    <div class="hero">
-      <div class="hero-label">Дописи</div>
-      <h1>Нотатки людини з <em>широкими інтересами</em></h1>
-      <p>Про PKM, автоматизацію та життя сканера.</p>
-    </div>
-    <div id="posts-container">
-      <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted);">Завантаження дописів...</p>
-    </div>
-  </div>
+<div class="nav">
+  <a onclick="goHome()">Дописи</a>
+  <a onclick="openPage('about')">Про мене</a>
+</div>
 
-  <div id="page-post-view" class="page">
-    <button class="back-btn" onclick="showPage('home')">← до списку</button>
-    <article id="full-post-content" class="post-content">
-      </article>
-  </div>
+<div id="tag-filter"></div>
+<div id="posts"></div>
 
-  <div id="page-about" class="page">
-    <h2>Про мене</h2>
-    <p>7+ років у телекомі. Захоплююсь PKM, ШІ та бігом. Цей блог — мої нотатки вголос.</p>
-  </div>
-</main>
-
-<footer><p>Успішний Сканер &copy; 2026</p></footer>
+<div id="viewer" class="hidden">
+  <button onclick="goHome()">← назад</button>
+  <div id="content"></div>
+</div>
 
 <script>
-  function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + pageId).classList.add('active');
-    window.scrollTo(0, 0);
+const CACHE_KEY = "blog-cache-v1";
+const CACHE_TIME = 5 * 60 * 1000; // 5 хв
+
+let allPosts = [];
+let allPages = {};
+let activeTag = null;
+
+// ===== CACHE =====
+function saveCache(data) {
+  localStorage.setItem(CACHE_KEY, JSON.stringify({
+    time: Date.now(),
+    data
+  }));
+}
+
+function loadCache() {
+  const raw = localStorage.getItem(CACHE_KEY);
+  if (!raw) return null;
+
+  const parsed = JSON.parse(raw);
+  if (Date.now() - parsed.time > CACHE_TIME) return null;
+
+  return parsed.data;
+}
+
+// ===== FETCH =====
+async function fetchAll() {
+  const cached = loadCache();
+  if (cached) {
+    allPosts = cached.posts;
+    allPages = cached.pages;
+    renderAll();
+    return;
   }
 
-  // Функція для завантаження конкретного тексту допису
-  async function openPost(downloadUrl) {
-    const container = document.getElementById('full-post-content');
-    container.innerHTML = "Завантаження тексту...";
-    showPage('post-view');
+  const [posts, pages] = await Promise.all([
+    fetchFolder("posts"),
+    fetchFolder("pages")
+  ]);
 
-    try {
-      const response = await fetch(downloadUrl);
-      let text = await response.text();
-      
-      // Видаляємо Frontmatter (те, що між ---)
-      const cleanText = text.replace(/^---[\s\S]*?---/, '');
-      
-      // Перетворюємо Markdown у HTML за допомогою Marked
-      container.innerHTML = marked.parse(cleanText);
-    } catch (e) {
-      container.innerHTML = "Помилка завантаження тексту.";
+  allPosts = posts.reverse();
+  allPages = pages;
+
+  saveCache({ posts: allPosts, pages: allPages });
+
+  renderAll();
+}
+
+async function fetchFolder(folder) {
+  const res = await fetch(`https://api.github.com/repos/Bov888/my-scanner-blog/contents/${folder}`);
+  const files = await res.json();
+
+  const results = await Promise.all(files.map(async f => {
+    if (!f.name.endsWith('.md')) return null;
+
+    const r = await fetch(f.download_url);
+    if (!r.ok) return null;
+
+    const text = await r.text();
+
+    const match = text.match(/^---([\\s\\S]*?)---/);
+    let meta = {};
+    let body = text;
+
+    if (match) {
+      meta = jsyaml.load(match[1]);
+      body = text.replace(/^---[\\s\\S]*?---\\s*/, '');
     }
-  }
 
-  async function loadPosts() {
-    const container = document.querySelector('#posts-container');
-    try {
-      const response = await fetch('https://api.github.com/repos/Bov888/my-scanner-blog/contents/posts');
-      if (!response.ok) throw new Error();
-      const files = await response.json();
-      container.innerHTML = '';
-      files.reverse();
+    return {
+      slug: f.name.replace('.md', ''),
+      meta,
+      body
+    };
+  }));
 
-      for (const file of files) {
-        if (file.name.endsWith('.md')) {
-          const contentRes = await fetch(file.download_url);
-          const text = await contentRes.text();
-          
-          const title = text.match(/title:\s*"(.*)"/)?.[1] || text.match(/title:\s*(.*)/)?.[1] || "Без назви";
-          const excerpt = text.match(/excerpt:\s*"(.*)"/)?.[1] || "Натисніть, щоб прочитати...";
-          const dateStr = text.match(/date:\s*(.*)/)?.[1] || "";
-          const tag = text.match(/tag:\s*"(.*)"/)?.[1] || "ДОПИС";
-          
-          const date = new Date(dateStr);
-          const monthNames = ["СІЧ", "ЛЮТ", "БЕР", "КВІТ", "ТРА", "ЧЕР", "ЛИП", "СЕР", "ВЕР", "ЖОВ", "ЛИС", "ГРУ"];
-          const displayDate = isNaN(date.getTime()) ? "НОВЕ" : `${monthNames[date.getMonth()]}<br>${date.getFullYear()}`;
+  return results.filter(Boolean);
+}
 
-          // ЗМІНЕНО: тепер замість посилання на GitHub ми викликаємо функцію openPost
-          const postHTML = `
-            <div class="post-item" onclick="openPost('${file.download_url}')">
-              <div class="post-date">${displayDate}</div>
-              <div>
-                <div class="post-title">${title}</div>
-                <div class="post-excerpt">${excerpt}</div>
-                <span class="post-tag">${tag}</span>
-              </div>
-            </div>
-          `;
-          container.insertAdjacentHTML('beforeend', postHTML);
-        }
-      }
-    } catch (e) {
-      container.innerHTML = '<p>Поки що дописів немає.</p>';
-    }
-  }
+// ===== RENDER =====
+function renderAll() {
+  renderTags();
+  renderPosts();
+}
 
-  loadPosts();
+function renderTags() {
+  const container = document.getElementById('tag-filter');
+  const tags = new Set();
 
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
-        });
-      }
-    });
-  }
+  allPosts.forEach(p => (p.meta.tags || []).forEach(t => tags.add(t)));
+
+  container.innerHTML =
+    "<b>Теги:</b> " +
+    "<span class='tag' onclick='setTag(null)'>всі</span>" +
+    [...tags].map(t =>
+      `<span class='tag' onclick="setTag('${t}')">${t}</span>`
+    ).join('');
+}
+
+function setTag(tag) {
+  activeTag = tag;
+  renderPosts();
+}
+
+function renderPosts() {
+  const container = document.getElementById('posts');
+
+  const filtered = activeTag
+    ? allPosts.filter(p => (p.meta.tags || []).includes(activeTag))
+    : allPosts;
+
+  container.innerHTML = filtered.map((p, i) => `
+    <div class="post" onclick="openPost(${i})">
+      <b>${p.meta.title || "Без назви"}</b><br>
+      ${(p.meta.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}
+    </div>
+  `).join('');
+}
+
+// ===== VIEW =====
+function openPost(index) {
+  const post = allPosts[index];
+  showViewer(post.body);
+}
+
+function openPage(slug) {
+  const page = allPages.find(p => p.slug === slug);
+  if (!page) return alert("Сторінка не знайдена");
+  showViewer(page.body);
+}
+
+function showViewer(content) {
+  document.getElementById('posts').classList.add('hidden');
+  document.getElementById('tag-filter').classList.add('hidden');
+  document.getElementById('viewer').classList.remove('hidden');
+
+  document.getElementById('content').innerHTML = marked.parse(content);
+}
+
+function goHome() {
+  document.getElementById('posts').classList.remove('hidden');
+  document.getElementById('tag-filter').classList.remove('hidden');
+  document.getElementById('viewer').classList.add('hidden');
+}
+
+// старт
+fetchAll();
 </script>
+
 </body>
 </html>
