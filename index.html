@@ -1,49 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Scanner Blog</title>
-    <style>
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-        }
-        .video-container video,
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Existing content remains unchanged -->
-
-    <script>
-        function embedVideos(content) {
-            const videoFormats = ['mp4', 'webm', 'ogg'];
-            const videoLinks = content.match(/(https?:\\/\\/)?(www\\.)?youtube\\.com\\/watch\\?v=([\w-]+)/g) || [];
-            videoLinks.forEach(link => {
-                const videoId = link.split('v=')[1];
-                if (videoId) {
-                    content = content.replace(link, `<div class='video-container'><iframe src='https://www.youtube.com/embed/${videoId}' frameborder='0' allowfullscreen></iframe></div>`);
-                }
-            });
-            videoFormats.forEach(format => {
-                const fileLinks = content.match(/([\w\-\.]+)\\.${format}/g) || [];
-                fileLinks.forEach(file => {
-                    content = content.replace(file, `<div class='video-container'><video controls><source src='${file}' type='video/${format}'></video></div>`);
-                });
-            });
-            return content;
-        }
-
-        // Invoke embedVideos where appropriate in your existing functionality
-        // Example: let updatedContent = embedVideos(existingContent);
-    </script>
+    <header>
+        <h1>Блог про сканери</h1>
+        <nav>
+            <a href="index.html">Головна</a>
+            <a href="posts.html">Публікації</a>
+            <a href="search.html">Пошук</a>
+            <a href="tags.html">Теги</a>
+            <button id="theme-toggle">Переключити тему</button>
+        </nav>
+    </header>
+    <main>
+        <section id="posts">
+            <article>
+                <h2>Огляд найкращих сканерів 2026 року</h2>
+                <p>Сьогодні поговоримо про найкращі сканери, які доступні на ринку...</p>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/some_video_id" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </article>
+            <!-- Additional posts can go here -->
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 My Scanner Blog</p>
+    </footer>
+    <script src="scripts.js"></script>
 </body>
 </html>
