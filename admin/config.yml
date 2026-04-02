@@ -1,7 +1,8 @@
 backend:
   name: github
-  repo: Bov888/my-scanner-blog # Твій шлях до репозиторію
+  repo: Bov888/my-scanner-blog
   branch: main
+  site_domain: uspishnyskaner.pp.ua # Твій домен зі скріншота
 
 # Налаштування хмари Cloudinary
 media_library:
