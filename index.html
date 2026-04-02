@@ -9,13 +9,11 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-  // Оновлені налаштування Marked для підтримки відео та HTML
-  marked.setOptions({
-    breaks: true,
-    gfm: true,
-    headerIds: false,
-    mangle: false
-  });
+  const renderer = new marked.Renderer();
+  renderer.html = function(token) {
+    return typeof token === 'object' ? (token.text || token.raw || '') : token;
+  };
+  marked.use({ breaks: true, gfm: true, renderer });
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -111,7 +109,7 @@
   .post-content pre code { background: none; padding: 0; }
   .post-content img { max-width: 100%; height: auto; border-radius: 4px; margin: 1rem 0; }
   .post-content hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-  .youtube-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; margin: 1.5rem 0; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  .youtube-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; margin: 1.5rem 0; }
   .youtube-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
   .post-content a { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent-light); text-underline-offset: 3px; transition: text-decoration-color 0.2s; }
   .post-content a:hover { text-decoration-color: var(--accent); }
@@ -153,6 +151,7 @@
 
 <main>
 
+  <!-- ГОЛОВНА -->
   <div id="page-home" class="page active">
     <div class="hero">
       <div class="hero-label">Блог</div>
@@ -171,6 +170,7 @@
     </div>
   </div>
 
+  <!-- ДОПИС -->
   <div id="page-post" class="page">
     <button class="back-btn" onclick="navigateTo('home')">← до списку</button>
     <div class="post-header">
@@ -183,6 +183,7 @@
     <article id="post-content-display" class="post-content"></article>
   </div>
 
+  <!-- СТОРІНКА -->
   <div id="page-page" class="page">
     <button class="back-btn" onclick="navigateTo('home')">← до списку</button>
     <div class="post-header">
@@ -191,6 +192,7 @@
     <article id="page-content-display" class="post-content"></article>
   </div>
 
+  <!-- ПРО МЕНЕ -->
   <div id="page-about" class="page">
     <div class="about-section">
       <h2>Про мене</h2>
@@ -484,11 +486,9 @@
 
       contentEl.innerHTML = marked.parse(withLinks);
 
-      // YouTube та Cloudinary посилання → плеєр
+      // YouTube посилання → плеєр
       contentEl.querySelectorAll('a').forEach(link => {
         const href = link.getAttribute('href') || '';
-        
-        // Перевірка YouTube
         const yt = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
         if (yt) {
           const wrap = document.createElement('div');
