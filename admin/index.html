@@ -14,9 +14,7 @@
       const CMS = window.StaticCMS || window.CMS;
       if (CMS) {
         CMS.init();
-        console.log("CMS успішно запущено");
       } else {
-        console.log("Чекаємо завантаження бібліотеки...");
         setTimeout(initCMS, 100);
       }
     }
