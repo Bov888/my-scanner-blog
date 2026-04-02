@@ -14,6 +14,15 @@
     return typeof token === 'object' ? (token.text || token.raw || '') : token;
   };
   marked.use({ breaks: true, gfm: true, renderer });
+
+  function decodeHtmlEntities(str) {
+    return str
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'");
+  }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -406,7 +415,7 @@
       const title = parseMeta(text, 'title') || 'Сторінка';
       const body  = text.replace(/^---[\s\S]*?---\n?/, '');
       titleEl.textContent = title;
-      contentEl.innerHTML = marked.parse(body);
+      contentEl.innerHTML = marked.parse(decodeHtmlEntities(body));
       if (body.includes('amplenote-embed') && !document.getElementById('amplenote-script')) {
         const s = document.createElement('script');
         s.id = 'amplenote-script'; s.defer = true;
@@ -484,7 +493,7 @@
         return `[${lt}](#${s})`;
       });
 
-      contentEl.innerHTML = marked.parse(withLinks);
+      contentEl.innerHTML = marked.parse(decodeHtmlEntities(withLinks));
 
       // YouTube посилання → плеєр
       contentEl.querySelectorAll('a').forEach(link => {
