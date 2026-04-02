@@ -36,5 +36,3 @@ collections:
       - { label: "Заголовок", name: "title", widget: "string" }
       - { label: "Опис", name: "description", widget: "string", required: false }
       - { label: "Вміст", name: "body", widget: "markdown" }
-
-ось код конфігу, додай те що треба і куди треба
