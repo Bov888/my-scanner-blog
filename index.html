@@ -36,7 +36,7 @@
     --accent-light: #1e2e1c;
     --border: #2e2d2a;
   }
-  .theme-toggle { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; padding: 0.3rem 0.6rem; border-radius: 2px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.04em; }
+  .theme-toggle { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; cursor: pointer; padding: 0.25rem 0.6rem; border-radius: 20px; transition: all 0.2s; line-height: 1.4; }
   .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
   .search-bar { position: relative; margin-bottom: 1.5rem; }
@@ -50,11 +50,12 @@
   html { font-size: 18px; }
   body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
 
-  header { border-bottom: 1px solid var(--border); padding: 2rem 1.5rem; }
-  .header-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  header { border-bottom: 1px solid var(--border); padding: 1.5rem 1.5rem; }
+  .header-inner { max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: 0.8rem; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
   .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; cursor: pointer; }
   .site-title span { color: var(--accent); }
-  nav { display: flex; gap: 1.5rem; }
+  nav { display: flex; align-items: center; gap: 1.5rem; }
   nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; transition: color 0.2s; }
   nav a:hover { color: var(--accent); }
 
@@ -133,11 +134,13 @@
 
 <header>
   <div class="header-inner">
-    <span class="site-title" onclick="navigateTo('home')">Як стати <span>успішним сканером</span></span>
+    <div class="header-top">
+      <span class="site-title" onclick="navigateTo('home')">Як стати <span>успішним сканером</span></span>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Змінити тему">☾ тема</button>
+    </div>
     <nav>
       <a onclick="navigateTo('home')">Дописи</a>
       <a onclick="navigateTo('about')">Про мене</a>
-      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">☾</button>
     </nav>
   </div>
 </header>
@@ -227,7 +230,7 @@
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     const newTheme = isDark ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', newTheme);
-    document.getElementById('theme-toggle').textContent = isDark ? '☾' : '☀';
+    document.getElementById('theme-toggle').textContent = isDark ? '☾ тема' : '☀ тема';
     localStorage.setItem('theme', newTheme);
   }
 
@@ -237,7 +240,7 @@
     const theme = saved || (prefersDark ? 'dark' : 'light');
     if (theme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
-      document.getElementById('theme-toggle').textContent = '☀';
+      document.getElementById('theme-toggle').textContent = '☀ тема';
     }
   }
 
