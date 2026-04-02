@@ -8,6 +8,7 @@ media_library:
     cloud_name: dyvv0gduq
     api_key: 363277514958419
     api_secret: npjLvpKRgXgmzzh82ZJsKp4jGLE
+    output_filename_only: false
 
 media_folder: "images"
 public_folder: "/images"
@@ -21,7 +22,7 @@ collections:
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
-      - { label: "Дата", name: "date", widget: "datetime", format: "yyyy-MM-dd" }
+      - { label: "Дата", name: "date", widget: "datetime", date_format: "yyyy-MM-dd", time_format: false }
       - label: "Тег"
         name: "tag"
         widget: "select"
