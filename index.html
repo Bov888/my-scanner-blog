@@ -27,6 +27,25 @@
     --border: #e2e1db;
     --max: 680px;
   }
+  [data-theme="dark"] {
+    --bg: #141412;
+    --surface: #1e1d1b;
+    --text: #e8e6e0;
+    --muted: #8a8880;
+    --accent: #6ab05f;
+    --accent-light: #1e2e1c;
+    --border: #2e2d2a;
+  }
+  .theme-toggle { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; padding: 0.3rem 0.6rem; border-radius: 2px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.04em; }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+  .search-bar { position: relative; margin-bottom: 1.5rem; }
+  .search-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 0.7rem 1rem 0.7rem 2.4rem; border-radius: 2px; outline: none; transition: border-color 0.2s; }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+  .search-icon { position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.8rem; pointer-events: none; }
+  .search-clear { position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; display: none; }
+  .search-clear.visible { display: block; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { font-size: 18px; }
   body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
@@ -118,6 +137,7 @@
     <nav>
       <a onclick="navigateTo('home')">Дописи</a>
       <a onclick="navigateTo('about')">Про мене</a>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">☾</button>
     </nav>
   </div>
 </header>
@@ -132,6 +152,11 @@
       <p>Про PKM, ШІ, автоматизацію, спорт і все що зацікавило цього тижня. Без графіку і перфекціонізму.</p>
     </div>
     <div class="posts-label">Дописи</div>
+    <div class="search-bar">
+      <span class="search-icon">⌕</span>
+      <input class="search-input" id="search-input" type="text" placeholder="Пошук дописів..." oninput="handleSearch(this.value)">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()">×</button>
+    </div>
     <div id="tag-filters" class="tag-filters"></div>
     <div id="posts-container">
       <p class="loading">Завантаження дописів...</p>
@@ -195,6 +220,42 @@
   let postsCache = {};
   let allPosts   = [];
   let activeTag  = null;
+  let searchQuery = '';
+
+  // --- Темна тема ---
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    document.getElementById('theme-toggle').textContent = isDark ? '☾' : '☀';
+    localStorage.setItem('theme', newTheme);
+  }
+
+  function initTheme() {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.getElementById('theme-toggle').textContent = '☀';
+    }
+  }
+
+  // --- Пошук ---
+  function handleSearch(val) {
+    searchQuery = val.trim().toLowerCase();
+    document.getElementById('search-clear').classList.toggle('visible', searchQuery.length > 0);
+    activeTag = null;
+    document.querySelectorAll('.tag-filter').forEach(b => b.classList.remove('active'));
+    renderPostsList();
+  }
+
+  function clearSearch() {
+    document.getElementById('search-input').value = '';
+    searchQuery = '';
+    document.getElementById('search-clear').classList.remove('visible');
+    renderPostsList();
+  }
 
   function navigateTo(page, slug) {
     if (slug) {
@@ -252,10 +313,17 @@
 
   function renderPostsList() {
     const container = document.getElementById('posts-container');
-    const filtered  = activeTag ? allPosts.filter(p => p.tag === activeTag) : allPosts;
+    let filtered = activeTag ? allPosts.filter(p => p.tag === activeTag) : allPosts;
+    if (searchQuery) {
+      filtered = filtered.filter(p =>
+        p.title.toLowerCase().includes(searchQuery) ||
+        p.excerpt.toLowerCase().includes(searchQuery) ||
+        p.tag.toLowerCase().includes(searchQuery)
+      );
+    }
 
     if (filtered.length === 0) {
-      container.innerHTML = '<p class="loading">Немає дописів у цій категорії.</p>';
+      container.innerHTML = `<p class="loading">${searchQuery ? 'Нічого не знайдено.' : 'Немає дописів у цій категорії.'}</p>`;
       return;
     }
 
@@ -456,6 +524,7 @@
 
   window.addEventListener('hashchange', handleRoute);
   window.addEventListener('DOMContentLoaded', () => {
+    initTheme();
     loadPosts();
     loadPages();
     handleRoute();
