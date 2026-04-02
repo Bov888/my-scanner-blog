@@ -1,7 +1,17 @@
 backend:
   name: git-gateway
-  branch: main
+  branch: main # Перевір, чи на GitHub гілка називається main
 
+# Налаштування хмари Cloudinary
+media_library:
+  name: cloudinary
+  config:
+    cloud_name: твій_cloud_name # ВСТАВ СВІЙ
+    api_key: твій_api_key       # ВСТАВ СВІЙ
+    folder: "успішний сканер"    # Твоя папка в хмарі
+    use_secure_url: true
+
+# Ці папки мають бути в репозиторії для технічних потреб CMS
 media_folder: "images"
 public_folder: "/images"
 
@@ -10,7 +20,8 @@ collections:
     label: "Дописи"
     folder: "posts"
     create: true
-    slug: "{{slug}}"
+    # Це автоматично конвертує заголовок у назву файлу без кирилиці
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" 
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
