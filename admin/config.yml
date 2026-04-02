@@ -1,8 +1,6 @@
 backend:
-  name: github
-  repo: Bov888/my-scanner-blog
-  branch: main
-  auth_type: implicit
+  name: git-gateway
+  branch: main # Перевір, чи у тебе на GitHub гілка main, а не master
 # Налаштування хмари Cloudinary
 media_library:
   name: cloudinary
