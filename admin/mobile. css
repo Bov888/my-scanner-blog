@@ -1,0 +1,33 @@
+@media (max-width: 768px) {
+
+  body {
+    font-size: 16px !important;
+  }
+
+  /* Основний контейнер CMS */
+  [class*="AppMainContainer"] {
+    padding: 10px !important;
+  }
+
+  /* Поля вводу */
+  input, textarea, select {
+    width: 100% !important;
+    font-size: 16px !important;
+  }
+
+  textarea {
+    min-height: 150px !important;
+  }
+
+  /* Кнопки */
+  button {
+    width: 100% !important;
+    min-height: 44px !important;
+    font-size: 16px !important;
+  }
+
+  /* Зменшення відступів */
+  [class*="Pane"] {
+    padding: 5px !important;
+  }
+}
