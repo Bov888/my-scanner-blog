@@ -5,15 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Адмін-панель | Успішний Сканер</title>
 
-  <!-- ПІДКЛЮЧАЄМО СВІЙ CSS -->
-  <link rel="stylesheet" href="/admin/mobile.css" />
-
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
 
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.0.0/dist/netlify-cms-media-library-cloudinary.js"></script>
+
+  <!-- 💥 ДОДАЄМО СТИЛІ ЧЕРЕЗ JS -->
+  <script>
+    function addMobileStyles() {
+      const style = document.createElement('style');
+      style.innerHTML = `
+        @media (max-width: 768px) {
+          body {
+            font-size: 16px !important;
+          }
+
+          input, textarea, select {
+            font-size: 16px !important;
+          }
+
+          textarea {
+            min-height: 150px !important;
+          }
+
+          button {
+            min-height: 44px !important;
+            font-size: 16px !important;
+          }
+
+          /* Основний контейнер */
+          div[class*="App"] {
+            padding: 10px !important;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // чекаємо поки CMS завантажиться
+    setTimeout(addMobileStyles, 1000);
+  </script>
 
   <script>
     if (window.netlifyIdentity) {
