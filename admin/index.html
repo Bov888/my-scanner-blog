@@ -4,31 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Адмін-панель | Успішний Сканер</title>
-  <link rel="stylesheet" href="https://unpkg.com/@staticcms/core@^4.0.0/dist/main.css" />
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/@staticcms/core@^4.0.0/dist/static-cms-core.js"></script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  
   <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.0.0/dist/netlify-cms-media-library-cloudinary.js"></script>
 
   <script>
-    // Чекаємо, поки об'єкт з'явиться в пам'яті
-    const initCMS = () => {
-      if (window.StaticCMS) {
-        window.StaticCMS.init();
-        // Реєструємо Cloudinary, якщо бібліотека завантажилась
-        if (window.CloudinaryLibrary) {
-          window.StaticCMS.registerMediaLibrary(window.CloudinaryLibrary);
-        }
-      } else {
-        // Якщо ще не завантажилось, чекаємо 100мс і пробуємо знову
-        setTimeout(initCMS, 100);
-      }
-    };
-
-    initCMS();
-
-    // Вхід через Netlify
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
