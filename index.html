@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Як стати успішним сканером</title>
 <meta name="description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'><rect width='32' height='32' rx='6' fill='%232d5a27'/><circle cx='13' cy='13' r='8' stroke='white' stroke-width='2' fill='%231e2e1c'/><path d='M13 8 C10 8 8 10 8 12 C8 13.5 9 14.5 9 14.5 C9 16 10 17 11 17 L13 17 L15 17 C16 17 17 16 17 14.5 C17 14.5 18 13.5 18 12 C18 10 16 8 13 8Z' fill='none' stroke='white' stroke-width='1'/><line x1='19' y1='19' x2='27' y2='27' stroke='white' stroke-width='2.5' stroke-linecap='round'/></svg>">
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
@@ -36,12 +37,17 @@
     --accent-light: #1e2e1c;
     --border: #2e2d2a;
   }
-  .header-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-width: 0; }
-  .site-title { font-weight: 500; font-size: 1.35rem; color: var(--text); text-decoration: none; cursor: pointer; letter-spacing: -0.02em; min-width: 0; }
+  header { border-bottom: 1px solid var(--border); padding: 1.2rem 1.5rem; }
+  .header-inner { max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: 0.6rem; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+  .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; cursor: pointer; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.4rem; min-width: 0; overflow: hidden; }
   .site-title span { color: var(--accent); }
-  @media (max-width: 420px) { .site-title { font-size: 1.05rem; } .theme-toggle { font-size: 0.7rem; padding: 0.2rem 0.55rem; } }
-  .theme-toggle { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 0.8rem; font-family: 'Literata', Georgia, serif; font-weight: 300; cursor: pointer; padding: 0.25rem 0.75rem; border-radius: 20px; transition: all 0.2s; line-height: 1.4; white-space: nowrap; flex-shrink: 0; }
-  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .site-title svg { flex-shrink: 0; }
+  .theme-toggle { background: var(--accent-light); border: 1px solid var(--accent); color: var(--accent); font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; cursor: pointer; padding: 0.15rem 0.5rem; border-radius: 2px; transition: opacity 0.2s; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; flex-shrink: 0; }
+  .theme-toggle:hover { opacity: 0.7; }
+  nav { display: flex; align-items: center; gap: 1.5rem; }
+  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: color 0.2s; }
+  nav a:hover { color: var(--accent); }
 
   .search-bar { position: relative; margin-bottom: 1.5rem; }
   .search-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 0.7rem 1rem 0.7rem 2.4rem; border-radius: 2px; outline: none; transition: border-color 0.2s; }
@@ -53,13 +59,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { font-size: 18px; }
   body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
-
-  header { border-bottom: 1px solid var(--border); padding: 1.5rem 1.5rem; }
-  .header-inner { max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: 0.8rem; }
-  .header-top { display: flex; align-items: center; justify-content: space-between; }
-  nav { display: flex; align-items: center; gap: 1.5rem; }
-  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; cursor: pointer; transition: color 0.2s; }
-  nav a:hover { color: var(--accent); }
 
   main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
   .page { display: none; }
@@ -140,7 +139,7 @@
 <header>
   <div class="header-inner">
     <div class="header-top">
-      <span class="site-title" onclick="navigateTo('home')">Як стати <span>успішним сканером</span></span>
+      <span class="site-title" onclick="navigateTo('home')"><svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="13" r="8" stroke="currentColor" stroke-width="2" fill="var(--accent-light)"/><path d="M13 8 C10 8 8 10 8 12 C8 13.5 9 14.5 9 14.5 C9 16 10 17 11 17 L13 17 L15 17 C16 17 17 16 17 14.5 C17 14.5 18 13.5 18 12 C18 10 16 8 13 8Z" fill="none" stroke="currentColor" stroke-width="1"/><line x1="19" y1="19" x2="27" y2="27" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>Як стати <span>успішним сканером</span></span>
       <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Змінити тему">☾ тема</button>
     </div>
     <nav>
@@ -197,10 +196,9 @@
   <div id="page-about" class="page">
     <div class="about-section">
       <h2>Про мене</h2>
-      <p>Людина-сканер з Прикарпаття. 7+ років у роздрібній торгівлі та телекомі. Колись керував чотирма магазинами одночасно.</p>
+      <p>Людина-сканер з Коломиї. 7+ років у роздрібній торгівлі та телекомі. Колись керував чотирма магазинами одночасно.</p>
       <p>Захоплююсь PKM, ШІ, автоматизацією, бігом і ще купою речей. Цей блог — мої нотатки вголос. Пишу коли є що сказати.</p>
-      <p>Пробіг півмарафон. Скинув 13 кг за 100 днів. Займався силовими тренуваннями і функціональною підготовкою. 
-      <p>Маю більше акаунтів у застосунках для нотаток ніж треба.</p>
+      <p>Пробіг півмарафон. Скинув 13 кг за 100 днів. Маю більше акаунтів у застосунках для нотаток ніж треба.</p>
       <div class="about-tags">
         <span class="about-tag" onclick="filterFromAbout('PKM')">PKM</span>
         <span class="about-tag" onclick="filterFromAbout('ШІ та автоматизація')">ШІ та автоматизація</span>
