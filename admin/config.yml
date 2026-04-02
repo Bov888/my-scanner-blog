@@ -1,6 +1,7 @@
 backend:
-  name: git-gateway
-  branch: main # Перевір, чи на GitHub гілка називається main
+  name: github
+  repo: Bov888/my-scanner-blog # Твій шлях до репозиторію
+  branch: main
 
 # Налаштування хмари Cloudinary
 media_library:
