@@ -5,18 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Адмін-панель | Успішний Сканер</title>
   <link rel="stylesheet" href="https://unpkg.com/@staticcms/core@^4.0.0/dist/main.css" />
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  
   <script src="https://unpkg.com/@staticcms/core@^4.0.0/dist/static-cms-core.js"></script>
   
   <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.0.0/dist/netlify-cms-media-library-cloudinary.js"></script>
 
   <script>
-    // Реєстрація Cloudinary у новій адмінці
-    CMS.registerMediaLibrary(CloudinaryLibrary);
+    // Чекаємо завантаження скриптів, потім реєструємо хмару
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.StaticCMS) {
+        window.StaticCMS.registerMediaLibrary(window.CloudinaryLibrary);
+      }
+    });
 
-    // Стандартний скрипт входу
+    // Обробка логіну Netlify
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
