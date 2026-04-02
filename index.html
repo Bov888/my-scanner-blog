@@ -8,15 +8,11 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-  marked.use({
-    breaks: true,
-    gfm: true,
-    renderer: (() => {
-      const r = new marked.Renderer();
-      r.html = (html) => html;
-      return r;
-    })()
-  });
+  const renderer = new marked.Renderer();
+  renderer.html = function(token) {
+    return typeof token === 'object' ? (token.text || token.raw || '') : token;
+  };
+  marked.use({ breaks: true, gfm: true, renderer });
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
