@@ -10,7 +10,17 @@
 <body>
   <script src="https://unpkg.com/@staticcms/app@^4.0.0/dist/static-cms-app.js"></script>
   <script>
-    StaticCMS.init();
+    function initCMS() {
+      const CMS = window.StaticCMS || window.CMS;
+      if (CMS) {
+        CMS.init();
+        console.log("CMS успішно запущено");
+      } else {
+        console.log("Чекаємо завантаження бібліотеки...");
+        setTimeout(initCMS, 100);
+      }
+    }
+    initCMS();
   </script>
 </body>
 </html>
