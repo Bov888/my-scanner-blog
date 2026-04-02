@@ -2,7 +2,6 @@ backend:
   name: git-gateway
   branch: main
 
-# Підключення хмари для старої адмінки
 media_library:
   name: cloudinary
   config:
@@ -14,22 +13,13 @@ media_library:
 collections:
   - name: "posts"
     label: "Дописи"
-    folder: "posts"
+    folder: "posts" # Шлях згідно з image_5ead0b.png
     create: true
     slug: "{{slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
-      - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      # ВИПРАВЛЕНО: використовуємо yyyy замість YYYY
+      - { label: "Дата", name: "date", widget: "datetime", format: "yyyy-MM-dd" }
       - { label: "Тег", name: "tag", widget: "select", options: ["PKM", "ШІ та автоматизація", "Спорт та дисципліна", "Життя сканера", "Інструменти", "Нотатки"] }
-      - { label: "Вміст", name: "body", widget: "markdown" }
-
-  - name: "pages"
-    label: "Сторінки"
-    folder: "pages"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Опис", name: "description", widget: "string", required: false }
       - { label: "Вміст", name: "body", widget: "markdown" }
