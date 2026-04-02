@@ -2,7 +2,7 @@ backend:
   name: git-gateway
   branch: main
 
-# Підключення Cloudinary
+# Підключення хмари для старої адмінки
 media_library:
   name: cloudinary
   config:
@@ -14,7 +14,7 @@ media_library:
 collections:
   - name: "posts"
     label: "Дописи"
-    folder: "posts" # Шлях з твого скріншоту
+    folder: "posts"
     create: true
     slug: "{{slug}}"
     fields:
@@ -26,7 +26,7 @@ collections:
 
   - name: "pages"
     label: "Сторінки"
-    folder: "pages" # Шлях з твого скріншоту
+    folder: "pages"
     create: true
     slug: "{{slug}}"
     fields:
