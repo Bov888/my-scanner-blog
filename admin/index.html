@@ -1,12 +1,19 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Успішний Сканер: Адмінка</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Manager</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  
+  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.3.0/dist/netlify-cms-media-library-cloudinary.js"></script>
+  
+  <script>
+    // РЕЄСТРАЦІЯ БІБЛІОТЕКИ (без цього кнопка не з'явиться)
+    CMS.registerMediaLibrary(NetlifyCmsMediaLibraryCloudinary);
+  </script>
 </body>
 </html>
