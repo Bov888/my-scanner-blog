@@ -1,38 +1,48 @@
 backend:
-  name: git-gateway
-  branch: main
+  name: git-gateway
+  branch: main
+
+# --- ДОДАНИЙ БЛОК ДЛЯ ХМАРИ ---
+media_library:
+  name: cloudinary
+  config:
+    cloud_name: dyvv0gduq
+    api_key: 363277514958419
+    api_secret: npjLvpKRgXgmzzh82ZJsKp4jGLE
+    folder: "успішний сканер" # Назва папки з твого скріншоту
+# ------------------------------
 
 media_folder: "images"
 public_folder: "/images"
 
 collections:
-  - name: "posts"
-    label: "Дописи"
-    folder: "posts"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Короткий опис", name: "excerpt", widget: "string" }
-      - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
-      - label: "Тег"
-        name: "tag"
-        widget: "select"
-        options:
-          - { label: "PKM", value: "PKM" }
-          - { label: "ШІ та автоматизація", value: "ШІ та автоматизація" }
-          - { label: "Спорт та дисципліна", value: "Спорт та дисципліна" }
-          - { label: "Життя сканера", value: "Життя сканера" }
-          - { label: "Інструменти", value: "Інструменти" }
-          - { label: "Нотатки", value: "Нотатки" }
-      - { label: "Вміст", name: "body", widget: "markdown" }
+  - name: "posts"
+    label: "Дописи"
+    folder: "posts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Короткий опис", name: "excerpt", widget: "string" }
+      - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      - label: "Тег"
+        name: "tag"
+        widget: "select"
+        options:
+          - { label: "PKM", value: "PKM" }
+          - { label: "ШІ та автоматизація", value: "ШІ та автоматизація" }
+          - { label: "Спорт та дисципліна", value: "Спорт та дисципліна" }
+          - { label: "Життя сканера", value: "Життя сканера" }
+          - { label: "Інструменти", value: "Інструменти" }
+          - { label: "Нотатки", value: "Нотатки" }
+      - { label: "Вміст", name: "body", widget: "markdown" }
 
-  - name: "pages"
-    label: "Сторінки"
-    folder: "pages"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Опис", name: "description", widget: "string", required: false }
-      - { label: "Вміст", name: "body", widget: "markdown" }
+  - name: "pages"
+    label: "Сторінки"
+    folder: "pages"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Опис", name: "description", widget: "string", required: false }
+      - { label: "Вміст", name: "body", widget: "markdown" }
