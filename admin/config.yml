@@ -2,49 +2,31 @@ backend:
   name: git-gateway
   branch: main
 
+# Підключення Cloudinary
 media_library:
   name: cloudinary
   config:
     cloud_name: dyvv0gduq
     api_key: 363277514958419
     api_secret: npjLvpKRgXgmzzh82ZJsKp4jGLE
-    folder: "успішний сканер"
-    use_secure_url: true
-    output_filename_only: false
-
-media_folder: "images"
-public_folder: "/images"
+    folder: "успішний сканер" 
 
 collections:
   - name: "posts"
     label: "Дописи"
-    folder: "posts" # Шлях за твоїм скріншотом
+    folder: "posts" # Шлях з твого скріншоту
     create: true
     slug: "{{slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
-      - { label: "Дата", name: "date", widget: "datetime", date_format: "yyyy-MM-dd", time_format: false }
-      - label: "Тег"
-        name: "tag"
-        widget: "select"
-        options:
-          - { label: "PKM", value: "PKM" }
-          - { label: "ШІ та автоматизація", value: "ШІ та автоматизація" }
-          - { label: "Спорт та дисципліна", value: "Спорт та дисципліна" }
-          - { label: "Життя сканера", value: "Життя сканера" }
-          - { label: "Інструменти", value: "Інструменти" }
-          - { label: "Нотатки", value: "Нотатки" }
-      - label: "Вміст"
-        name: "body"
-        widget: "markdown"
-        media_library:
-          config:
-            multiple: true
+      - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      - { label: "Тег", name: "tag", widget: "select", options: ["PKM", "ШІ та автоматизація", "Спорт та дисципліна", "Життя сканера", "Інструменти", "Нотатки"] }
+      - { label: "Вміст", name: "body", widget: "markdown" }
 
   - name: "pages"
     label: "Сторінки"
-    folder: "pages" # Шлях за твоїм скріншотом
+    folder: "pages" # Шлях з твого скріншоту
     create: true
     slug: "{{slug}}"
     fields:
