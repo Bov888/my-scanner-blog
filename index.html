@@ -155,6 +155,15 @@
     <article id="post-content-display" class="post-content"></article>
   </div>
 
+  <!-- СТОРІНКА -->
+  <div id="page-page" class="page">
+    <button class="back-btn" onclick="navigateTo('home')">← до списку</button>
+    <div class="post-header">
+      <h2 id="page-title-display"></h2>
+    </div>
+    <article id="page-content-display" class="post-content"></article>
+  </div>
+
   <!-- ПРО МЕНЕ -->
   <div id="page-about" class="page">
     <div class="about-section">
@@ -207,6 +216,8 @@
       showPage('home');
     } else if (hash === 'about') {
       showPage('about');
+    } else if (hash.startsWith('page-')) {
+      openPageBySlug(hash.replace('page-', ''));
     } else {
       openPostBySlug(hash);
     }
@@ -310,6 +321,55 @@
     }
   }
 
+  async function openPageBySlug(slug) {
+    showPage('page');
+    const titleEl   = document.getElementById('page-title-display');
+    const contentEl = document.getElementById('page-content-display');
+    titleEl.textContent = 'Завантаження...';
+    contentEl.innerHTML = '';
+    try {
+      const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error();
+      const text  = await res.text();
+      const title = parseMeta(text, 'title') || 'Сторінка';
+      const body  = text.replace(/^---[\s\S]*?---\n?/, '');
+      titleEl.textContent = title;
+      contentEl.innerHTML = marked.parse(body);
+      if (body.includes('amplenote-embed') && !document.getElementById('amplenote-script')) {
+        const s = document.createElement('script');
+        s.id = 'amplenote-script'; s.defer = true;
+        s.src = 'https://public.amplenote.com/embed.js';
+        document.body.appendChild(s);
+      }
+    } catch(e) {
+      titleEl.textContent = 'Сторінку не знайдено';
+      contentEl.innerHTML = '<p>Не вдалось завантажити сторінку.</p>';
+    }
+  }
+
+  async function loadPages() {
+    try {
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/pages`);
+      if (!res.ok) return;
+      const files   = await res.json();
+      const mdFiles = files.filter(f => f.name.endsWith('.md'));
+      if (mdFiles.length === 0) return;
+
+      const nav = document.querySelector('nav');
+      for (const file of mdFiles) {
+        const r2   = await fetch(file.download_url);
+        const text = await r2.text();
+        const title = parseMeta(text, 'title') || file.name.replace('.md','');
+        const slug  = file.name.replace('.md','');
+        const a = document.createElement('a');
+        a.textContent = title;
+        a.onclick = () => navigateTo('page-' + slug);
+        nav.appendChild(a);
+      }
+    } catch(e) {}
+  }
+
   async function openPostBySlug(slug) {
     showPage('post');
     const titleEl   = document.getElementById('post-title-display');
@@ -355,12 +415,16 @@
 
       contentEl.innerHTML = marked.parse(withLinks);
 
-      if (body.includes('amplenote-embed') && !document.getElementById('amplenote-script')) {
-        const s = document.createElement('script');
-        s.id    = 'amplenote-script';
-        s.defer = true;
-        s.src   = 'https://public.amplenote.com/embed.js';
-        document.body.appendChild(s);
+      // Amplenote embed — завантажуємо скрипт або переініціалізуємо
+      if (body.includes('amplenote-embed')) {
+        if (!document.getElementById('amplenote-script')) {
+          const s = document.createElement('script');
+          s.id = 'amplenote-script'; s.defer = true;
+          s.src = 'https://public.amplenote.com/embed.js';
+          document.body.appendChild(s);
+        } else if (window.Amplenote && window.Amplenote.init) {
+          window.Amplenote.init();
+        }
       }
 
       contentEl.querySelectorAll('a[href^="#"]').forEach(link => {
@@ -397,6 +461,7 @@
   window.addEventListener('hashchange', handleRoute);
   window.addEventListener('DOMContentLoaded', () => {
     loadPosts();
+    loadPages();
     handleRoute();
   });
 </script>
