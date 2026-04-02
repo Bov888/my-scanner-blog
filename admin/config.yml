@@ -2,6 +2,7 @@ backend:
   name: git-gateway
   branch: main
 
+# Глобальне підключення хмари
 media_library:
   name: cloudinary
   config:
@@ -33,7 +34,13 @@ collections:
           - { label: "Життя сканера", value: "Життя сканера" }
           - { label: "Інструменти", value: "Інструменти" }
           - { label: "Нотатки", value: "Нотатки" }
-      - { label: "Вміст", name: "body", widget: "markdown" }
+      # ТУТ МАГІЯ: додаємо media_library прямо в маркдаун
+      - label: "Вміст"
+        name: "body"
+        widget: "markdown"
+        media_library:
+          config:
+            multiple: true
 
   - name: "pages"
     label: "Сторінки"
