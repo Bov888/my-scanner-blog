@@ -2,8 +2,7 @@ backend:
   name: github
   repo: Bov888/my-scanner-blog
   branch: main
-  site_domain: uspishnyskaner.pp.ua # Твій домен зі скріншота
-
+  auth_type: implicit
 # Налаштування хмари Cloudinary
 media_library:
   name: cloudinary
