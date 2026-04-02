@@ -2,16 +2,6 @@ backend:
   name: git-gateway
   branch: main
 
-# --- ДОДАНИЙ БЛОК ДЛЯ ХМАРИ ---
-media_library:
-  name: cloudinary
-  config:
-    cloud_name: dyvv0gduq
-    api_key: 363277514958419
-    api_secret: npjLvpKRgXgmzzh82ZJsKp4jGLE
-    folder: "успішний сканер" # Назва папки з твого скріншоту
-# ------------------------------
-
 media_folder: "images"
 public_folder: "/images"
 
