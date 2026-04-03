@@ -508,39 +508,51 @@
           link.parentNode.replaceChild(wrap, link);
         }
       });
-              // Розумний аудіо-плеєр (файли + авто-конвертація посилань Cloudinary)
+                    // Універсальний обробник медіа (Cloudinary, Spotify, Прямі MP3)
       contentEl.querySelectorAll('a').forEach(link => {
-        let href = link.getAttribute('href') || '';
-        let isAudio = false;
+        const href = link.getAttribute('href') || '';
+        
+        // 1. ПЕРЕВІРКА НА SPOTIFY
+        const sp = href.match(/open\.spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
+        if (sp) {
+          const spotifyFrame = document.createElement('div');
+          spotifyFrame.style.margin = '1.5rem 0';
+          // Висота 152 для епізодів, 80 для треків - 152 універсальна
+          spotifyFrame.innerHTML = `
+            <iframe style="border-radius:12px" 
+              src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator" 
+              width="100%" height="152" frameBorder="0" allowfullscreen="" 
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+              loading="lazy"></iframe>`;
+          link.parentNode.replaceChild(spotifyFrame, link);
+          return; // Переходимо до наступного посилання
+        }
 
-        // 1. Якщо це посилання на плеєр Cloudinary, трансформуємо його в пряме посилання
+        // 2. ПЕРЕВІРКА НА CLOUDINARY АБО ПРЯМИЙ MP3
+        let audioSrc = null;
         if (href.includes('player.cloudinary.com')) {
           const urlParams = new URLSearchParams(href.split('?')[1]);
           const cloudName = urlParams.get('cloud_name');
           const publicId = urlParams.get('public_id');
-          
           if (cloudName && publicId) {
-            href = `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.mp3`;
-            isAudio = true;
+            audioSrc = `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.mp3`;
           }
-        } 
-        // 2. Якщо це звичайне пряме посилання
-        else if (href.toLowerCase().includes('.mp3')) {
-          isAudio = true;
+        } else if (href.toLowerCase().includes('.mp3')) {
+          audioSrc = href;
         }
 
-        if (isAudio) {
+        if (audioSrc) {
           const nativePlayer = document.createElement('div');
           nativePlayer.style.margin = '1.5rem 0';
           nativePlayer.innerHTML = `
             <audio controls style="width: 100%;">
-              <source src="${href}" type="audio/mpeg">
+              <source src="${audioSrc}" type="audio/mpeg">
               Ваш браузер не підтримує аудіо.
-            </audio>
-          `;
+            </audio>`;
           link.parentNode.replaceChild(nativePlayer, link);
         }
       });
+
 
 
       // Amplenote embed — завантажуємо скрипт або переініціалізуємо
