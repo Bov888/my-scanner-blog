@@ -3,11 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Динамічний title — оновлюється через JS -->
 <title>Як стати успішним сканером</title>
+
+<!-- SEO -->
 <meta name="description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
+<meta name="author" content="Успішний сканер">
+<link rel="canonical" href="https://bov888.github.io/my-scanner-blog/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Як стати успішним сканером">
+<meta property="og:title" content="Як стати успішним сканером">
+<meta property="og:description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
+<meta property="og:url" content="https://bov888.github.io/my-scanner-blog/">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Як стати успішним сканером">
+<meta name="twitter:description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
+
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'><rect width='32' height='32' rx='6' fill='%232d5a27'/><circle cx='13' cy='13' r='8' stroke='white' stroke-width='2' fill='%231e2e1c'/><path d='M13 8 C10 8 8 10 8 12 C8 13.5 9 14.5 9 14.5 C9 16 10 17 11 17 L13 17 L15 17 C16 17 17 16 17 14.5 C17 14.5 18 13.5 18 12 C18 10 16 8 13 8Z' fill='none' stroke='white' stroke-width='1'/><line x1='19' y1='19' x2='27' y2='27' stroke='white' stroke-width='2.5' stroke-linecap='round'/></svg>">
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!-- marked.js з integrity для безпеки -->
+<script
+  src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"
+  integrity="sha256-ywg1DPaQBEYDdXmIqz3hcHQBmSrxEsqH9h0YVDE4p8="
+  crossorigin="anonymous"></script>
+
 <script>
   const renderer = new marked.Renderer();
   renderer.html = function(token) {
@@ -24,136 +48,150 @@
       .replace(/&#39;/g, "'");
   }
 </script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --bg: #fafaf8;
-    --surface: #f4f3ef;
-    --text: #1a1917;
-    --muted: #6b6963;
-    --accent: #2d5a27;
-    --accent-light: #e8f0e6;
-    --border: #e2e1db;
-    --max: 680px;
-  }
-  [data-theme="dark"] {
-    --bg: #141412;
-    --surface: #1e1d1b;
-    --text: #e8e6e0;
-    --muted: #8a8880;
-    --accent: #6ab05f;
-    --accent-light: #1e2e1c;
-    --border: #2e2d2a;
-  }
-  header { border-bottom: 1px solid var(--border); padding: 1.2rem 1.5rem; }
-  .header-inner { max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: 0.6rem; }
-  .header-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
-  .site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; cursor: pointer; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.4rem; min-width: 0; overflow: hidden; }
-  .site-title span { color: var(--accent); }
-  .site-title svg { flex-shrink: 0; }
-  .theme-toggle { background: var(--accent-light); border: 1px solid var(--accent); color: var(--accent); font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; cursor: pointer; padding: 0.15rem 0.5rem; border-radius: 2px; transition: opacity 0.2s; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; flex-shrink: 0; }
-  .theme-toggle:hover { opacity: 0.7; }
-  nav { display: flex; align-items: center; gap: 1.5rem; }
-  nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: color 0.2s; }
-  nav a:hover { color: var(--accent); }
+:root {
+  --bg: #fafaf8;
+  --surface: #f4f3ef;
+  --text: #1a1917;
+  --muted: #6b6963;
+  --accent: #2d5a27;
+  --accent-light: #e8f0e6;
+  --border: #e2e1db;
+  --max: 680px;
+}
 
-  .search-bar { position: relative; margin-bottom: 1.5rem; }
-  .search-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 0.7rem 1rem 0.7rem 2.4rem; border-radius: 2px; outline: none; transition: border-color 0.2s; }
-  .search-input:focus { border-color: var(--accent); }
-  .search-input::placeholder { color: var(--muted); }
-  .search-icon { position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.8rem; pointer-events: none; }
-  .search-clear { position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; display: none; }
-  .search-clear.visible { display: block; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 18px; }
-  body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
+[data-theme="dark"] {
+  --bg: #141412;
+  --surface: #1e1d1b;
+  --text: #e8e6e0;
+  --muted: #8a8880;
+  --accent: #6ab05f;
+  --accent-light: #1e2e1c;
+  --border: #2e2d2a;
+}
 
-  main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
-  .page { display: none; }
-  .page.active { display: block; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 18px; }
+body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
 
-  .hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
-  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.2rem; }
-  .hero h1 { font-size: 1.5rem; font-weight: 300; line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 1.2rem; max-width: 520px; }
-  .hero h1 em { font-style: italic; color: var(--accent); }
-  .hero p { color: var(--muted); font-size: 0.95rem; max-width: 460px; }
+header { border-bottom: 1px solid var(--border); padding: 1.2rem 1.5rem; }
+.header-inner { max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: 0.6rem; }
+.header-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.site-title { font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; cursor: pointer; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.4rem; min-width: 0; overflow: hidden; }
+.site-title span { color: var(--accent); }
+.site-title svg { flex-shrink: 0; }
+.theme-toggle { background: var(--accent-light); border: 1px solid var(--accent); color: var(--accent); font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; cursor: pointer; padding: 0.15rem 0.5rem; border-radius: 2px; transition: opacity 0.2s; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; flex-shrink: 0; }
+.theme-toggle:hover { opacity: 0.7; }
 
-  .posts-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem; }
+nav { display: flex; align-items: center; gap: 1.5rem; }
+nav a { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: color 0.2s; }
+nav a:hover { color: var(--accent); }
 
-  .tag-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
-  .tag-filter { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
-  .tag-filter:hover { border-color: var(--accent); color: var(--accent); }
-  .tag-filter.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.search-bar { position: relative; margin-bottom: 1.5rem; }
+.search-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 0.7rem 1rem 0.7rem 2.4rem; border-radius: 2px; outline: none; transition: border-color 0.2s; }
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--muted); }
+.search-icon { position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.8rem; pointer-events: none; }
+.search-clear { position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; display: none; }
+.search-clear.visible { display: block; }
 
-  .post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: opacity 0.2s; }
-  .post-item:first-of-type { border-top: 1px solid var(--border); }
-  .post-item:hover { opacity: 0.7; }
-  .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); padding-top: 0.3rem; line-height: 1.4; }
-  .post-title { font-size: 1.05rem; font-weight: 400; line-height: 1.4; margin-bottom: 0.4rem; }
-  .post-excerpt { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-  .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 2px; margin-top: 0.5rem; cursor: pointer; transition: opacity 0.2s; }
-  .post-tag:hover { opacity: 0.7; }
+main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+.page { display: none; }
+.page.active { display: block; }
 
-  .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
-  .back-btn:hover { color: var(--accent); }
+.hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
+.hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.2rem; }
+.hero h1 { font-size: 1.5rem; font-weight: 300; line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 1.2rem; max-width: 520px; }
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero p { color: var(--muted); font-size: 0.95rem; max-width: 460px; }
 
-  .post-header { padding: 0 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2.5rem; }
-  .post-header h2 { font-size: 1.4rem; font-weight: 300; line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 1rem; }
-  .post-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.05em; display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
-  .post-meta-tag { background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 2px; cursor: pointer; transition: opacity 0.2s; }
-  .post-meta-tag:hover { opacity: 0.7; }
+.posts-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem; }
+.tag-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+.tag-filter { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
+.tag-filter:hover { border-color: var(--accent); color: var(--accent); }
+.tag-filter.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
-  .post-content { font-size: 1rem; line-height: 1.8; }
-  .post-content h1, .post-content h2, .post-content h3 { font-weight: 400; line-height: 1.3; margin: 2rem 0 0.8rem; letter-spacing: -0.01em; }
-  .post-content h1 { font-size: 1.3rem; }
-  .post-content h2 { font-size: 1.1rem; }
-  .post-content h3 { font-size: 0.95rem; }
-  .post-content p { margin-bottom: 1.2rem; }
-  .post-content ul, .post-content ol { margin: 0 0 1.2rem 1.5rem; }
-  .post-content li { margin-bottom: 0.4rem; }
-  .post-content blockquote { border-left: 3px solid var(--accent); padding-left: 1.2rem; color: var(--muted); font-style: italic; margin: 1.5rem 0; }
-  .post-content code { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; background: var(--surface); padding: 0.15rem 0.4rem; border-radius: 2px; }
-  .post-content pre { background: var(--surface); padding: 1.2rem; border-radius: 4px; overflow-x: auto; margin-bottom: 1.2rem; }
-  .post-content pre code { background: none; padding: 0; }
-  .post-content img { max-width: 100%; height: auto; border-radius: 4px; margin: 1rem 0; }
-  .post-content hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-  .youtube-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; margin: 1.5rem 0; }
-  .youtube-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-  .post-content a { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent-light); text-underline-offset: 3px; transition: text-decoration-color 0.2s; }
-  .post-content a:hover { text-decoration-color: var(--accent); }
+.post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: opacity 0.2s; }
+.post-item:first-of-type { border-top: 1px solid var(--border); }
+.post-item:hover { opacity: 0.7; }
+.post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); padding-top: 0.3rem; line-height: 1.4; }
+.post-title { font-size: 1.05rem; font-weight: 400; line-height: 1.4; margin-bottom: 0.4rem; }
+.post-excerpt { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+.post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 2px; margin-top: 0.5rem; cursor: pointer; transition: opacity 0.2s; }
+.post-tag:hover { opacity: 0.7; }
 
-  .about-section h2 { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
-  .about-section p { color: var(--muted); margin-bottom: 1rem; font-size: 0.95rem; }
-  .about-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
-  .about-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
-  .about-tag:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
+.back-btn:hover { color: var(--accent); }
 
-  .loading { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+.post-header { padding: 0 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2.5rem; }
+.post-header h2 { font-size: 1.4rem; font-weight: 300; line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 1rem; }
+.post-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.05em; display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+.post-meta-tag { background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 2px; cursor: pointer; transition: opacity 0.2s; }
+.post-meta-tag:hover { opacity: 0.7; }
 
-  footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; }
-  footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
-  footer a { color: var(--accent); text-decoration: none; }
+.post-content { font-size: 1rem; line-height: 1.8; }
+.post-content h1, .post-content h2, .post-content h3 { font-weight: 400; line-height: 1.3; margin: 2rem 0 0.8rem; letter-spacing: -0.01em; }
+.post-content h1 { font-size: 1.3rem; }
+.post-content h2 { font-size: 1.1rem; }
+.post-content h3 { font-size: 0.95rem; }
+.post-content p { margin-bottom: 1.2rem; }
+.post-content ul, .post-content ol { margin: 0 0 1.2rem 1.5rem; }
+.post-content li { margin-bottom: 0.4rem; }
+.post-content blockquote { border-left: 3px solid var(--accent); padding-left: 1.2rem; color: var(--muted); font-style: italic; margin: 1.5rem 0; }
+.post-content code { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; background: var(--surface); padding: 0.15rem 0.4rem; border-radius: 2px; }
+.post-content pre { background: var(--surface); padding: 1.2rem; border-radius: 4px; overflow-x: auto; margin-bottom: 1.2rem; }
+.post-content pre code { background: none; padding: 0; }
+.post-content img { max-width: 100%; height: auto; border-radius: 4px; margin: 1rem 0; }
+.post-content hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+.post-content a { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent-light); text-underline-offset: 3px; transition: text-decoration-color 0.2s; }
+.post-content a:hover { text-decoration-color: var(--accent); }
 
-  @media (max-width: 600px) {
-    html { font-size: 16px; }
-    .hero h1 { font-size: 1.8rem; }
-    .post-item { grid-template-columns: 1fr; gap: 0.3rem; }
-    .post-date { padding-top: 0; }
-  }
+.youtube-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; margin: 1.5rem 0; }
+.youtube-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+.about-section h2 { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+.about-section p { color: var(--muted); margin-bottom: 1rem; font-size: 0.95rem; }
+.about-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+.about-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
+.about-tag:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+.loading { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+
+footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; }
+footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+footer a { color: var(--accent); text-decoration: none; }
+
+@media (max-width: 600px) {
+  html { font-size: 16px; }
+  .hero h1 { font-size: 1.8rem; }
+  .post-item { grid-template-columns: 1fr; gap: 0.3rem; }
+  .post-date { padding-top: 0; }
+}
 </style>
 </head>
+
 <body>
 
 <header>
   <div class="header-inner">
     <div class="header-top">
-      <span class="site-title" onclick="navigateTo('home')"><svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="13" r="8" stroke="currentColor" stroke-width="2" fill="var(--accent-light)"/><path d="M13 8 C10 8 8 10 8 12 C8 13.5 9 14.5 9 14.5 C9 16 10 17 11 17 L13 17 L15 17 C16 17 17 16 17 14.5 C17 14.5 18 13.5 18 12 C18 10 16 8 13 8Z" fill="none" stroke="currentColor" stroke-width="1"/><line x1="19" y1="19" x2="27" y2="27" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>Як стати <span>успішним сканером</span></span>
-      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Змінити тему">☾ тема</button>
+      <span class="site-title" onclick="navigateTo('home')" role="link" tabindex="0" aria-label="На головну">
+        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="13" cy="13" r="8" stroke="currentColor" stroke-width="2" fill="var(--accent-light)"/>
+          <path d="M13 8 C10 8 8 10 8 12 C8 13.5 9 14.5 9 14.5 C9 16 10 17 11 17 L13 17 L15 17 C16 17 17 16 17 14.5 C17 14.5 18 13.5 18 12 C18 10 16 8 13 8Z" fill="none" stroke="currentColor" stroke-width="1"/>
+          <line x1="19" y1="19" x2="27" y2="27" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        Як стати <span>успішним сканером</span>
+      </span>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Змінити тему">☾ тема</button>
     </div>
-    <nav>
-      <a onclick="navigateTo('home')">Дописи</a>
-      <a onclick="navigateTo('about')">Про мене</a>
+    <nav aria-label="Навігація">
+      <a onclick="navigateTo('home')" role="link" tabindex="0">Дописи</a>
+      <a onclick="navigateTo('about')" role="link" tabindex="0">Про мене</a>
     </nav>
   </div>
 </header>
@@ -161,32 +199,41 @@
 <main>
 
   <!-- ГОЛОВНА -->
-  <div id="page-home" class="page active">
+  <div id="page-home" class="page active" role="main">
     <div class="hero">
       <div class="hero-label">Блог</div>
       <h1>Нотатки людини з <em>широкими інтересами</em></h1>
       <p>Про PKM, ШІ, автоматизацію, спорт і все що зацікавило цього тижня. Без графіку і перфекціонізму.</p>
     </div>
+
     <div class="posts-label">Дописи</div>
-    <div class="search-bar">
-      <span class="search-icon">⌕</span>
-      <input class="search-input" id="search-input" type="text" placeholder="Пошук дописів..." oninput="handleSearch(this.value)">
-      <button class="search-clear" id="search-clear" onclick="clearSearch()">×</button>
+
+    <div class="search-bar" role="search">
+      <span class="search-icon" aria-hidden="true">⌕</span>
+      <input
+        class="search-input"
+        id="search-input"
+        type="search"
+        placeholder="Пошук дописів..."
+        aria-label="Пошук дописів"
+        oninput="handleSearch(this.value)">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()" aria-label="Очистити пошук">×</button>
     </div>
-    <div id="tag-filters" class="tag-filters"></div>
-    <div id="posts-container">
+
+    <div id="tag-filters" class="tag-filters" role="group" aria-label="Фільтри по тегах"></div>
+    <div id="posts-container" aria-live="polite">
       <p class="loading">Завантаження дописів...</p>
     </div>
   </div>
 
   <!-- ДОПИС -->
   <div id="page-post" class="page">
-    <button class="back-btn" onclick="navigateTo('home')">← до списку</button>
+    <button class="back-btn" onclick="navigateTo('home')" aria-label="Повернутись до списку">← до списку</button>
     <div class="post-header">
       <h2 id="post-title-display"></h2>
       <div class="post-meta">
         <span id="post-date-display"></span>
-        <span id="post-tag-display" class="post-meta-tag"></span>
+        <span id="post-tag-display" class="post-meta-tag" role="button" tabindex="0"></span>
       </div>
     </div>
     <article id="post-content-display" class="post-content"></article>
@@ -194,7 +241,7 @@
 
   <!-- СТОРІНКА -->
   <div id="page-page" class="page">
-    <button class="back-btn" onclick="navigateTo('home')">← до списку</button>
+    <button class="back-btn" onclick="navigateTo('home')" aria-label="Повернутись до списку">← до списку</button>
     <div class="post-header">
       <h2 id="page-title-display"></h2>
     </div>
@@ -206,17 +253,17 @@
     <div class="about-section">
       <h2>Про мене</h2>
       <p>Людина-сканер з Прикарпаття. 7+ років у роздрібній торгівлі та телекомі. Колись керував чотирма магазинами одночасно.</p>
-      <p>Захоплююсь PKM, ШІ, автоматизацією, бігом і ще купою речей. 
+      <p>Захоплююсь PKM, ШІ, автоматизацією, бігом і ще купою речей.
         Цей блог — мої нотатки вголос. Пишу, коли є що сказати.</p>
       <p>Пробіг півмарафон. Скинув 13 кг за 100 днів. Займався силовими тренуваннями і кроссфітом.</p>
       <p>Маю більше акаунтів у застосунках для нотаток, ніж треба.</p>
       <div class="about-tags">
-        <span class="about-tag" onclick="filterFromAbout('PKM')">PKM</span>
-        <span class="about-tag" onclick="filterFromAbout('ШІ та автоматизація')">ШІ та автоматизація</span>
-        <span class="about-tag" onclick="filterFromAbout('Спорт та дисципліна')">Спорт та дисципліна</span>
-        <span class="about-tag" onclick="filterFromAbout('Життя сканера')">Життя сканера</span>
-        <span class="about-tag" onclick="filterFromAbout('Інструменти')">Інструменти</span>
-        <span class="about-tag" onclick="filterFromAbout('Нотатки')">Нотатки</span>
+        <button class="about-tag" onclick="filterFromAbout('PKM')">PKM</button>
+        <button class="about-tag" onclick="filterFromAbout('ШІ та автоматизація')">ШІ та автоматизація</button>
+        <button class="about-tag" onclick="filterFromAbout('Спорт та дисципліна')">Спорт та дисципліна</button>
+        <button class="about-tag" onclick="filterFromAbout('Життя сканера')">Життя сканера</button>
+        <button class="about-tag" onclick="filterFromAbout('Інструменти')">Інструменти</button>
+        <button class="about-tag" onclick="filterFromAbout('Нотатки')">Нотатки</button>
       </div>
     </div>
   </div>
@@ -224,390 +271,465 @@
 </main>
 
 <footer>
-  <p>Успішний сканер &nbsp;·&nbsp; <a href="https://t.me/YOUR_CHANNEL" target="_blank">Telegram</a></p>
+  <p>Успішний сканер</p>
 </footer>
 
 <script>
-  const GITHUB_USER = 'Bov888';
-  const GITHUB_REPO = 'my-scanner-blog';
-  const POSTS_FOLDER = 'posts';
+const GITHUB_USER = 'Bov888';
+const GITHUB_REPO = 'my-scanner-blog';
+const POSTS_FOLDER = 'posts';
+const SITE_TITLE = 'Як стати успішним сканером';
 
-  const MONTHS     = ["СІЧ","ЛЮТ","БЕР","КВІ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
-  const MONTHS_UA  = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+const MONTHS = ["СІЧ","ЛЮТ","БЕР","КВІ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
+const MONTHS_UA = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
 
-  let postsCache = {};
-  let allPosts   = [];
-  let activeTag  = null;
-  let searchQuery = '';
+let postsCache = {};
+let allPosts = [];
+let activeTag = null;
+let searchQuery = '';
 
-  // --- Темна тема ---
-  function toggleTheme() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const newTheme = isDark ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    document.getElementById('theme-toggle').textContent = isDark ? '☾ тема' : '☀ тема';
-    localStorage.setItem('theme', newTheme);
+// --- Темна тема ---
+function toggleTheme() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const newTheme = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  document.getElementById('theme-toggle').textContent = isDark ? '☾ тема' : '☀ тема';
+  localStorage.setItem('theme', newTheme);
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (prefersDark ? 'dark' : 'light');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('theme-toggle').textContent = '☀ тема';
+  }
+}
+
+// --- Динамічний title та OG ---
+function setPageTitle(title) {
+  document.title = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
+}
+
+// --- Пошук ---
+function handleSearch(val) {
+  searchQuery = val.trim().toLowerCase();
+  document.getElementById('search-clear').classList.toggle('visible', searchQuery.length > 0);
+  activeTag = null;
+  document.querySelectorAll('.tag-filter').forEach(b => b.classList.remove('active'));
+  renderPostsList();
+}
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  searchQuery = '';
+  document.getElementById('search-clear').classList.remove('visible');
+  renderPostsList();
+}
+
+// --- Навігація ---
+function navigateTo(page, slug) {
+  if (slug) {
+    window.location.hash = slug;
+  } else if (page === 'home') {
+    window.location.hash = '';
+  } else {
+    window.location.hash = page;
+  }
+}
+
+function handleRoute() {
+  const hash = window.location.hash.replace('#', '');
+  if (!hash || hash === 'home') {
+    showPage('home');
+    setPageTitle('');
+  } else if (hash === 'about') {
+    showPage('about');
+    setPageTitle('Про мене');
+  } else if (hash.startsWith('page-')) {
+    openPageBySlug(hash.replace('page-', ''));
+  } else {
+    openPostBySlug(hash);
+  }
+}
+
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + pageId);
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// --- Фільтри по тегах ---
+function filterByTag(tag) {
+  activeTag = activeTag === tag ? null : tag;
+  syncTagButtons();
+  renderPostsList();
+}
+
+function filterFromAbout(tag) {
+  activeTag = tag;
+  navigateTo('home');
+  setTimeout(() => { syncTagButtons(); renderPostsList(); }, 80);
+}
+
+function filterByTagFromPost(tag) {
+  activeTag = tag;
+  navigateTo('home');
+  setTimeout(() => { syncTagButtons(); renderPostsList(); }, 80);
+}
+
+function syncTagButtons() {
+  document.querySelectorAll('.tag-filter').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tag === activeTag);
+  });
+}
+
+// --- Рендер списку дописів ---
+function renderPostsList() {
+  const container = document.getElementById('posts-container');
+  let filtered = activeTag ? allPosts.filter(p => p.tag === activeTag) : allPosts;
+
+  if (searchQuery) {
+    filtered = filtered.filter(p =>
+      p.title.toLowerCase().includes(searchQuery) ||
+      p.excerpt.toLowerCase().includes(searchQuery) ||
+      p.tag.toLowerCase().includes(searchQuery)
+    );
   }
 
-  function initTheme() {
-    const saved = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = saved || (prefersDark ? 'dark' : 'light');
-    if (theme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      document.getElementById('theme-toggle').textContent = '☀ тема';
-    }
+  if (filtered.length === 0) {
+    container.innerHTML = `<p class="loading">${searchQuery ? 'Нічого не знайдено.' : 'Немає дописів у цій категорії.'}</p>`;
+    return;
   }
 
-  // --- Пошук ---
-  function handleSearch(val) {
-    searchQuery = val.trim().toLowerCase();
-    document.getElementById('search-clear').classList.toggle('visible', searchQuery.length > 0);
-    activeTag = null;
-    document.querySelectorAll('.tag-filter').forEach(b => b.classList.remove('active'));
-    renderPostsList();
-  }
+  container.innerHTML = filtered.map(p => `
+    <div class="post-item" onclick="navigateTo('post','${p.slug}')" role="article" tabindex="0" aria-label="${p.title}">
+      <div class="post-date">${p.displayDate}</div>
+      <div>
+        <div class="post-title">${p.title}</div>
+        <div class="post-excerpt">${p.excerpt}</div>
+        <span class="post-tag" onclick="event.stopPropagation(); filterByTag('${p.tag}')" role="button" tabindex="0">${p.tag}</span>
+      </div>
+    </div>
+  `).join('');
+}
 
-  function clearSearch() {
-    document.getElementById('search-input').value = '';
-    searchQuery = '';
-    document.getElementById('search-clear').classList.remove('visible');
-    renderPostsList();
-  }
+// --- Завантаження дописів (паралельно через Promise.all) ---
+async function loadPosts() {
+  const container = document.getElementById('posts-container');
+  const filtersEl = document.getElementById('tag-filters');
 
-  function navigateTo(page, slug) {
-    if (slug) {
-      window.location.hash = slug;
-    } else if (page === 'home') {
-      window.location.hash = '';
-    } else {
-      window.location.hash = page;
-    }
-  }
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
+    if (!res.ok) throw new Error('GitHub API error');
 
-  function handleRoute() {
-    const hash = window.location.hash.replace('#', '');
-    if (!hash || hash === 'home') {
-      showPage('home');
-    } else if (hash === 'about') {
-      showPage('about');
-    } else if (hash.startsWith('page-')) {
-      openPageBySlug(hash.replace('page-', ''));
-    } else {
-      openPostBySlug(hash);
-    }
-  }
+    const files = await res.json();
+    const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
 
-  function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const el = document.getElementById('page-' + pageId);
-    if (el) el.classList.add('active');
-    window.scrollTo(0, 0);
-  }
-
-  function filterByTag(tag) {
-    activeTag = activeTag === tag ? null : tag;
-    syncTagButtons();
-    renderPostsList();
-  }
-
-  function filterFromAbout(tag) {
-    activeTag = tag;
-    navigateTo('home');
-    setTimeout(() => { syncTagButtons(); renderPostsList(); }, 80);
-  }
-
-  function filterByTagFromPost(tag) {
-    activeTag = tag;
-    navigateTo('home');
-    setTimeout(() => { syncTagButtons(); renderPostsList(); }, 80);
-  }
-
-  function syncTagButtons() {
-    document.querySelectorAll('.tag-filter').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.tag === activeTag);
-    });
-  }
-
-  function renderPostsList() {
-    const container = document.getElementById('posts-container');
-    let filtered = activeTag ? allPosts.filter(p => p.tag === activeTag) : allPosts;
-    if (searchQuery) {
-      filtered = filtered.filter(p =>
-        p.title.toLowerCase().includes(searchQuery) ||
-        p.excerpt.toLowerCase().includes(searchQuery) ||
-        p.tag.toLowerCase().includes(searchQuery)
-      );
-    }
-
-    if (filtered.length === 0) {
-      container.innerHTML = `<p class="loading">${searchQuery ? 'Нічого не знайдено.' : 'Немає дописів у цій категорії.'}</p>`;
+    if (mdFiles.length === 0) {
+      container.innerHTML = '<p class="loading">Поки що дописів немає.</p>';
       return;
     }
 
-    container.innerHTML = filtered.map(p => `
-      <div class="post-item" onclick="navigateTo('post','${p.slug}')">
-        <div class="post-date">${p.displayDate}</div>
-        <div>
-          <div class="post-title">${p.title}</div>
-          <div class="post-excerpt">${p.excerpt}</div>
-          <span class="post-tag" onclick="event.stopPropagation(); filterByTag('${p.tag}')">${p.tag}</span>
-        </div>
-      </div>
-    `).join('');
+    // Завантажуємо всі пости паралельно замість послідовного циклу
+    const results = await Promise.all(
+      mdFiles.map(async (file) => {
+        const r = await fetch(file.download_url);
+        const text = await r.text();
+        return { file, text };
+      })
+    );
+
+    allPosts = [];
+    const tags = new Set();
+
+    for (const { file, text } of results) {
+      const slug = file.name.replace('.md', '');
+      postsCache[slug] = { text };
+
+      const title = parseMeta(text, 'title') || 'Без назви';
+      const excerpt = parseMeta(text, 'excerpt') || '';
+      const dateStr = parseMeta(text, 'date') || '';
+      const tag = parseMeta(text, 'tag') || 'Допис';
+
+      const date = new Date(dateStr);
+      const displayDate = isNaN(date.getTime())
+        ? 'НОВЕ'
+        : `${MONTHS[date.getMonth()]}<br>${date.getFullYear()}`;
+
+      tags.add(tag);
+      allPosts.push({ slug, title, excerpt, tag, displayDate });
+    }
+
+    filtersEl.innerHTML = [...tags].map(tag =>
+      `<button class="tag-filter" data-tag="${tag}" onclick="filterByTag('${tag}')">${tag}</button>`
+    ).join('');
+
+    renderPostsList();
+
+  } catch(e) {
+    container.innerHTML = '<p class="loading">Не вдалось завантажити дописи.</p>';
+    console.error('loadPosts error:', e);
   }
+}
 
-  async function loadPosts() {
-    const container = document.getElementById('posts-container');
-    const filtersEl = document.getElementById('tag-filters');
-    try {
-      const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
+// --- Завантаження статичних сторінок ---
+async function loadPages() {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/pages`);
+    if (!res.ok) return;
+
+    const files = await res.json();
+    const mdFiles = files.filter(f => f.name.endsWith('.md'));
+    if (mdFiles.length === 0) return;
+
+    // Завантажуємо паралельно
+    const results = await Promise.all(
+      mdFiles.map(async (file) => {
+        const r = await fetch(file.download_url);
+        const text = await r.text();
+        return { file, text };
+      })
+    );
+
+    const nav = document.querySelector('nav');
+
+    for (const { file, text } of results) {
+      const title = parseMeta(text, 'title') || file.name.replace('.md', '');
+      const slug = file.name.replace('.md', '');
+      const a = document.createElement('a');
+      a.textContent = title;
+      a.setAttribute('role', 'link');
+      a.setAttribute('tabindex', '0');
+      a.onclick = () => navigateTo('page-' + slug);
+      nav.appendChild(a);
+    }
+
+  } catch(e) {
+    console.error('loadPages error:', e);
+  }
+}
+
+// --- Відкрити статичну сторінку ---
+async function openPageBySlug(slug) {
+  showPage('page');
+  const titleEl = document.getElementById('page-title-display');
+  const contentEl = document.getElementById('page-content-display');
+
+  titleEl.textContent = 'Завантаження...';
+  contentEl.innerHTML = '';
+
+  try {
+    const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error();
+
+    const text = await res.text();
+    const title = parseMeta(text, 'title') || 'Сторінка';
+    const body = text.replace(/^---[\s\S]*?---\n?/, '');
+
+    titleEl.textContent = title;
+    setPageTitle(title);
+    contentEl.innerHTML = marked.parse(decodeHtmlEntities(body));
+
+    if (body.includes('amplenote-embed') && !document.getElementById('amplenote-script')) {
+      const s = document.createElement('script');
+      s.id = 'amplenote-script';
+      s.defer = true;
+      s.src = 'https://public.amplenote.com/embed.js';
+      document.body.appendChild(s);
+    }
+
+  } catch(e) {
+    titleEl.textContent = 'Сторінку не знайдено';
+    contentEl.innerHTML = '<p>Не вдалось завантажити сторінку.</p>';
+  }
+}
+
+// --- Відкрити допис ---
+async function openPostBySlug(slug) {
+  showPage('post');
+  const titleEl = document.getElementById('post-title-display');
+  const dateEl = document.getElementById('post-date-display');
+  const tagEl = document.getElementById('post-tag-display');
+  const contentEl = document.getElementById('post-content-display');
+
+  titleEl.textContent = 'Завантаження...';
+  dateEl.textContent = '';
+  tagEl.textContent = '';
+  contentEl.innerHTML = '';
+
+  try {
+    let text;
+    if (postsCache[slug]) {
+      text = postsCache[slug].text;
+    } else {
+      const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_FOLDER}/${slug}.md`;
+      const res = await fetch(url);
       if (!res.ok) throw new Error();
-      const files   = await res.json();
-      const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
+      text = await res.text();
+      postsCache[slug] = { text };
+    }
 
-      if (mdFiles.length === 0) {
-        container.innerHTML = '<p class="loading">Поки що дописів немає.</p>';
+    const title = parseMeta(text, 'title') || 'Без назви';
+    const dateStr = parseMeta(text, 'date') || '';
+    const tag = parseMeta(text, 'tag') || '';
+
+    const date = new Date(dateStr);
+    const dispDate = isNaN(date.getTime())
+      ? ''
+      : `${date.getDate()} ${MONTHS_UA[date.getMonth()]} ${date.getFullYear()}`;
+
+    titleEl.textContent = title;
+    dateEl.textContent = dispDate;
+    tagEl.textContent = tag;
+    tagEl.onclick = () => filterByTagFromPost(tag);
+
+    setPageTitle(title);
+
+    const body = text.replace(/^---[\s\S]*?---\n?/, '');
+
+    // Wikilinks [[назва]] → посилання
+    const withLinks = body.replace(/\[\[([^\]]+)\]\]/g, (_, lt) => {
+      const s = lt.toLowerCase().replace(/\s+/g, '-').replace(/[^a-zа-яіїєґ0-9-]/gi, '');
+      return `[${lt}](#${s})`;
+    });
+
+    contentEl.innerHTML = marked.parse(decodeHtmlEntities(withLinks));
+
+    // YouTube посилання → плеєр
+    contentEl.querySelectorAll('a').forEach(link => {
+      const href = link.getAttribute('href') || '';
+      const yt = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      if (yt) {
+        const wrap = document.createElement('div');
+        wrap.className = 'youtube-wrap';
+        wrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen title="YouTube відео"></iframe>`;
+        link.parentNode.replaceChild(wrap, link);
+      }
+    });
+
+    // Spotify, Cloudinary, MP3
+    contentEl.querySelectorAll('a').forEach(link => {
+      const href = link.getAttribute('href') || '';
+
+      // Spotify
+      const sp = href.match(/open\.spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
+      if (sp) {
+        const spotifyFrame = document.createElement('div');
+        spotifyFrame.style.margin = '1.5rem 0';
+        spotifyFrame.innerHTML = `
+          <iframe style="border-radius:12px"
+            src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator"
+            width="100%" height="152" frameBorder="0" allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy" title="Spotify плеєр"></iframe>`;
+        link.parentNode.replaceChild(spotifyFrame, link);
         return;
       }
 
-      allPosts = [];
-      const tags = new Set();
-
-      for (const file of mdFiles) {
-        const r2   = await fetch(file.download_url);
-        const text = await r2.text();
-        const slug = file.name.replace('.md', '');
-        postsCache[slug] = { text };
-
-        const title       = parseMeta(text, 'title')   || 'Без назви';
-        const excerpt     = parseMeta(text, 'excerpt') || '';
-        const dateStr     = parseMeta(text, 'date')    || '';
-        const tag         = parseMeta(text, 'tag')     || 'Допис';
-        const date        = new Date(dateStr);
-        const displayDate = isNaN(date.getTime())
-          ? 'НОВЕ'
-          : `${MONTHS[date.getMonth()]}<br>${date.getFullYear()}`;
-
-        tags.add(tag);
-        allPosts.push({ slug, title, excerpt, tag, displayDate });
+      // Cloudinary або прямий MP3
+      let audioSrc = null;
+      if (href.includes('player.cloudinary.com')) {
+        const urlParams = new URLSearchParams(href.split('?')[1]);
+        const cloudName = urlParams.get('cloud_name');
+        const publicId = urlParams.get('public_id');
+        if (cloudName && publicId) {
+          audioSrc = `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.mp3`;
+        }
+      } else if (href.toLowerCase().includes('.mp3')) {
+        audioSrc = href;
       }
 
-      filtersEl.innerHTML = [...tags].map(tag =>
-        `<button class="tag-filter" data-tag="${tag}" onclick="filterByTag('${tag}')">${tag}</button>`
-      ).join('');
+      if (audioSrc) {
+        const nativePlayer = document.createElement('div');
+        nativePlayer.style.margin = '1.5rem 0';
+        nativePlayer.innerHTML = `
+          <audio controls style="width: 100%;">
+            <source src="${audioSrc}" type="audio/mpeg">
+            Ваш браузер не підтримує аудіо.
+          </audio>`;
+        link.parentNode.replaceChild(nativePlayer, link);
+      }
+    });
 
-      renderPostsList();
-    } catch(e) {
-      container.innerHTML = '<p class="loading">Не вдалось завантажити дописи.</p>';
-    }
-  }
-
-  async function openPageBySlug(slug) {
-    showPage('page');
-    const titleEl   = document.getElementById('page-title-display');
-    const contentEl = document.getElementById('page-content-display');
-    titleEl.textContent = 'Завантаження...';
-    contentEl.innerHTML = '';
-    try {
-      const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error();
-      const text  = await res.text();
-      const title = parseMeta(text, 'title') || 'Сторінка';
-      const body  = text.replace(/^---[\s\S]*?---\n?/, '');
-      titleEl.textContent = title;
-      contentEl.innerHTML = marked.parse(decodeHtmlEntities(body));
-      if (body.includes('amplenote-embed') && !document.getElementById('amplenote-script')) {
+    // Amplenote embed
+    if (body.includes('amplenote-embed')) {
+      if (!document.getElementById('amplenote-script')) {
         const s = document.createElement('script');
-        s.id = 'amplenote-script'; s.defer = true;
+        s.id = 'amplenote-script';
+        s.defer = true;
         s.src = 'https://public.amplenote.com/embed.js';
         document.body.appendChild(s);
+      } else if (window.Amplenote && window.Amplenote.init) {
+        window.Amplenote.init();
       }
-    } catch(e) {
-      titleEl.textContent = 'Сторінку не знайдено';
-      contentEl.innerHTML = '<p>Не вдалось завантажити сторінку.</p>';
     }
-  }
 
-  async function loadPages() {
-    try {
-      const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/pages`);
-      if (!res.ok) return;
-      const files   = await res.json();
-      const mdFiles = files.filter(f => f.name.endsWith('.md'));
-      if (mdFiles.length === 0) return;
-
-      const nav = document.querySelector('nav');
-      for (const file of mdFiles) {
-        const r2   = await fetch(file.download_url);
-        const text = await r2.text();
-        const title = parseMeta(text, 'title') || file.name.replace('.md','');
-        const slug  = file.name.replace('.md','');
-        const a = document.createElement('a');
-        a.textContent = title;
-        a.onclick = () => navigateTo('page-' + slug);
-        nav.appendChild(a);
-      }
-    } catch(e) {}
-  }
-
-  async function openPostBySlug(slug) {
-    showPage('post');
-    const titleEl   = document.getElementById('post-title-display');
-    const dateEl    = document.getElementById('post-date-display');
-    const tagEl     = document.getElementById('post-tag-display');
-    const contentEl = document.getElementById('post-content-display');
-
-    titleEl.textContent = 'Завантаження...';
-    dateEl.textContent  = '';
-    tagEl.textContent   = '';
-    contentEl.innerHTML = '';
-
-    try {
-      let text;
-      if (postsCache[slug]) {
-        text = postsCache[slug].text;
-      } else {
-        const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_FOLDER}/${slug}.md`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error();
-        text = await res.text();
-        postsCache[slug] = { text };
-      }
-
-      const title   = parseMeta(text, 'title')   || 'Без назви';
-      const dateStr = parseMeta(text, 'date')    || '';
-      const tag     = parseMeta(text, 'tag')     || '';
-      const date    = new Date(dateStr);
-      const dispDate = isNaN(date.getTime())
-        ? ''
-        : `${date.getDate()} ${MONTHS_UA[date.getMonth()]} ${date.getFullYear()}`;
-
-      titleEl.textContent = title;
-      dateEl.textContent  = dispDate;
-      tagEl.textContent   = tag;
-      tagEl.onclick       = () => filterByTagFromPost(tag);
-
-      const body      = text.replace(/^---[\s\S]*?---\n?/, '');
-      const withLinks = body.replace(/\[\[([^\]]+)\]\]/g, (_, lt) => {
-        const s = lt.toLowerCase().replace(/\s+/g, '-').replace(/[^a-zа-яіїєґ0-9-]/gi, '');
-        return `[${lt}](#${s})`;
-      });
-
-      contentEl.innerHTML = marked.parse(decodeHtmlEntities(withLinks));
-
-      // YouTube посилання → плеєр
-      contentEl.querySelectorAll('a').forEach(link => {
-        const href = link.getAttribute('href') || '';
-        const yt = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-        if (yt) {
-          const wrap = document.createElement('div');
-          wrap.className = 'youtube-wrap';
-          wrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen></iframe>`;
-          link.parentNode.replaceChild(wrap, link);
-        }
-      });
-        
-       // Універсальний обробник медіа (Cloudinary, Spotify, Прямі MP3)
-      contentEl.querySelectorAll('a').forEach(link => {
-        const href = link.getAttribute('href') || '';
-        
-        // 1. ПЕРЕВІРКА НА SPOTIFY
-        const sp = href.match(/open\.spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
-        if (sp) {
-          const spotifyFrame = document.createElement('div');
-          spotifyFrame.style.margin = '1.5rem 0';
-          // Висота 152 для епізодів, 80 для треків - 152 універсальна
-          spotifyFrame.innerHTML = `
-            <iframe style="border-radius:12px" 
-              src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator" 
-              width="100%" height="152" frameBorder="0" allowfullscreen="" 
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-              loading="lazy"></iframe>`;
-          link.parentNode.replaceChild(spotifyFrame, link);
-          return; // Переходимо до наступного посилання
-        }
-
-        // 2. ПЕРЕВІРКА НА CLOUDINARY АБО ПРЯМИЙ MP3
-        let audioSrc = null;
-        if (href.includes('player.cloudinary.com')) {
-          const urlParams = new URLSearchParams(href.split('?')[1]);
-          const cloudName = urlParams.get('cloud_name');
-          const publicId = urlParams.get('public_id');
-          if (cloudName && publicId) {
-            audioSrc = `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.mp3`;
-          }
-        } else if (href.toLowerCase().includes('.mp3')) {
-          audioSrc = href;
-        }
-
-        if (audioSrc) {
-          const nativePlayer = document.createElement('div');
-          nativePlayer.style.margin = '1.5rem 0';
-          nativePlayer.innerHTML = `
-            <audio controls style="width: 100%;">
-              <source src="${audioSrc}" type="audio/mpeg">
-              Ваш браузер не підтримує аудіо.
-            </audio>`;
-          link.parentNode.replaceChild(nativePlayer, link);
-        }
-      });
-
-
-
-      // Amplenote embed — завантажуємо скрипт або переініціалізуємо
-      if (body.includes('amplenote-embed')) {
-        if (!document.getElementById('amplenote-script')) {
-          const s = document.createElement('script');
-          s.id = 'amplenote-script'; s.defer = true;
-          s.src = 'https://public.amplenote.com/embed.js';
-          document.body.appendChild(s);
-        } else if (window.Amplenote && window.Amplenote.init) {
-          window.Amplenote.init();
-        }
-      }
-
-      contentEl.querySelectorAll('a[href^="#"]').forEach(link => {
-        const href = link.getAttribute('href').replace('#', '');
-        if (href && href !== 'home' && href !== 'about') {
-          link.addEventListener('click', e => {
-            e.preventDefault();
-            navigateTo('post', href);
-          });
-        }
-      });
-
-    } catch(e) {
-      titleEl.textContent = 'Допис не знайдено';
-      contentEl.innerHTML = '<p>Не вдалось завантажити допис.</p>';
-    }
-  }
-
-  function parseMeta(text, key) {
-    const m = text.match(new RegExp(`${key}:\\s*"?([^"\\n]+)"?`));
-    return m ? m[1].trim() : null;
-  }
-
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
+    // Внутрішні anchor-посилання
+    contentEl.querySelectorAll('a[href^="#"]').forEach(link => {
+      const href = link.getAttribute('href').replace('#', '');
+      if (href && href !== 'home' && href !== 'about') {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          navigateTo('post', href);
         });
       }
     });
-  }
 
-  window.addEventListener('hashchange', handleRoute);
-  window.addEventListener('DOMContentLoaded', () => {
-    initTheme();
-    loadPosts();
-    loadPages();
-    handleRoute();
-  });
+  } catch(e) {
+    titleEl.textContent = 'Допис не знайдено';
+    contentEl.innerHTML = '<p>Не вдалось завантажити допис.</p>';
+    console.error('openPostBySlug error:', e);
+  }
+}
+
+// --- Парсинг YAML frontmatter ---
+function parseMeta(text, key) {
+  const m = text.match(new RegExp(`${key}:\\s*"?([^"\\n]+)"?`));
+  return m ? m[1].trim() : null;
+}
+
+// --- Навігація клавіатурою для елементів з role="link" ---
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.target.getAttribute('role') === 'link') {
+    e.target.click();
+  }
+});
+
+// --- Netlify Identity (тільки якщо ми на /admin/) ---
+if (window.location.pathname.startsWith('/admin')) {
+  const script = document.createElement('script');
+  script.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+  document.head.appendChild(script);
+  script.onload = () => {
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', user => {
+        if (!user) {
+          window.netlifyIdentity.on('login', () => {
+            document.location.href = '/admin/';
+          });
+        }
+      });
+    }
+  };
+}
+
+// --- Ініціалізація ---
+window.addEventListener('hashchange', handleRoute);
+window.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  loadPosts();
+  loadPages();
+  handleRoute();
+});
 </script>
+
+<!-- GoatCounter аналітика -->
 <script data-goatcounter="https://uspishnyskaner.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+  async src="//gc.zgo.at/count.js"></script>
+
 </body>
 </html>
