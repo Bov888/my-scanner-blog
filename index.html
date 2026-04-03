@@ -529,30 +529,54 @@
           return; // Переходимо до наступного посилання
         }
 
-        // 2. ПЕРЕВІРКА НА CLOUDINARY АБО ПРЯМИЙ MP3
-        let audioSrc = null;
-        if (href.includes('player.cloudinary.com')) {
-          const urlParams = new URLSearchParams(href.split('?')[1]);
-          const cloudName = urlParams.get('cloud_name');
-          const publicId = urlParams.get('public_id');
-          if (cloudName && publicId) {
-            audioSrc = `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.mp3`;
+        // 2. ПЕРЕВІРКА НА CLOUDINARY АБО ПРЯМЕ МЕДІА (АУДІО ТА ВІДЕО)
+        let mediaSrc = null;
+        let isVideo = false;
+
+        // Обробка посилань Cloudinary (авто-детект типу)
+        if (href.includes('cloudinary.com')) {
+          if (href.toLowerCase().includes('.mp4')) {
+            mediaSrc = href;
+            isVideo = true;
+          } else if (href.includes('player.cloudinary.com')) {
+            const urlParams = new URLSearchParams(href.split('?')[1]);
+            const cloudName = urlParams.get('cloud_name');
+            const publicId = urlParams.get('public_id');
+            if (cloudName && publicId) {
+              // Для аудіо за замовчуванням
+              mediaSrc = `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.mp3`;
+            }
           }
-        } else if (href.toLowerCase().includes('.mp3')) {
-          audioSrc = href;
+        } 
+        // Обробка прямих файлів за розширенням
+        else if (href.toLowerCase().endsWith('.mp3')) {
+          mediaSrc = href;
+        } else if (href.toLowerCase().endsWith('.mp4')) {
+          mediaSrc = href;
+          isVideo = true;
         }
 
-        if (audioSrc) {
-          const nativePlayer = document.createElement('div');
-          nativePlayer.style.margin = '1.5rem 0';
-          nativePlayer.innerHTML = `
-            <audio controls style="width: 100%;">
-              <source src="${audioSrc}" type="audio/mpeg">
-              Ваш браузер не підтримує аудіо.
-            </audio>`;
-          link.parentNode.replaceChild(nativePlayer, link);
+        if (mediaSrc) {
+          const mediaContainer = document.createElement('div');
+          mediaContainer.style.margin = '1.5rem 0';
+          
+          if (isVideo) {
+            // Відеоплеєр: адаптивний, із заокругленими кутами
+            mediaContainer.innerHTML = `
+              <video controls style="width: 100%; border-radius: 12px; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <source src="${mediaSrc}" type="video/mp4">
+                Ваш браузер не підтримує відео.
+              </video>`;
+          } else {
+            // Аудіоплеєр (твій існуючий)
+            mediaContainer.innerHTML = `
+              <audio controls style="width: 100%;">
+                <source src="${mediaSrc}" type="audio/mpeg">
+                Ваш браузер не підтримує аудіо.
+              </audio>`;
+          }
+          link.parentNode.replaceChild(mediaContainer, link);
         }
-      });
 
 
 
