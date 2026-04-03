@@ -588,13 +588,7 @@ async function openPostBySlug(slug) {
 
     const body = text.replace(/^---[\s\S]*?---\n?/, '');
 
-    // Wikilinks [[назва]] → посилання
-    const withLinks = body.replace(/\[\[([^\]]+)\]\]/g, (_, lt) => {
-      const s = lt.toLowerCase().replace(/\s+/g, '-').replace(/[^a-zа-яіїєґ0-9-]/gi, '');
-      return `[${lt}](#${s})`;
-    });
-
-    contentEl.innerHTML = marked.parse(decodeHtmlEntities(withLinks));
+    contentEl.innerHTML = marked.parse(decodeHtmlEntities(body));
 
     // YouTube посилання → плеєр
     contentEl.querySelectorAll('a').forEach(link => {
@@ -665,16 +659,6 @@ async function openPostBySlug(slug) {
       }
     }
 
-    // Внутрішні anchor-посилання
-    contentEl.querySelectorAll('a[href^="#"]').forEach(link => {
-      const href = link.getAttribute('href').replace('#', '');
-      if (href && href !== 'home' && href !== 'about') {
-        link.addEventListener('click', e => {
-          e.preventDefault();
-          navigateTo('post', href);
-        });
-      }
-    });
 
   } catch(e) {
     titleEl.textContent = 'Допис не знайдено';
