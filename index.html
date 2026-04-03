@@ -508,12 +508,28 @@
           link.parentNode.replaceChild(wrap, link);
         }
       });
-        // Браузерний аудіо-плеєр для прямих посилань
+              // Розумний аудіо-плеєр (файли + авто-конвертація посилань Cloudinary)
       contentEl.querySelectorAll('a').forEach(link => {
-        const href = link.getAttribute('href') || '';
-        
-        // Перевіряємо, чи посилання містить mp3 (незалежно від того, чи це Cloudinary)
-        if (href.toLowerCase().includes('.mp3')) {
+        let href = link.getAttribute('href') || '';
+        let isAudio = false;
+
+        // 1. Якщо це посилання на плеєр Cloudinary, трансформуємо його в пряме посилання
+        if (href.includes('player.cloudinary.com')) {
+          const urlParams = new URLSearchParams(href.split('?')[1]);
+          const cloudName = urlParams.get('cloud_name');
+          const publicId = urlParams.get('public_id');
+          
+          if (cloudName && publicId) {
+            href = `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.mp3`;
+            isAudio = true;
+          }
+        } 
+        // 2. Якщо це звичайне пряме посилання
+        else if (href.toLowerCase().includes('.mp3')) {
+          isAudio = true;
+        }
+
+        if (isAudio) {
           const nativePlayer = document.createElement('div');
           nativePlayer.style.margin = '1.5rem 0';
           nativePlayer.innerHTML = `
