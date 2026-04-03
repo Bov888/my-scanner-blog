@@ -7,9 +7,7 @@ media_library:
   config:
     cloud_name: dyvv0gduq
     api_key: "363277514958419"
-    default_transformations:
-      - fetch_format: auto
-        quality: auto
+    use_secure_url: true
 
 # Ці папки мають бути в репозиторії для технічних потреб CMS
 media_folder: "images"
