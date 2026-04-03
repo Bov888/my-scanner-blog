@@ -1,26 +1,34 @@
-<!DOCTYPE html>  
-<html lang="uk">  
-<head>  
-  <meta charset="utf-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
-  <title>Адмін-панель | Успішний Сканер</title>  
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>  
-</head>  
-<body>  
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>  
-  
-  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.0.0/dist/netlify-cms-media-library-cloudinary.js"></script>  
-  
-  <script>  
-    if (window.netlifyIdentity) {  
-      window.netlifyIdentity.on("init", user => {  
-        if (!user) {  
-          window.netlifyIdentity.on("login", () => {  
-            document.location.href = "/admin/";  
-          });  
-        }  
-      });  
-    }  
-  </script>  
-</body>  
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Адмін-панель | Успішний Сканер</title>
+
+  <!-- Забороняємо індексацію адмін-панелі пошуковиками -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+
+  <!-- Фіксована версія замість ^3.0.0 — щоб уникнути несподіваних оновлень -->
+  <script src="https://unpkg.com/decap-cms@3.11.0/dist/decap-cms.js"></script>
+
+  <!-- Cloudinary media library — фіксована версія -->
+  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@1.0.3/dist/netlify-cms-media-library-cloudinary.js"></script>
+
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+  </script>
+
+</body>
 </html>
