@@ -508,6 +508,22 @@
           link.parentNode.replaceChild(wrap, link);
         }
       });
+      // Cloudinary аудіо посилання → плеєр
+      contentEl.querySelectorAll('a').forEach(link => {
+        const href = link.getAttribute('href') || '';
+        // Перевіряємо, чи це посилання на Cloudinary і чи це mp3
+        if (href.includes('cloudinary.com') && href.toLowerCase().endsWith('.mp3')) {
+          const audioPlayer = document.createElement('div');
+          audioPlayer.style.margin = '1.5rem 0';
+          audioPlayer.innerHTML = `
+            <audio controls style="width: 100%;">
+              <source src="${href}" type="audio/mpeg">
+              Ваш браузер не підтримує аудіо-плеєр.
+            </audio>
+          `;
+          link.parentNode.replaceChild(audioPlayer, link);
+        }
+      });
 
       // Amplenote embed — завантажуємо скрипт або переініціалізуємо
       if (body.includes('amplenote-embed')) {
