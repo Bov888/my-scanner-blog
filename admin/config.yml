@@ -5,9 +5,8 @@ backend:
 media_library:
   name: cloudinary
   config:
-    cloud_name: dyvv0gduq # ВСТАВ СВІЙ
-    api_key: 363277514958419       # ВСТАВ СВІЙ
-    folder: "успішний сканер"    # Твоя папка в хмарі
+    cloud_name: dyvv0gduq
+    api_key: "363277514958419"
     use_secure_url: true
     default_transformations:
       - fetch_format: auto
