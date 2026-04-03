@@ -9,6 +9,9 @@ media_library:
     api_key: 363277514958419       # ВСТАВ СВІЙ
     folder: "успішний сканер"    # Твоя папка в хмарі
     use_secure_url: true
+    default_transformations:
+      - fetch_format: auto
+        quality: auto
 
 # Ці папки мають бути в репозиторії для технічних потреб CMS
 media_folder: "images"
