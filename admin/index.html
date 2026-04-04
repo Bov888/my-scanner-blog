@@ -20,12 +20,12 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); font-family: 'Literata', serif; line-height: 1.75; }
+        body { background: var(--bg); color: var(--text); font-family: 'Literata', serif; line-height: 1.75; transition: background 0.3s; }
 
-        /* ОНОВЛЕНА ШАПКА — ДВОРІВНЕВА */
+        /* НОВА ДВОРІВНЕВА ШАПКА */
         header { 
             border-bottom: 1px solid var(--border); 
-            padding: 1.5rem 0; 
+            padding: 1.2rem 0 0 0; 
             position: sticky; top: 0; 
             background: var(--bg); 
             z-index: 100;
@@ -33,65 +33,64 @@
         .header-inner { 
             max-width: var(--max); margin: 0 auto; padding: 0 1.5rem;
             display: flex; 
-            flex-direction: column; /* Елементи один під одним */
+            flex-direction: column; 
             align-items: center; 
-            gap: 1.2rem;
         }
 
-        /* Верхній ряд: Лого та Кнопка теми */
+        /* 1 ПОВЕРХ: ЛОГО ТА ТЕМА */
         .header-top {
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1.2rem;
         }
 
         .site-title { 
-            font-weight: 500; font-size: 1.2rem; color: var(--text); 
-            text-decoration: none; display: flex; align-items: center; gap: 0.8rem; cursor: pointer;
+            font-weight: 500; font-size: 1.15rem; color: var(--text); 
+            text-decoration: none; display: flex; align-items: center; gap: 0.7rem; cursor: pointer;
         }
         .site-title span { color: var(--accent); }
 
-        /* Нижній ряд: Навігація */
+        .theme-toggle { 
+            background: var(--accent-light); border: 1px solid var(--accent); 
+            color: var(--accent); font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; 
+            padding: 0.3rem 0.6rem; border-radius: 4px; text-transform: uppercase;
+            cursor: pointer; transition: 0.2s;
+        }
+
+        /* 2 ПОВЕРХ: МЕНЮ (під логотипом) */
         .nav-desktop { 
             display: flex; 
             justify-content: center;
-            gap: 2rem;
+            gap: 1.8rem;
             width: 100%;
-            padding-top: 0.5rem;
-            border-top: 1px solid var(--border); /* Візуально відділяємо меню */
+            padding: 0.8rem 0;
+            border-top: 1px solid var(--border); 
         }
         .nav-desktop a { 
-            font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; 
+            font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; 
             color: var(--muted); text-decoration: none; text-transform: uppercase; 
-            letter-spacing: 0.1em; cursor: pointer;
-            transition: color 0.2s;
+            letter-spacing: 0.08em; cursor: pointer;
         }
         .nav-desktop a:hover, .nav-desktop a.active { color: var(--accent); }
 
-        .theme-toggle { 
-            background: var(--accent-light); border: 1px solid var(--accent); 
-            color: var(--accent); font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; 
-            padding: 0.35rem 0.8rem; border-radius: 4px; text-transform: uppercase;
-            cursor: pointer;
-        }
-
         /* КОНТЕНТ */
-        main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem; }
+        main { max-width: var(--max); margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
         .page { display: none; }
         .page.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .post-item { padding: 2.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .post-title { font-size: 1.5rem; font-weight: 400; margin-bottom: 0.5rem; }
+        .post-item { padding: 2rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .post-title { font-size: 1.4rem; font-weight: 400; margin-bottom: 0.5rem; color: var(--text); }
         .post-item:hover .post-title { color: var(--accent); }
+        .post-excerpt { color: var(--muted); font-size: 0.95rem; }
 
-        footer { border-top: 1px solid var(--border); padding: 4rem 0; text-align: center; color: var(--muted); font-family: 'JetBrains Mono'; font-size: 0.65rem; text-transform: uppercase; }
+        footer { border-top: 1px solid var(--border); padding: 3rem 0; text-align: center; color: var(--muted); font-family: 'JetBrains Mono'; font-size: 0.65rem; text-transform: uppercase; }
 
-        /* Адаптивність */
-        @media (max-width: 600px) {
-            .nav-desktop { gap: 1rem; flex-wrap: wrap; }
-            .site-title { font-size: 1rem; }
+        @media (max-width: 500px) {
+            .nav-desktop { gap: 1rem; }
+            .site-title { font-size: 0.95rem; }
         }
     </style>
 </head>
@@ -110,24 +109,22 @@
         <nav class="nav-desktop" id="nav-links">
             <a onclick="navigateTo('home')" data-page="home">Дописи</a>
             <a onclick="navigateTo('about')" data-page="about">Про мене</a>
-            <a onclick="alert('Незабаром...')">Зв'язок</a>
-            <a onclick="alert('Архів у розробці')">Архів</a>
+            <a onclick="alert('Зв’язок у розробці')">Зв'язок</a>
+            <a onclick="alert('Архіви будуть тут')">Архів</a>
         </nav>
     </div>
 </header>
 
 <main>
     <div id="page-home" class="page active">
-        <div id="posts-container">Завантаження...</div>
+        <div id="posts-container"><p style="font-family:'JetBrains Mono'; font-size:0.8rem; color:var(--muted);">Завантаження...</p></div>
     </div>
-
     <div id="page-about" class="page">
         <h1>Про мене</h1>
-        <p style="margin-top:2rem;">Я — професійний сканер. Мій шлях у PKM та продуктивності почався з хаосу, який я намагаюся впорядкувати тут.</p>
+        <p style="margin-top:1.5rem;">Я — 42-річний професіонал у сфері продажів, який досліджує світ як "сканер". Тут мої нотатки про PKM та продуктивність.</p>
     </div>
-
     <div id="page-post" class="page">
-        <button onclick="navigateTo('home')" style="border:none; background:none; cursor:pointer; color:var(--muted); font-family:'JetBrains Mono'; margin-bottom:2rem;">← ПОВЕРНУТИСЯ</button>
+        <button onclick="navigateTo('home')" style="border:none; background:none; cursor:pointer; color:var(--muted); font-family:'JetBrains Mono'; font-size:0.7rem; margin-bottom:2rem;">← ПОВЕРНУТИСЯ</button>
         <h1 id="post-title-display"></h1>
         <article id="post-content-display" style="margin-top:2rem;"></article>
     </div>
@@ -163,7 +160,6 @@
     async function handleRoute() {
         const hash = window.location.hash.replace('#', '');
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        
         document.querySelectorAll('#nav-links a').forEach(a => {
             a.classList.toggle('active', a.getAttribute('data-page') === hash || (!hash && a.getAttribute('data-page') === 'home'));
         });
@@ -185,20 +181,18 @@
             const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
             const files = await res.json();
             const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
-
             const results = await Promise.all(mdFiles.map(async f => {
                 const r = await fetch(f.download_url);
                 const text = await r.text();
                 return { slug: f.name.replace('.md', ''), text };
             }));
-
             const container = document.getElementById('posts-container');
             container.innerHTML = results.map(p => {
                 const title = parseMeta(p.text, 'title') || p.slug;
-                const excerpt = parseMeta(p.text, 'excerpt') || 'Читати далі...';
+                const excerpt = parseMeta(p.text, 'excerpt') || 'Натисніть, щоб прочитати...';
                 return `<div class="post-item" onclick="navigateTo('post', '${p.slug}')">
                     <h2 class="post-title">${title}</h2>
-                    <p style="color:var(--muted)">${excerpt}</p>
+                    <p class="post-excerpt">${excerpt}</p>
                 </div>`;
             }).join('');
         } catch (e) { console.error(e); }
@@ -214,7 +208,7 @@
             const text = decodeURIComponent(escape(atob(data.content)));
             titleEl.textContent = parseMeta(text, 'title') || slug;
             contentEl.innerHTML = marked.parse(text.replace(/---[\s\S]*?---/, ''));
-        } catch (e) { titleEl.textContent = 'Помилка'; }
+        } catch (e) { titleEl.textContent = 'Не знайдено'; }
     }
 
     window.addEventListener('hashchange', handleRoute);
