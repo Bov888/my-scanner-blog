@@ -399,13 +399,26 @@ function toggleBurger() {
   els.burgerMenu.classList.toggle('open', !isOpen);
   document.querySelector('header').classList.toggle('menu-open', !isOpen);
   els.burgerBtn.setAttribute('aria-expanded', String(!isOpen));
-  if (!isOpen) window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Зсуваємо контент на висоту меню без скролу
+  const main = document.querySelector('main');
+  if (!isOpen) {
+    // Відкриваємо — чекаємо поки меню відрендериться і беремо його висоту
+    requestAnimationFrame(() => {
+      const menuHeight = els.burgerMenu.offsetHeight;
+      main.style.paddingTop = `calc(3rem + ${menuHeight}px)`;
+    });
+  } else {
+    // Закриваємо — повертаємо оригінальний padding
+    main.style.paddingTop = '';
+  }
 }
 function closeBurger() {
   els.burgerBtn.classList.remove('open');
   els.burgerMenu.classList.remove('open');
   document.querySelector('header').classList.remove('menu-open');
   els.burgerBtn.setAttribute('aria-expanded', 'false');
+  document.querySelector('main').style.paddingTop = '';
 }
 
 // --- Scroll top ---
