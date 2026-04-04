@@ -29,8 +29,8 @@
 
 <!-- DOMPurify для захисту від XSS -->
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js" defer></script>
-<!-- marked.js з defer — не блокує рендер -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+<!-- marked.js БЕЗ defer — потрібен одразу для рендеру контенту -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
 :root {
@@ -47,7 +47,8 @@ html { font-size: 18px; }
 body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
 
 /* ХЕДЕР */
-header { border-bottom: 1px solid var(--border); padding: 0.9rem 1.5rem; position: sticky; top: 0; background: var(--bg); z-index: 100; }
+header { border-bottom: 1px solid var(--border); padding: 0.9rem 1.5rem; position: sticky; top: 0; background: var(--bg); z-index: 100; transition: border-bottom-color 0.15s; }
+header.menu-open { border-bottom-color: transparent; }
 .header-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .site-title { font-weight: 500; font-size: 1rem; color: var(--text); cursor: pointer; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; line-height: 1; background: none; border: none; font-family: inherit; }
 .site-title span { color: var(--accent); }
@@ -70,6 +71,9 @@ header { border-bottom: 1px solid var(--border); padding: 0.9rem 1.5rem; positio
 .burger-menu-inner { display: grid; grid-template-columns: 1fr; gap: 0.5rem; max-width: 320px; margin: 0 auto; }
 .burger-menu a { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 0.8rem; cursor: pointer; transition: all 0.2s; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); display: block; text-decoration: none; }
 .burger-menu a:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+/* Герой не має верхньої лінії — вона вже є на хедері */
+.hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
 
 /* МОБІЛЬНИЙ */
 @media (max-width: 600px) {
@@ -294,8 +298,13 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
 </footer>
 
 <script defer>
-// Чекаємо поки завантажаться defer скрипти
-window.addEventListener('load', initApp);
+// Ініціалізуємо marked одразу
+const renderer = new marked.Renderer();
+renderer.html = token => typeof token === 'object' ? (token.text || token.raw || '') : token;
+marked.use({ breaks: true, gfm: true, renderer });
+
+// Чекаємо поки завантажаться defer скрипти (DOMPurify)
+window.addEventListener('DOMContentLoaded', initApp);
 
 const GITHUB_USER = 'Bov888';
 const GITHUB_REPO = 'my-scanner-blog';
@@ -320,13 +329,6 @@ const $ = id => document.getElementById(id);
 const els = {};
 
 function initApp() {
-  // Ініціалізуємо marked
-  if (window.marked) {
-    const renderer = new marked.Renderer();
-    renderer.html = token => typeof token === 'object' ? (token.text || token.raw || '') : token;
-    marked.use({ breaks: true, gfm: true, renderer });
-  }
-
   // Кешуємо елементи
   Object.assign(els, {
     themeToggle: $('theme-toggle'),
@@ -395,11 +397,14 @@ function toggleBurger() {
   const isOpen = els.burgerMenu.classList.contains('open');
   els.burgerBtn.classList.toggle('open', !isOpen);
   els.burgerMenu.classList.toggle('open', !isOpen);
+  document.querySelector('header').classList.toggle('menu-open', !isOpen);
   els.burgerBtn.setAttribute('aria-expanded', String(!isOpen));
+  if (!isOpen) window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function closeBurger() {
   els.burgerBtn.classList.remove('open');
   els.burgerMenu.classList.remove('open');
+  document.querySelector('header').classList.remove('menu-open');
   els.burgerBtn.setAttribute('aria-expanded', 'false');
 }
 
