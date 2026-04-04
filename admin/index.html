@@ -7,6 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
@@ -22,18 +23,26 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Literata', serif; line-height: 1.75; transition: background 0.3s; }
 
+        /* --- НОВА ШАПКА: ДВОПОВЕРХОВА ЛОГІКА --- */
         header { 
             border-bottom: 1px solid var(--border); 
-            padding: 1.2rem 0 0 0; 
-            position: sticky; top: 0; 
             background: var(--bg); 
+            position: sticky; 
+            top: 0; 
             z-index: 100;
+            /* Прибираємо фіксовану висоту, щоб вона підлаштовувалася під вміст */
         }
+        
         .header-inner { 
-            max-width: var(--max); margin: 0 auto; padding: 0 1.5rem;
-            display: flex; flex-direction: column; align-items: center; 
+            max-width: var(--max); 
+            margin: 0 auto; 
+            padding: 1.2rem 1.5rem 0 1.5rem;
+            display: flex; 
+            flex-direction: column; /* Елементи один під одним */
+            align-items: center; 
         }
 
+        /* ПОВЕРХ 1: Лого та Кнопка */
         .header-top {
             width: 100%;
             display: flex;
@@ -43,43 +52,90 @@
         }
 
         .site-title { 
-            font-weight: 500; font-size: 1.15rem; color: var(--text); 
-            text-decoration: none; display: flex; align-items: center; gap: 0.7rem; cursor: pointer;
+            font-weight: 500; 
+            font-size: 1.15rem; 
+            color: var(--text); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.7rem; 
+            cursor: pointer;
         }
-        .site-title b { color: var(--accent); }
+        .site-title b { color: var(--accent); font-weight: 500; }
 
         .theme-toggle { 
-            background: var(--accent-light); border: 1px solid var(--accent); 
-            color: var(--accent); font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; 
-            padding: 0.3rem 0.6rem; border-radius: 4px; text-transform: uppercase;
+            background: var(--accent-light); 
+            border: 1px solid var(--accent); 
+            color: var(--accent); 
+            font-size: 0.65rem; 
+            font-family: 'JetBrains Mono', monospace; 
+            padding: 0.35rem 0.7rem; 
+            border-radius: 4px; 
+            text-transform: uppercase; 
             cursor: pointer;
         }
 
-        .nav-desktop { 
-            display: flex; justify-content: center; gap: 1.8rem; width: 100%;
-            padding: 0.8rem 0; border-top: 1px solid var(--border); 
+        /* ПОВЕРХ 2: Навігація */
+        .nav-bar {
+            width: 100%;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            padding: 0.8rem 0;
         }
-        .nav-desktop a { 
-            font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; 
-            color: var(--muted); text-decoration: none; text-transform: uppercase; 
-            letter-spacing: 0.08em; cursor: pointer;
+
+        .nav-links { 
+            display: flex; 
+            gap: 2rem; 
         }
-        .nav-desktop a:hover, .nav-desktop a.active { color: var(--accent); }
-
-        main { max-width: var(--max); margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
-        .page { display: none; }
-        .page.active { display: block; }
-
-        .post-item { padding: 2rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .post-title { font-size: 1.4rem; font-weight: 400; margin-bottom: 0.5rem; }
-        .post-item:hover .post-title { color: var(--accent); }
         
+        .nav-links a { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 0.72rem; 
+            color: var(--muted); 
+            text-decoration: none; 
+            text-transform: uppercase; 
+            letter-spacing: 0.08em; 
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        /* --- ОСНОВНИЙ КОНТЕНТ --- */
+        main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .post-item { padding: 2.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .post-title { font-size: 1.5rem; font-weight: 400; margin-bottom: 0.6rem; transition: color 0.2s; }
+        .post-item:hover .post-title { color: var(--accent); }
+        .post-excerpt { color: var(--muted); font-size: 0.95rem; }
+
         .error-msg { 
-            padding: 2rem; background: var(--surface); border: 1px dashed var(--accent); 
-            border-radius: 8px; text-align: center; font-family: 'JetBrains Mono'; font-size: 0.8rem;
+            padding: 2rem; 
+            background: var(--surface); 
+            border: 1px dashed var(--accent); 
+            border-radius: 8px; 
+            text-align: center; 
+            font-family: 'JetBrains Mono'; 
+            font-size: 0.8rem; 
         }
 
-        footer { border-top: 1px solid var(--border); padding: 3rem 0; text-align: center; color: var(--muted); font-family: 'JetBrains Mono'; font-size: 0.65rem; text-transform: uppercase; }
+        footer { 
+            border-top: 1px solid var(--border); 
+            padding: 4rem 0; 
+            text-align: center; 
+            color: var(--muted); 
+            font-family: 'JetBrains Mono'; 
+            font-size: 0.65rem; 
+            text-transform: uppercase; 
+        }
+
+        @media (max-width: 600px) {
+            .nav-links { gap: 1.2rem; }
+            .site-title { font-size: 1rem; }
+        }
     </style>
 </head>
 <body>
@@ -93,44 +149,52 @@
             </a>
             <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle">☾ ТЕМА</button>
         </div>
-        <nav class="nav-desktop" id="nav-links">
-            <a onclick="navigateTo('home')" data-page="home">Дописи</a>
-            <a onclick="navigateTo('about')" data-page="about">Про мене</a>
-            <a onclick="alert('Зв’язок у розробці')">Зв'язок</a>
-        </nav>
+        <div class="nav-bar">
+            <nav class="nav-links" id="nav-links">
+                <a onclick="navigateTo('home')" data-page="home">Дописи</a>
+                <a onclick="navigateTo('about')" data-page="about">Про мене</a>
+                <a onclick="alert('Зв’язок незабаром')">Зв'язок</a>
+            </nav>
+        </div>
     </div>
 </header>
 
 <main>
     <div id="page-home" class="page active">
         <div id="posts-container">
-            <p style="font-family:'JetBrains Mono'; font-size:0.8rem; color:var(--muted);">Завантаження...</p>
+            <p style="font-family:'JetBrains Mono'; font-size:0.8rem; color:var(--muted);">Завантаження постів...</p>
         </div>
     </div>
+
     <div id="page-about" class="page">
         <h1>Про мене</h1>
-        <p style="margin-top:1.5rem;">Я професіонал у продажах та "сканер". Тут я пишу про PKM та системи знань.</p>
+        <p style="margin-top:2rem;">Я — 42-річний професіонал і "сканер". Цей блог є частиною моєї системи керування знаннями (PKM).</p>
     </div>
+
     <div id="page-post" class="page">
-        <button onclick="navigateTo('home')" style="border:none; background:none; cursor:pointer; color:var(--muted); font-family:'JetBrains Mono'; font-size:0.7rem; margin-bottom:2rem;">← НАЗАД</button>
+        <button onclick="navigateTo('home')" style="border:none; background:none; cursor:pointer; color:var(--muted); font-family:'JetBrains Mono'; font-size:0.7rem; margin-bottom:2.5rem; letter-spacing:0.1em;">← ПОВЕРНУТИСЯ ДО СПИСКУ</button>
         <h1 id="post-title-display"></h1>
-        <article id="post-content-display" style="margin-top:2rem;"></article>
+        <article id="post-content-display" style="margin-top:2.5rem;"></article>
     </div>
 </main>
 
-<footer>© 2026 Успішний сканер · uspishnyskaner.pp.ua</footer>
+<footer>
+    © 2026 Успішний сканер · uspishnyskaner.pp.ua
+</footer>
 
 <script>
     const GITHUB_USER = 'Bov888';
     const GITHUB_REPO = 'my-scanner-blog';
     const POSTS_FOLDER = 'posts';
 
+    // Парсинг метаданих (Title, Excerpt) з Markdown файлу
     function parseMeta(text, key) {
         const regex = new RegExp(`${key}:\\s*(.*)`, 'i');
         const match = text.match(regex);
         return match ? match[1].trim().replace(/^["']|["']$/g, '') : null;
     }
 
+    // Перемикач теми
     function toggleTheme() {
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
         const newTheme = isDark ? 'light' : 'dark';
@@ -139,15 +203,21 @@
         localStorage.setItem('theme', newTheme);
     }
 
+    // Навігація через Hash
     function navigateTo(page, slug = '') {
         window.location.hash = slug || page;
     }
 
+    // Обробка маршрутів
     async function handleRoute() {
         const hash = window.location.hash.replace('#', '');
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        
+        // Підсвічування активного посилання
         document.querySelectorAll('#nav-links a').forEach(a => {
-            a.classList.toggle('active', a.getAttribute('data-page') === hash || (!hash && a.getAttribute('data-page') === 'home'));
+            const isHome = (!hash || hash === 'home') && a.getAttribute('data-page') === 'home';
+            const isActive = a.getAttribute('data-page') === hash;
+            a.classList.toggle('active', isHome || isActive);
         });
 
         if (!hash || hash === 'home') {
@@ -162,18 +232,20 @@
         window.scrollTo(0, 0);
     }
 
+    // Завантаження списку постів
     async function loadPosts() {
         const container = document.getElementById('posts-container');
         try {
             const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
             
             if (res.status === 403) {
-                container.innerHTML = `<div class="error-msg">GitHub API тимчасово обмежив доступ (Rate Limit). <br>Дописи повернуться через деякий час.</div>`;
+                container.innerHTML = `<div class="error-msg">GitHub API Rate Limit. Спробуйте через годину або змініть IP (наприклад, через мобільний інтернет).</div>`;
                 return;
             }
 
             const files = await res.json();
             const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
+
             const results = await Promise.all(mdFiles.map(async f => {
                 const r = await fetch(f.download_url);
                 const text = await r.text();
@@ -182,30 +254,39 @@
 
             container.innerHTML = results.map(p => {
                 const title = parseMeta(p.text, 'title') || p.slug;
-                const excerpt = parseMeta(p.text, 'excerpt') || 'Читати далі...';
-                return `<div class="post-item" onclick="navigateTo('post', '${p.slug}')">
-                    <h2 class="post-title">${title}</h2>
-                    <p style="color:var(--muted); font-size:0.95rem;">${excerpt}</p>
-                </div>`;
+                const excerpt = parseMeta(p.text, 'excerpt') || 'Натисніть, щоб прочитати цей допис повністю...';
+                return `
+                    <div class="post-item" onclick="navigateTo('post', '${p.slug}')">
+                        <h2 class="post-title">${title}</h2>
+                        <p class="post-excerpt">${excerpt}</p>
+                    </div>
+                `;
             }).join('');
-        } catch (e) { 
-            container.innerHTML = `<div class="error-msg">Не вдалося завантажити дописи. Перевірте з'єднання.</div>`;
+        } catch (e) {
+            container.innerHTML = `<div class="error-msg">Не вдалося завантажити дописи. Перевірте з'єднання або налаштування репозиторію.</div>`;
         }
     }
 
+    // Відкриття конкретного посту
     async function openPostBySlug(slug) {
         const titleEl = document.getElementById('post-title-display');
         const contentEl = document.getElementById('post-content-display');
-        titleEl.textContent = 'Завантаження...';
+        titleEl.textContent = 'Завантаження вмісту...';
+        
         try {
             const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}/${slug}.md`);
             const data = await res.json();
             const text = decodeURIComponent(escape(atob(data.content)));
+            
             titleEl.textContent = parseMeta(text, 'title') || slug;
             contentEl.innerHTML = marked.parse(text.replace(/---[\s\S]*?---/, ''));
-        } catch (e) { titleEl.textContent = 'Помилка завантаження вмісту'; }
+        } catch (e) {
+            titleEl.textContent = 'Допис не знайдено';
+            contentEl.innerHTML = '';
+        }
     }
 
+    // Слухачі подій
     window.addEventListener('hashchange', handleRoute);
     window.addEventListener('DOMContentLoaded', () => {
         if (localStorage.getItem('theme') === 'dark') {
