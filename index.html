@@ -22,14 +22,11 @@
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'><rect width='32' height='32' rx='6' fill='%231e2e1c'/><line x1='16' y1='15' x2='6' y2='6' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='16' y1='15' x2='26' y2='6' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='16' y1='15' x2='27' y2='18' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='16' y1='15' x2='22' y2='27' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='16' y1='15' x2='9' y2='26' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='16' y1='15' x2='5' y2='18' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='6' y1='6' x2='26' y2='6' stroke='%236ab05f' stroke-width='0.6' opacity='0.15'/><line x1='27' y1='18' x2='22' y2='27' stroke='%236ab05f' stroke-width='0.6' opacity='0.15'/><line x1='9' y1='26' x2='5' y2='18' stroke='%236ab05f' stroke-width='0.6' opacity='0.15'/><circle cx='6' cy='6' r='1.8' fill='%236ab05f' opacity='0.4'/><circle cx='26' cy='6' r='2.4' fill='%236ab05f' opacity='0.55'/><circle cx='27' cy='18' r='1.6' fill='%236ab05f' opacity='0.4'/><circle cx='22' cy='27' r='2' fill='%236ab05f' opacity='0.45'/><circle cx='9' cy='26' r='1.5' fill='%236ab05f' opacity='0.38'/><circle cx='5' cy='18' r='1.8' fill='%236ab05f' opacity='0.42'/><circle cx='16' cy='15' r='5' stroke='%236ab05f' stroke-width='0.8' fill='none' opacity='0.25'/><circle cx='16' cy='15' r='4' fill='%236ab05f'/><circle cx='16' cy='15' r='2.2' fill='%231e2e1c'/><circle cx='16' cy='15' r='1.2' fill='%236ab05f'/></svg>">
 
-<!-- Preload шрифтів для швидшого рендеру -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap&font-display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
 
-<!-- DOMPurify для захисту від XSS -->
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js" defer></script>
-<!-- marked.js БЕЗ defer — потрібен одразу для рендеру контенту -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
@@ -46,7 +43,6 @@
 html { font-size: 18px; }
 body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
 
-/* ХЕДЕР */
 header { border-bottom: 1px solid var(--border); padding: 0.9rem 1.5rem; position: sticky; top: 0; background: var(--bg); z-index: 100; transition: border-bottom-color 0.15s; }
 header.menu-open { border-bottom-color: transparent; }
 .header-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
@@ -54,28 +50,21 @@ header.menu-open { border-bottom-color: transparent; }
 .site-title span { color: var(--accent); }
 .header-right { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
 
-/* Тема кнопка */
 .theme-toggle { background: var(--accent-light); border: 1px solid var(--accent); color: var(--accent); font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; cursor: pointer; padding: 0.35rem 0.65rem; border-radius: 2px; transition: opacity 0.2s; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; flex-shrink: 0; line-height: 1; }
 .theme-toggle:hover { opacity: 0.7; }
 
-/* Бургер кнопка */
 .burger-btn { background: none; border: none; cursor: pointer; padding: 4px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; flex-shrink: 0; }
 .burger-btn span { display: block; width: 20px; height: 1.5px; background: var(--muted); border-radius: 1px; transition: all 0.25s; }
 .burger-btn.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
 .burger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .burger-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
 
-/* Бургер меню — плитки, один стовпець, по центру */
 .burger-menu { display: none; background: var(--bg); border-bottom: 1px solid var(--border); padding: 0.75rem; }
 .burger-menu.open { display: block; }
 .burger-menu-inner { display: grid; grid-template-columns: 1fr; gap: 0.5rem; max-width: 320px; margin: 0 auto; }
 .burger-menu a { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 0.8rem; cursor: pointer; transition: all 0.2s; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); display: block; text-decoration: none; }
 .burger-menu a:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
-/* Герой не має верхньої лінії — вона вже є на хедері */
-.hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
-
-/* МОБІЛЬНИЙ */
 @media (max-width: 600px) {
   html { font-size: 16px; }
   .hero h1 { font-size: 1.8rem; }
@@ -84,7 +73,6 @@ header.menu-open { border-bottom-color: transparent; }
   header { padding: 0.75rem 1rem; }
 }
 
-/* ПОШУК */
 .search-bar { position: relative; margin-bottom: 1.5rem; }
 .search-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 0.7rem 1rem 0.7rem 2.4rem; border-radius: 2px; outline: none; transition: border-color 0.2s; }
 .search-input:focus { border-color: var(--accent); }
@@ -97,14 +85,12 @@ main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
 .page { display: none; }
 .page.active { display: block; }
 
-/* ГЕРОЙ */
 .hero { padding: 3rem 0 4rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
 .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.2rem; }
 .hero h1 { font-size: 1.5rem; font-weight: 300; line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 1.2rem; max-width: 520px; }
 .hero h1 em { font-style: italic; color: var(--accent); }
 .hero p { color: var(--muted); font-size: 0.95rem; max-width: 460px; }
 
-/* СПИСОК */
 .posts-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem; }
 .tag-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
 .tag-filter { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
@@ -120,7 +106,6 @@ main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
 .post-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 2px; margin-top: 0.5rem; cursor: pointer; transition: opacity 0.2s; border: none; }
 .post-tag:hover { opacity: 0.7; }
 
-/* ДОПИС */
 .back-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
 .back-btn:hover { color: var(--accent); }
 .post-header { padding: 0 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2.5rem; }
@@ -129,7 +114,6 @@ main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
 .post-meta-tag { background: var(--accent-light); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 2px; cursor: pointer; transition: opacity 0.2s; border: none; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.05em; }
 .post-meta-tag:hover { opacity: 0.7; }
 
-/* ВМІСТ */
 .post-content { font-size: 1rem; line-height: 1.8; }
 .post-content h1,.post-content h2,.post-content h3 { font-weight: 400; line-height: 1.3; margin: 2rem 0 0.8rem; letter-spacing: -0.01em; }
 .post-content h1 { font-size: 1.3rem; }
@@ -147,34 +131,28 @@ main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
 .post-content a { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent-light); text-underline-offset: 3px; transition: text-decoration-color 0.2s; }
 .post-content a:hover { text-decoration-color: var(--accent); }
 
-/* ПОДІЛИТИСЬ */
 .post-actions { display: flex; align-items: center; gap: 1rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
 .share-btn { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: none; border: 1px solid var(--border); cursor: pointer; padding: 0.4rem 0.8rem; border-radius: 2px; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s; }
 .share-btn:hover { border-color: var(--accent); color: var(--accent); }
 .share-btn.copied { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
-/* YOUTUBE */
 .youtube-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; margin: 1.5rem 0; }
 .youtube-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-/* ПРО МЕНЕ */
 .about-section h2 { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
 .about-section p { color: var(--muted); margin-bottom: 1rem; font-size: 0.95rem; }
 .about-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
 .about-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
 .about-tag:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
-/* СТАНИ */
 .loading { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
 .empty-state { padding: 3rem 0; text-align: center; }
 .empty-state p { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
 
-/* КНОПКА ВГОРУ */
 .scroll-top { position: fixed; bottom: 2rem; right: 1.5rem; background: var(--accent); color: var(--bg); border: none; cursor: pointer; width: 36px; height: 36px; border-radius: 2px; font-size: 1rem; display: none; align-items: center; justify-content: center; transition: opacity 0.2s; z-index: 50; }
 .scroll-top.visible { display: flex; }
 .scroll-top:hover { opacity: 0.8; }
 
-/* ФУТЕР */
 footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; }
 .footer-inner { max-width: var(--max); margin: 0 auto; }
 footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: center; }
@@ -185,7 +163,6 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
 
 <header>
   <div class="header-inner">
-    <!-- site-title як <button> — семантично правильно -->
     <button class="site-title" id="site-title" aria-label="На головну">
       <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
         <line x1="16" y1="15" x2="6" y2="6" stroke="var(--accent)" stroke-width="0.9" opacity="0.35"/>
@@ -219,7 +196,6 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
     </div>
   </div>
 
-  <!-- Бургер меню -->
   <nav id="burger-menu" class="burger-menu" aria-label="Навігація">
     <div class="burger-menu-inner">
       <a id="nav-home" href="#" data-page="home">Дописи</a>
@@ -229,8 +205,6 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
 </header>
 
 <main>
-
-  <!-- ГОЛОВНА -->
   <div id="page-home" class="page active" role="main">
     <div class="hero">
       <div class="hero-label">Блог</div>
@@ -249,7 +223,6 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
     </div>
   </div>
 
-  <!-- ДОПИС -->
   <div id="page-post" class="page">
     <button class="back-btn" id="back-btn-post" aria-label="Повернутись до списку">← до списку</button>
     <div class="post-header">
@@ -266,7 +239,6 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
     </div>
   </div>
 
-  <!-- СТОРІНКА -->
   <div id="page-page" class="page">
     <button class="back-btn" id="back-btn-page" aria-label="Повернутись до списку">← до списку</button>
     <div class="post-header">
@@ -275,7 +247,6 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
     <article id="page-content-display" class="post-content"></article>
   </div>
 
-  <!-- ПРО МЕНЕ -->
   <div id="page-about" class="page">
     <div class="about-section">
       <h2>Про мене</h2>
@@ -286,7 +257,6 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
       <div class="about-tags" id="about-tags"></div>
     </div>
   </div>
-
 </main>
 
 <button class="scroll-top" id="scroll-top" aria-label="Вгору">↑</button>
@@ -298,12 +268,10 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
 </footer>
 
 <script defer>
-// Ініціалізуємо marked одразу
 const renderer = new marked.Renderer();
 renderer.html = token => typeof token === 'object' ? (token.text || token.raw || '') : token;
 marked.use({ breaks: true, gfm: true, renderer });
 
-// Чекаємо поки завантажаться defer скрипти (DOMPurify)
 window.addEventListener('DOMContentLoaded', initApp);
 
 const GITHUB_USER = 'Bov888';
@@ -314,7 +282,6 @@ const CACHE_TTL = 5 * 60 * 1000;
 
 const MONTHS = ["СІЧ","ЛЮТ","БЕР","КВІ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
 const MONTHS_UA = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
-
 const ABOUT_TAGS = ['PKM','ШІ та автоматизація','Спорт та дисципліна','Життя сканера','Інструменти','Нотатки'];
 
 let postsCache = {};
@@ -324,12 +291,10 @@ let activeTag = null;
 let searchQuery = '';
 let searchDebounce = null;
 
-// Кешуємо DOM елементи
 const $ = id => document.getElementById(id);
 const els = {};
 
 function initApp() {
-  // Кешуємо елементи
   Object.assign(els, {
     themeToggle: $('theme-toggle'),
     burgerBtn: $('burger-btn'),
@@ -351,7 +316,6 @@ function initApp() {
     aboutTags: $('about-tags'),
   });
 
-  // Рендеримо теги "Про мене"
   els.aboutTags.innerHTML = ABOUT_TAGS.map(tag =>
     `<button class="about-tag" data-tag="${tag}">${tag}</button>`
   ).join('');
@@ -364,7 +328,6 @@ function initApp() {
   Promise.all([loadPages(), routeHandler()]);
 }
 
-// --- Тема ---
 function initTheme() {
   const saved = localStorage.getItem('theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -382,7 +345,6 @@ function toggleTheme() {
   localStorage.setItem('theme', newTheme);
 }
 
-// --- Бургер ---
 function initBurger() {
   els.burgerBtn.addEventListener('click', toggleBurger);
   document.addEventListener('click', e => {
@@ -399,17 +361,13 @@ function toggleBurger() {
   els.burgerMenu.classList.toggle('open', !isOpen);
   document.querySelector('header').classList.toggle('menu-open', !isOpen);
   els.burgerBtn.setAttribute('aria-expanded', String(!isOpen));
-
-  // Зсуваємо контент на висоту меню без скролу
   const main = document.querySelector('main');
   if (!isOpen) {
-    // Відкриваємо — чекаємо поки меню відрендериться і беремо його висоту
     requestAnimationFrame(() => {
       const menuHeight = els.burgerMenu.offsetHeight;
       main.style.paddingTop = `calc(3rem + ${menuHeight}px)`;
     });
   } else {
-    // Закриваємо — повертаємо оригінальний padding
     main.style.paddingTop = '';
   }
 }
@@ -421,7 +379,6 @@ function closeBurger() {
   document.querySelector('main').style.paddingTop = '';
 }
 
-// --- Scroll top ---
 function initScrollTop() {
   window.addEventListener('scroll', () => {
     els.scrollTop.classList.toggle('visible', window.scrollY > 400);
@@ -429,61 +386,39 @@ function initScrollTop() {
   els.scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
-// --- Всі події в одному місці ---
 function initEvents() {
-  // Логотип
   $('site-title').addEventListener('click', () => { navigateTo('home'); closeBurger(); });
-
-  // Тема
   els.themeToggle.addEventListener('click', toggleTheme);
-
-  // Пошук з debounce — не викликаємо при кожному символі
   els.searchInput.addEventListener('input', e => {
     clearTimeout(searchDebounce);
     searchDebounce = setTimeout(() => handleSearch(e.target.value), 200);
   });
   els.searchClear.addEventListener('click', clearSearch);
-
-  // Кнопка назад
   $('back-btn-post').addEventListener('click', () => navigateTo('home'));
   $('back-btn-page').addEventListener('click', () => navigateTo('home'));
-
-  // Поділитись
   els.shareBtn.addEventListener('click', sharePost);
-
-  // Теги "Про мене"
   els.aboutTags.addEventListener('click', e => {
     const btn = e.target.closest('.about-tag');
     if (btn) filterByTag(btn.dataset.tag, true);
   });
-
-  // Клавіатура
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeBurger();
   });
-
-  // Роутинг
   window.addEventListener('hashchange', routeHandler);
 }
 
-// --- Title ---
 function setPageTitle(title) {
   document.title = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
 }
-
-// --- Час читання ---
 function calcReadingTime(text) {
   const words = text.trim().split(/\s+/).length;
   return `${Math.max(1, Math.round(words / 200))} хв`;
 }
-
-// --- Санітизація HTML ---
 function safeHTML(html) {
   if (window.DOMPurify) return DOMPurify.sanitize(html);
-  return html; // fallback якщо DOMPurify не завантажився
+  return html;
 }
 
-// --- Поділитись ---
 function sharePost() {
   const url = window.location.href;
   if (navigator.share) {
@@ -497,7 +432,6 @@ function sharePost() {
   }
 }
 
-// --- Пошук ---
 function handleSearch(val) {
   searchQuery = val.trim().toLowerCase();
   els.searchClear.classList.toggle('visible', searchQuery.length > 0);
@@ -512,7 +446,6 @@ function clearSearch() {
   renderPostsList();
 }
 
-// --- Навігація ---
 function navigateTo(page, slug) {
   if (slug) { window.location.hash = slug; }
   else if (page === 'home') { window.location.hash = ''; }
@@ -535,18 +468,15 @@ function showPage(pageId) {
   window.scrollTo(0, 0);
 }
 
-// --- Фільтри ---
 function filterByTag(tag, fromAbout = false) {
   activeTag = (!fromAbout && activeTag === tag) ? null : tag;
   document.querySelectorAll('.tag-filter').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tag === activeTag);
   });
   if (fromAbout) navigateTo('home');
-  // Невеликий delay лише при переході зі сторінки "Про мене"
   setTimeout(() => renderPostsList(), fromAbout ? 80 : 0);
 }
 
-// --- Рендер списку ---
 function renderPostsList() {
   let filtered = activeTag ? allPosts.filter(p => p.tag === activeTag) : allPosts;
   if (searchQuery) {
@@ -560,79 +490,55 @@ function renderPostsList() {
     els.postsContainer.innerHTML = `<div class="empty-state"><p>${searchQuery ? 'Нічого не знайдено' : 'Немає дописів у цій категорії'}</p></div>`;
     return;
   }
-
-  // Будуємо DOM замість innerHTML для безпеки
   const fragment = document.createDocumentFragment();
   filtered.forEach(p => {
     const item = document.createElement('div');
     item.className = 'post-item';
     item.setAttribute('role', 'article');
     item.setAttribute('tabindex', '0');
-    item.setAttribute('aria-label', p.title);
     item.addEventListener('click', () => navigateTo('post', p.slug));
-    item.addEventListener('keydown', e => { if (e.key === 'Enter') navigateTo('post', p.slug); });
-
     const dateDiv = document.createElement('div');
     dateDiv.className = 'post-date';
     dateDiv.innerHTML = p.displayDate;
-
     const bodyDiv = document.createElement('div');
     const titleDiv = document.createElement('div');
     titleDiv.className = 'post-title';
     titleDiv.textContent = p.title;
-
     const excerptDiv = document.createElement('div');
     excerptDiv.className = 'post-excerpt';
     excerptDiv.textContent = p.excerpt;
-
     const tagBtn = document.createElement('button');
     tagBtn.className = 'post-tag';
     tagBtn.textContent = p.tag;
     tagBtn.addEventListener('click', e => { e.stopPropagation(); filterByTag(p.tag); });
-
     bodyDiv.append(titleDiv, excerptDiv, tagBtn);
     item.append(dateDiv, bodyDiv);
     fragment.appendChild(item);
   });
-
   els.postsContainer.innerHTML = '';
   els.postsContainer.appendChild(fragment);
 }
 
-// --- Завантаження дописів ---
 async function loadPosts() {
   if (postsCachedAt && Date.now() - postsCachedAt < CACHE_TTL && allPosts.length > 0) {
     renderPostsList();
     return;
   }
-
   try {
     const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
     if (res.status === 403) {
-      els.postsContainer.innerHTML = `<div class="empty-state"><p>GitHub API тимчасово недоступний — спробуй пізніше</p></div>`;
+      els.postsContainer.innerHTML = `<div class="empty-state"><p>GitHub API обмеження — спробуйте пізніше</p></div>`;
       return;
     }
-    if (!res.ok) throw new Error('GitHub API error');
-
     const files = await res.json();
     const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
-
-    if (mdFiles.length === 0) {
-      els.postsContainer.innerHTML = `<div class="empty-state"><p>Поки що дописів немає</p></div>`;
-      return;
-    }
-
-    const results = await Promise.all(
-      mdFiles.map(async file => {
-        const r = await fetch(file.download_url);
-        const text = await r.text();
-        return { file, text };
-      })
-    );
-
+    const results = await Promise.all(mdFiles.map(async file => {
+      const r = await fetch(file.download_url);
+      const text = await r.text();
+      return { file, text };
+    }));
     allPosts = [];
     const tags = new Set();
-
     for (const { file, text } of results) {
       const slug = file.name.replace('.md', '');
       postsCache[slug] = { text };
@@ -645,184 +551,112 @@ async function loadPosts() {
       tags.add(tag);
       allPosts.push({ slug, title, excerpt, tag, displayDate });
     }
-
     postsCachedAt = Date.now();
-    els.tagFilters.innerHTML = [...tags].map(tag =>
-      `<button class="tag-filter" data-tag="${tag}">${tag}</button>`
-    ).join('');
-    els.tagFilters.addEventListener('click', e => {
-      const btn = e.target.closest('.tag-filter');
-      if (btn) filterByTag(btn.dataset.tag);
-    });
+    els.tagFilters.innerHTML = [...tags].map(tag => `<button class="tag-filter" data-tag="${tag}">${tag}</button>`).join('');
     renderPostsList();
-
-  } catch(e) {
-    els.postsContainer.innerHTML = `<div class="empty-state"><p>Не вдалось завантажити дописи</p></div>`;
-    console.error('loadPosts error:', e);
-  }
+  } catch(e) { console.error(e); }
 }
 
-// --- Завантаження сторінок ---
 async function loadPages() {
   try {
     const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/pages`);
     if (!res.ok) return;
     const files = await res.json();
     const mdFiles = files.filter(f => f.name.endsWith('.md'));
-    if (mdFiles.length === 0) return;
-
-    const results = await Promise.all(mdFiles.map(async file => {
-      const r = await fetch(file.download_url, { headers: { Range: 'bytes=0-300' } });
-      const text = await r.text();
-      return { file, text };
-    }));
-
-    for (const { file, text } of results) {
-      const title = parseMeta(text, 'title') || file.name.replace('.md', '');
+    for (const file of mdFiles) {
       const slug = file.name.replace('.md', '');
       const a = document.createElement('a');
-      a.textContent = title;
+      a.textContent = slug.charAt(0).toUpperCase() + slug.slice(1);
       a.href = `#page-${slug}`;
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        navigateTo('page-' + slug);
-        closeBurger();
-      });
       els.burgerMenuInner.appendChild(a);
     }
-  } catch(e) { console.error('loadPages error:', e); }
+  } catch(e) {}
 }
 
-// --- Відкрити статичну сторінку ---
 async function openPageBySlug(slug) {
   showPage('page');
   els.pageTitle.textContent = 'Завантаження...';
-  els.pageContent.innerHTML = '';
   try {
     const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`);
-    if (!res.ok) throw new Error();
     const text = await res.text();
-    const title = parseMeta(text, 'title') || 'Сторінка';
+    const title = parseMeta(text, 'title') || slug;
     const body = text.replace(/^---[\s\S]*?---\n?/, '');
     els.pageTitle.textContent = title;
-    setPageTitle(title);
     els.pageContent.innerHTML = safeHTML(marked.parse(decodeHtmlEntities(body)));
-    els.pageContent.querySelectorAll('img').forEach(img => img.setAttribute('loading', 'lazy'));
-    loadAmplenote(body);
-  } catch(e) {
-    els.pageTitle.textContent = 'Сторінку не знайдено';
-    els.pageContent.innerHTML = '<p>Не вдалось завантажити сторінку.</p>';
-  }
+  } catch(e) { els.pageTitle.textContent = 'Помилка завантаження'; }
 }
 
-// --- Відкрити допис ---
 async function openPostBySlug(slug) {
   showPage('post');
   els.postTitle.textContent = 'Завантаження...';
-  els.postDate.textContent = '';
-  els.postTag.textContent = '';
-  els.postTime.textContent = '';
   els.postContent.innerHTML = '';
-  els.shareBtn.textContent = '↗ поділитись';
-  els.shareBtn.classList.remove('copied');
-
   try {
-    let text;
-    if (postsCache[slug]) {
-      text = postsCache[slug].text;
-    } else {
-      const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_FOLDER}/${slug}.md`);
-      if (!res.ok) throw new Error();
-      text = await res.text();
-      postsCache[slug] = { text };
-    }
-
+    let text = postsCache[slug] ? postsCache[slug].text : await (await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_FOLDER}/${slug}.md`)).text();
     const title = parseMeta(text, 'title') || 'Без назви';
-    const dateStr = parseMeta(text, 'date') || '';
     const tag = parseMeta(text, 'tag') || '';
     const body = text.replace(/^---[\s\S]*?---\n?/, '');
-    const date = new Date(dateStr);
-    const dispDate = isNaN(date.getTime()) ? '' : `${date.getDate()} ${MONTHS_UA[date.getMonth()]} ${date.getFullYear()}`;
-
     els.postTitle.textContent = title;
-    els.postDate.textContent = dispDate;
-    els.postTime.textContent = calcReadingTime(body);
     els.postTag.textContent = tag;
-    els.postTag.onclick = () => filterByTag(tag, false);
-    setPageTitle(title);
-
     els.postContent.innerHTML = safeHTML(marked.parse(decodeHtmlEntities(body)));
-    els.postContent.querySelectorAll('img').forEach(img => img.setAttribute('loading', 'lazy'));
 
-    // YouTube → плеєр
+    // Медіа-плеєри (YouTube, Spotify, Аудіо)
     els.postContent.querySelectorAll('a').forEach(link => {
       const href = link.getAttribute('href') || '';
+      
+      // 1. YouTube
       const yt = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
       if (yt) {
         const wrap = document.createElement('div');
         wrap.className = 'youtube-wrap';
-        wrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen loading="lazy" title="YouTube відео"></iframe>`;
+        wrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen loading="lazy"></iframe>`;
         link.parentNode.replaceChild(wrap, link);
+        return;
       }
-    });
 
-    // Spotify, Cloudinary, MP3
-    els.postContent.querySelectorAll('a').forEach(link => {
-      const href = link.getAttribute('href') || '';
+      // 2. Spotify
       const sp = href.match(/open\.spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
       if (sp) {
         const frame = document.createElement('div');
         frame.style.margin = '1.5rem 0';
-        frame.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify плеєр"></iframe>`;
+        frame.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
         link.parentNode.replaceChild(frame, link);
         return;
       }
+
+      // 3. Хмарні сервіси та прямі аудіо
+      let isAudio = false;
       let audioSrc = null;
       if (href.includes('player.cloudinary.com')) {
         const p = new URLSearchParams(href.split('?')[1]);
         const cn = p.get('cloud_name'), pi = p.get('public_id');
-        if (cn && pi) {
-          // Визначаємо тип по розширенню public_id
-          const isVideo = /\.(mp4|mov|webm|avi|mkv)/i.test(pi) ||
-                          /VID_|video_|vid_/i.test(pi) ||
-                          !pi.toLowerCase().includes('.mp3');
-          if (isVideo) {
-            // Cloudinary відео плеєр через iframe
-            const wrap = document.createElement('div');
-            wrap.style.cssText = 'position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:4px;margin:1.5rem 0;';
-            wrap.innerHTML = `<iframe
-              src="https://player.cloudinary.com/embed/?cloud_name=${cn}&public_id=${encodeURIComponent(pi)}&fluid=true&controls=true"
-              style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
-              allowfullscreen
-              loading="lazy"
-              title="Відео плеєр"></iframe>`;
-            link.parentNode.replaceChild(wrap, link);
-            return;
-          } else {
-            audioSrc = `https://res.cloudinary.com/${cn}/video/upload/${pi}.mp3`;
-          }
+        const isV = /\.(mp4|mov|webm|avi|mkv)/i.test(pi) || /video|vid_|VID_/i.test(pi);
+        if (isV) {
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:4px;margin:1.5rem 0;';
+          wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cn}&public_id=${encodeURIComponent(pi)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
+          link.parentNode.replaceChild(wrap, link);
+          return;
+        } else {
+          audioSrc = `https://res.cloudinary.com/${cn}/video/upload/${pi}${pi.includes('.') ? '' : '.mp3'}`;
+          isAudio = true;
         }
-      } else if (href.toLowerCase().includes('.mp3')) {
+      } else if (href.toLowerCase().endsWith('.mp3') || href.toLowerCase().includes('.mp3?')) {
         audioSrc = href;
+        isAudio = true;
       }
-      if (audioSrc) {
+
+      if (isAudio && audioSrc) {
         const player = document.createElement('div');
-        player.style.margin = '1.5rem 0';
-        player.innerHTML = `<audio controls style="width:100%;"><source src="${audioSrc}" type="audio/mpeg">Ваш браузер не підтримує аудіо.</audio>`;
+        player.style.margin = '1.2rem 0';
+        player.innerHTML = `<audio controls style="width:100%; height: 40px;"><source src="${audioSrc}" type="audio/mpeg">Браузер не підтримує аудіо.</audio>`;
         link.parentNode.replaceChild(player, link);
       }
     });
 
     loadAmplenote(body);
-
-  } catch(e) {
-    els.postTitle.textContent = 'Допис не знайдено';
-    els.postContent.innerHTML = '<p>Не вдалось завантажити допис.</p>';
-    console.error('openPostBySlug error:', e);
-  }
+  } catch(e) { console.error(e); }
 }
 
-// --- Amplenote ---
 function loadAmplenote(body) {
   if (!body.includes('amplenote-embed')) return;
   if (!$('amplenote-script')) {
@@ -830,37 +664,18 @@ function loadAmplenote(body) {
     s.id = 'amplenote-script'; s.defer = true;
     s.src = 'https://public.amplenote.com/embed.js';
     document.body.appendChild(s);
-  } else if (window.Amplenote?.init) {
-    window.Amplenote.init();
-  }
+  } else if (window.Amplenote?.init) { window.Amplenote.init(); }
 }
 
-// --- Парсинг meta ---
 function parseMeta(text, key) {
   const m = text.match(new RegExp(`${key}:\\s*"?([^"\\n]+)"?`));
   return m ? m[1].trim() : null;
 }
-
 function decodeHtmlEntities(str) {
-  return str.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'");
-}
-
-// --- Netlify Identity ---
-if (window.location.pathname.startsWith('/admin')) {
-  const script = document.createElement('script');
-  script.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
-  document.head.appendChild(script);
-  script.onload = () => {
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', user => {
-        if (!user) window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
-      });
-    }
-  };
+  return str.replace(/</g,'<').replace(/>/g,'>').replace(/&/g,'&').replace(/"/g,'"').replace(/'/g,"'");
 }
 </script>
 
-<!-- GoatCounter аналітика — https замість http -->
 <script data-goatcounter="https://uspishnyskaner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 
 </body>
