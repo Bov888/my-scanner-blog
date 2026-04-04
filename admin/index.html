@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Як стати успішним сканером</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -21,36 +22,50 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Literata', serif; line-height: 1.75; }
 
+        /* ОНОВЛЕНА ШАПКА — ДВОРІВНЕВА */
         header { 
             border-bottom: 1px solid var(--border); 
-            padding: 0 1.5rem; 
+            padding: 1.5rem 0; 
             position: sticky; top: 0; 
             background: var(--bg); 
             z-index: 100;
-            height: 72px;
-            display: flex;
-            align-items: center;
         }
         .header-inner { 
-            max-width: var(--max); margin: 0 auto; width: 100%;
+            max-width: var(--max); margin: 0 auto; padding: 0 1.5rem;
             display: flex; 
-            align-items: baseline; 
+            flex-direction: column; /* Елементи один під одним */
+            align-items: center; 
+            gap: 1.2rem;
+        }
+
+        /* Верхній ряд: Лого та Кнопка теми */
+        .header-top {
+            width: 100%;
+            display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .site-title { 
-            font-weight: 500; font-size: 1.1rem; color: var(--text); 
-            text-decoration: none; display: flex; align-items: baseline; gap: 0.7rem; cursor: pointer;
+            font-weight: 500; font-size: 1.2rem; color: var(--text); 
+            text-decoration: none; display: flex; align-items: center; gap: 0.8rem; cursor: pointer;
         }
-        .site-title svg { transform: translateY(3px); }
         .site-title span { color: var(--accent); }
 
-        .header-right { display: flex; align-items: baseline; gap: 2rem; }
-        .nav-desktop { display: flex; align-items: baseline; gap: 1.5rem; }
+        /* Нижній ряд: Навігація */
+        .nav-desktop { 
+            display: flex; 
+            justify-content: center;
+            gap: 2rem;
+            width: 100%;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border); /* Візуально відділяємо меню */
+        }
         .nav-desktop a { 
-            font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; 
+            font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; 
             color: var(--muted); text-decoration: none; text-transform: uppercase; 
-            letter-spacing: 0.05em; cursor: pointer; line-height: 1;
+            letter-spacing: 0.1em; cursor: pointer;
+            transition: color 0.2s;
         }
         .nav-desktop a:hover, .nav-desktop a.active { color: var(--accent); }
 
@@ -58,36 +73,46 @@
             background: var(--accent-light); border: 1px solid var(--accent); 
             color: var(--accent); font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; 
             padding: 0.35rem 0.8rem; border-radius: 4px; text-transform: uppercase;
-            line-height: 1; cursor: pointer;
+            cursor: pointer;
         }
 
+        /* КОНТЕНТ */
         main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem; }
         .page { display: none; }
-        .page.active { display: block; }
+        .page.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .post-item { padding: 2rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .post-title { font-size: 1.4rem; font-weight: 400; margin-bottom: 0.5rem; }
+        .post-item { padding: 2.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .post-title { font-size: 1.5rem; font-weight: 400; margin-bottom: 0.5rem; }
         .post-item:hover .post-title { color: var(--accent); }
 
-        footer { border-top: 1px solid var(--border); padding: 3rem 0; text-align: center; color: var(--muted); font-family: 'JetBrains Mono'; font-size: 0.65rem; text-transform: uppercase; }
+        footer { border-top: 1px solid var(--border); padding: 4rem 0; text-align: center; color: var(--muted); font-family: 'JetBrains Mono'; font-size: 0.65rem; text-transform: uppercase; }
+
+        /* Адаптивність */
+        @media (max-width: 600px) {
+            .nav-desktop { gap: 1rem; flex-wrap: wrap; }
+            .site-title { font-size: 1rem; }
+        }
     </style>
 </head>
 <body>
 
 <header>
     <div class="header-inner">
-        <a class="site-title" onclick="navigateTo('home')">
-            <svg width="22" height="22" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="var(--accent-light)"/><circle cx="16" cy="15" r="4" fill="var(--accent)"/></svg>
-            <span>Як стати успішним сканером</span>
-        </a>
-        <div class="header-right">
-            <nav class="nav-desktop" id="nav-links">
-                <a onclick="navigateTo('home')" data-page="home">Дописи</a>
-                <a onclick="navigateTo('about')" data-page="about">Про мене</a>
-                <a onclick="alert('У розробці')">Зв'язок</a>
-            </nav>
+        <div class="header-top">
+            <a class="site-title" onclick="navigateTo('home')">
+                <svg width="24" height="24" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="var(--accent-light)"/><circle cx="16" cy="15" r="4" fill="var(--accent)"/></svg>
+                <span>Як стати <b>успішним сканером</b></span>
+            </a>
             <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle">☾ ТЕМА</button>
         </div>
+        
+        <nav class="nav-desktop" id="nav-links">
+            <a onclick="navigateTo('home')" data-page="home">Дописи</a>
+            <a onclick="navigateTo('about')" data-page="about">Про мене</a>
+            <a onclick="alert('Незабаром...')">Зв'язок</a>
+            <a onclick="alert('Архів у розробці')">Архів</a>
+        </nav>
     </div>
 </header>
 
@@ -95,21 +120,24 @@
     <div id="page-home" class="page active">
         <div id="posts-container">Завантаження...</div>
     </div>
+
     <div id="page-about" class="page">
         <h1>Про мене</h1>
-        <p style="margin-top:1.5rem;">Тут буде ваша історія.</p>
+        <p style="margin-top:2rem;">Я — професійний сканер. Мій шлях у PKM та продуктивності почався з хаосу, який я намагаюся впорядкувати тут.</p>
     </div>
+
     <div id="page-post" class="page">
-        <button onclick="navigateTo('home')" style="border:none; background:none; cursor:pointer; color:var(--muted); font-family:'JetBrains Mono'; margin-bottom:2rem;">← НАЗАД</button>
+        <button onclick="navigateTo('home')" style="border:none; background:none; cursor:pointer; color:var(--muted); font-family:'JetBrains Mono'; margin-bottom:2rem;">← ПОВЕРНУТИСЯ</button>
         <h1 id="post-title-display"></h1>
         <article id="post-content-display" style="margin-top:2rem;"></article>
     </div>
 </main>
 
-<footer>© 2026 Успішний сканер · uspishnyskaner.pp.ua</footer>
+<footer>
+    © 2026 Успішний сканер · uspishnyskaner.pp.ua
+</footer>
 
 <script>
-    // Весь попередній JS код залишається таким самим
     const GITHUB_USER = 'Bov888';
     const GITHUB_REPO = 'my-scanner-blog';
     const POSTS_FOLDER = 'posts';
@@ -164,22 +192,16 @@
                 return { slug: f.name.replace('.md', ''), text };
             }));
 
-            const posts = results.map(item => ({
-                slug: item.slug,
-                title: parseMeta(item.text, 'title') || item.slug,
-                excerpt: parseMeta(item.text, 'excerpt') || 'Читати далі...'
-            }));
-
             const container = document.getElementById('posts-container');
-            container.innerHTML = posts.map(p => `
-                <div class="post-item" onclick="navigateTo('post', '${p.slug}')">
-                    <h2 class="post-title">${p.title}</h2>
-                    <p class="post-excerpt">${p.excerpt}</p>
-                </div>
-            `).join('');
-        } catch (e) {
-            document.getElementById('posts-container').innerHTML = 'Помилка завантаження.';
-        }
+            container.innerHTML = results.map(p => {
+                const title = parseMeta(p.text, 'title') || p.slug;
+                const excerpt = parseMeta(p.text, 'excerpt') || 'Читати далі...';
+                return `<div class="post-item" onclick="navigateTo('post', '${p.slug}')">
+                    <h2 class="post-title">${title}</h2>
+                    <p style="color:var(--muted)">${excerpt}</p>
+                </div>`;
+            }).join('');
+        } catch (e) { console.error(e); }
     }
 
     async function openPostBySlug(slug) {
@@ -190,10 +212,9 @@
             const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}/${slug}.md`);
             const data = await res.json();
             const text = decodeURIComponent(escape(atob(data.content)));
-            const title = parseMeta(text, 'title') || slug;
-            titleEl.textContent = title;
+            titleEl.textContent = parseMeta(text, 'title') || slug;
             contentEl.innerHTML = marked.parse(text.replace(/---[\s\S]*?---/, ''));
-        } catch (e) { titleEl.textContent = 'Не знайдено'; }
+        } catch (e) { titleEl.textContent = 'Помилка'; }
     }
 
     window.addEventListener('hashchange', handleRoute);
