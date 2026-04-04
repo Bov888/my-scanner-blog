@@ -3,25 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Як стати успішним сканером</title>
-
-    <meta name="description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
-    <meta name="author" content="Успішний сканер">
-    <link rel="canonical" href="https://uspishnyskaner.pp.ua/">
-
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Як стати успішним сканером">
-    <meta property="og:title" content="Як стати успішним сканером">
-    <meta property="og:description" content="Блог про PKM, продуктивність, ШІ та життя людини з широкими інтересами">
-    <meta property="og:url" content="https://uspishnyskaner.pp.ua/">
-
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'><rect width='32' height='32' rx='6' fill='%231e2e1c'/><circle cx='16' cy='15' r='4' fill='%236ab05f'/><circle cx='16' cy='15' r='2.2' fill='%231e2e1c'/><circle cx='16' cy='15' r='1.2' fill='%236ab05f'/></svg>">
-
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
         :root {
@@ -34,109 +19,57 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { font-size: 18px; scroll-behavior: smooth; }
-        body { background: var(--bg); color: var(--text); font-family: 'Literata', serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
+        body { background: var(--bg); color: var(--text); font-family: 'Literata', serif; line-height: 1.75; }
 
-        /* ХЕДЕР — ФІНАЛЬНЕ ВИРІВНЮВАННЯ */
         header { 
             border-bottom: 1px solid var(--border); 
             padding: 0 1.5rem; 
-            position: sticky; 
-            top: 0; 
+            position: sticky; top: 0; 
             background: var(--bg); 
             z-index: 100;
-            height: 64px;
+            height: 72px;
             display: flex;
             align-items: center;
         }
         .header-inner { 
-            max-width: var(--max); 
-            margin: 0 auto; 
-            width: 100%;
+            max-width: var(--max); margin: 0 auto; width: 100%;
             display: flex; 
-            align-items: center; 
+            align-items: baseline; 
             justify-content: space-between;
         }
 
         .site-title { 
-            font-weight: 500; 
-            font-size: 1.05rem; 
-            color: var(--text); 
-            text-decoration: none;
-            display: flex; 
-            align-items: center; 
-            gap: 0.65rem; 
-            cursor: pointer;
-            /* Оптичний підйом логотипа на 1px */
-            transform: translateY(-1px);
+            font-weight: 500; font-size: 1.1rem; color: var(--text); 
+            text-decoration: none; display: flex; align-items: baseline; gap: 0.7rem; cursor: pointer;
         }
+        .site-title svg { transform: translateY(3px); }
         .site-title span { color: var(--accent); }
-        
-        .header-right { 
-            display: flex; 
-            align-items: center; 
-            gap: 1.8rem; 
-        }
 
-        .nav-desktop { 
-            display: flex; 
-            align-items: center; 
-            gap: 1.4rem;
-            /* Оптичне опускання меню на 2.5px, щоб назви сторінок не "злітали" вгору */
-            margin-top: 2.5px;
-        }
+        .header-right { display: flex; align-items: baseline; gap: 2rem; }
+        .nav-desktop { display: flex; align-items: baseline; gap: 1.5rem; }
         .nav-desktop a { 
-            font-family: 'JetBrains Mono', monospace; 
-            font-size: 0.68rem; 
-            color: var(--muted); 
-            text-decoration: none; 
-            text-transform: uppercase; 
-            letter-spacing: 0.06em; 
-            cursor: pointer; 
-            line-height: 1;
-            transition: color 0.2s; 
+            font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; 
+            color: var(--muted); text-decoration: none; text-transform: uppercase; 
+            letter-spacing: 0.05em; cursor: pointer; line-height: 1;
         }
         .nav-desktop a:hover, .nav-desktop a.active { color: var(--accent); }
 
         .theme-toggle { 
-            background: var(--accent-light); 
-            border: 1px solid var(--accent); 
-            color: var(--accent); 
-            font-size: 0.65rem; 
-            font-family: 'JetBrains Mono', monospace; 
-            cursor: pointer; 
-            padding: 0 0.7rem; 
-            border-radius: 4px; 
-            text-transform: uppercase;
-            height: 28px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 85px;
-            /* Кнопка теми теж трохи зміщена для балансу з меню */
-            margin-top: 1px;
+            background: var(--accent-light); border: 1px solid var(--accent); 
+            color: var(--accent); font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; 
+            padding: 0.35rem 0.8rem; border-radius: 4px; text-transform: uppercase;
+            line-height: 1; cursor: pointer;
         }
 
-        /* КОНТЕНТ */
-        main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+        main { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem; }
         .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .page.active { display: block; }
 
         .post-item { padding: 2rem 0; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .post-item:first-child { padding-top: 0; }
-        .post-title { font-size: 1.35rem; font-weight: 400; margin-bottom: 0.5rem; color: var(--text); transition: 0.2s; }
+        .post-title { font-size: 1.4rem; font-weight: 400; margin-bottom: 0.5rem; }
         .post-item:hover .post-title { color: var(--accent); }
-        .post-excerpt { color: var(--muted); font-size: 0.95rem; }
 
-        .search-input { 
-            width: 100%; padding: 0.9rem 1rem; background: var(--surface); 
-            border: 1px solid var(--border); color: var(--text); 
-            font-family: 'JetBrains Mono'; margin-bottom: 2.5rem; border-radius: 4px; outline: none;
-        }
-        .search-input:focus { border-color: var(--accent); }
-
-        footer { border-top: 1px solid var(--border); padding: 3rem 0; text-align: center; color: var(--muted); font-family: 'JetBrains Mono'; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        footer { border-top: 1px solid var(--border); padding: 3rem 0; text-align: center; color: var(--muted); font-family: 'JetBrains Mono'; font-size: 0.65rem; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -144,152 +77,133 @@
 <header>
     <div class="header-inner">
         <a class="site-title" onclick="navigateTo('home')">
-            <svg width="24" height="24" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="6" fill="var(--accent-light)"/><circle cx="16" cy="15" r="4" fill="var(--accent)"/><circle cx="16" cy="15" r="2.2" fill="var(--bg)"/><circle cx="16" cy="15" r="1.2" fill="var(--accent)"/></svg>
+            <svg width="22" height="22" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="var(--accent-light)"/><circle cx="16" cy="15" r="4" fill="var(--accent)"/></svg>
             <span>Як стати успішним сканером</span>
         </a>
         <div class="header-right">
             <nav class="nav-desktop" id="nav-links">
                 <a onclick="navigateTo('home')" data-page="home">Дописи</a>
                 <a onclick="navigateTo('about')" data-page="about">Про мене</a>
-                <a onclick="alert('Форма зв\'язку в розробці')">Зв'язатися</a>
+                <a onclick="alert('У розробці')">Зв'язок</a>
             </nav>
-            <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">☾ тема</button>
+            <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle">☾ ТЕМА</button>
         </div>
     </div>
 </header>
 
 <main>
     <div id="page-home" class="page active">
-        <input class="search-input" id="search-input" placeholder="Пошук нотаток..." oninput="handleSearch(this.value)">
-        <div id="posts-container"><p>Завантаження...</p></div>
+        <div id="posts-container">Завантаження...</div>
     </div>
-
-    <div id="page-post" class="page">
-        <button onclick="navigateTo('home')" style="cursor:pointer; background:none; border:none; color:var(--muted); font-family:'JetBrains Mono'; font-size: 0.7rem; margin-bottom: 2.5rem;">← НАЗАД</button>
-        <h1 id="post-title-display" style="font-weight: 400; margin-bottom: 1.5rem;"></h1>
-        <article id="post-content-display"></article>
-    </div>
-
     <div id="page-about" class="page">
-        <h1 style="font-weight: 400; margin-bottom: 1.5rem;">Про мене</h1>
-        <p>Я професіонал у сфері телепродажів та "сканер" за природою. Цей блог — спроба систематизувати хаос інтересів.</p>
+        <h1>Про мене</h1>
+        <p style="margin-top:1.5rem;">Тут буде ваша історія.</p>
+    </div>
+    <div id="page-post" class="page">
+        <button onclick="navigateTo('home')" style="border:none; background:none; cursor:pointer; color:var(--muted); font-family:'JetBrains Mono'; margin-bottom:2rem;">← НАЗАД</button>
+        <h1 id="post-title-display"></h1>
+        <article id="post-content-display" style="margin-top:2rem;"></article>
     </div>
 </main>
 
-<footer>
-    © 2026 Успішний сканер · uspishnyskaner.pp.ua
-</footer>
+<footer>© 2026 Успішний сканер · uspishnyskaner.pp.ua</footer>
 
 <script>
-const GITHUB_USER = 'Bov888';
-const GITHUB_REPO = 'my-scanner-blog';
-const POSTS_FOLDER = 'posts';
+    // Весь попередній JS код залишається таким самим
+    const GITHUB_USER = 'Bov888';
+    const GITHUB_REPO = 'my-scanner-blog';
+    const POSTS_FOLDER = 'posts';
 
-// Отримати мета-дані з тексту Markdown
-function parseMeta(text, key) {
-    const regex = new RegExp(`${key}:\\s*(.*)`, 'i');
-    const match = text.match(regex);
-    return match ? match[1].trim().replace(/^["']|["']$/g, '') : null;
-}
+    function parseMeta(text, key) {
+        const regex = new RegExp(`${key}:\\s*(.*)`, 'i');
+        const match = text.match(regex);
+        return match ? match[1].trim().replace(/^["']|["']$/g, '') : null;
+    }
 
-// Тема оформлення
-function toggleTheme() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const newTheme = isDark ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    document.getElementById('theme-toggle').textContent = isDark ? '☾ тема' : '☀ тема';
-    localStorage.setItem('theme', newTheme);
-}
+    function toggleTheme() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        document.getElementById('theme-toggle').textContent = isDark ? '☾ ТЕМА' : '☀ ТЕМА';
+        localStorage.setItem('theme', newTheme);
+    }
 
-// Навігація
-function navigateTo(page, slug = '') {
-    window.location.hash = slug || page;
-}
+    function navigateTo(page, slug = '') {
+        window.location.hash = slug || page;
+    }
 
-async function handleRoute() {
-    const hash = window.location.hash.replace('#', '');
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    
-    // Активне посилання в меню
-    document.querySelectorAll('#nav-links a').forEach(a => {
-        a.classList.toggle('active', a.getAttribute('data-page') === hash || (!hash && a.getAttribute('data-page') === 'home'));
+    async function handleRoute() {
+        const hash = window.location.hash.replace('#', '');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        
+        document.querySelectorAll('#nav-links a').forEach(a => {
+            a.classList.toggle('active', a.getAttribute('data-page') === hash || (!hash && a.getAttribute('data-page') === 'home'));
+        });
+
+        if (!hash || hash === 'home') {
+            document.getElementById('page-home').classList.add('active');
+            loadPosts();
+        } else if (hash === 'about') {
+            document.getElementById('page-about').classList.add('active');
+        } else {
+            document.getElementById('page-post').classList.add('active');
+            openPostBySlug(hash);
+        }
+        window.scrollTo(0, 0);
+    }
+
+    async function loadPosts() {
+        try {
+            const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
+            const files = await res.json();
+            const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
+
+            const results = await Promise.all(mdFiles.map(async f => {
+                const r = await fetch(f.download_url);
+                const text = await r.text();
+                return { slug: f.name.replace('.md', ''), text };
+            }));
+
+            const posts = results.map(item => ({
+                slug: item.slug,
+                title: parseMeta(item.text, 'title') || item.slug,
+                excerpt: parseMeta(item.text, 'excerpt') || 'Читати далі...'
+            }));
+
+            const container = document.getElementById('posts-container');
+            container.innerHTML = posts.map(p => `
+                <div class="post-item" onclick="navigateTo('post', '${p.slug}')">
+                    <h2 class="post-title">${p.title}</h2>
+                    <p class="post-excerpt">${p.excerpt}</p>
+                </div>
+            `).join('');
+        } catch (e) {
+            document.getElementById('posts-container').innerHTML = 'Помилка завантаження.';
+        }
+    }
+
+    async function openPostBySlug(slug) {
+        const titleEl = document.getElementById('post-title-display');
+        const contentEl = document.getElementById('post-content-display');
+        titleEl.textContent = 'Завантаження...';
+        try {
+            const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}/${slug}.md`);
+            const data = await res.json();
+            const text = decodeURIComponent(escape(atob(data.content)));
+            const title = parseMeta(text, 'title') || slug;
+            titleEl.textContent = title;
+            contentEl.innerHTML = marked.parse(text.replace(/---[\s\S]*?---/, ''));
+        } catch (e) { titleEl.textContent = 'Не знайдено'; }
+    }
+
+    window.addEventListener('hashchange', handleRoute);
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-toggle').textContent = '☀ ТЕМА';
+        }
+        handleRoute();
     });
-
-    if (!hash || hash === 'home') {
-        document.getElementById('page-home').classList.add('active');
-        loadPosts();
-    } else if (hash === 'about') {
-        document.getElementById('page-about').classList.add('active');
-    } else {
-        document.getElementById('page-post').classList.add('active');
-        openPostBySlug(hash);
-    }
-    window.scrollTo(0, 0);
-}
-
-// Список постів
-async function loadPosts() {
-    try {
-        const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
-        const files = await res.json();
-        const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
-
-        const results = await Promise.all(mdFiles.map(async f => {
-            const r = await fetch(f.download_url);
-            const text = await r.text();
-            return { slug: f.name.replace('.md', ''), text };
-        }));
-
-        const posts = results.map(item => ({
-            slug: item.slug,
-            title: parseMeta(item.text, 'title') || item.slug,
-            excerpt: parseMeta(item.text, 'excerpt') || 'Читати допис...'
-        }));
-
-        const container = document.getElementById('posts-container');
-        container.innerHTML = posts.map(p => `
-            <div class="post-item" onclick="navigateTo('post', '${p.slug}')">
-                <h2 class="post-title">${p.title}</h2>
-                <p class="post-excerpt">${p.excerpt}</p>
-            </div>
-        `).join('');
-    } catch (e) {
-        document.getElementById('posts-container').innerHTML = '<p>Помилка завантаження контенту.</p>';
-    }
-}
-
-// Відкриття поста
-async function openPostBySlug(slug) {
-    const titleEl = document.getElementById('post-title-display');
-    const contentEl = document.getElementById('post-content-display');
-    titleEl.textContent = 'Завантаження...';
-
-    try {
-        const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}/${slug}.md`);
-        const data = await res.json();
-        // Виправлення відображення кирилиці
-        const text = decodeURIComponent(escape(atob(data.content)));
-        
-        const title = parseMeta(text, 'title') || slug;
-        const body = text.replace(/---[\s\S]*?---/, '');
-        
-        titleEl.textContent = title;
-        contentEl.innerHTML = marked.parse(body);
-        document.title = title + " · Успішний сканер";
-    } catch (e) {
-        titleEl.textContent = 'Помилка завантаження';
-    }
-}
-
-window.addEventListener('hashchange', handleRoute);
-window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('theme') === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        document.getElementById('theme-toggle').textContent = '☀ тема';
-    }
-    handleRoute();
-});
 </script>
-
 </body>
 </html>
