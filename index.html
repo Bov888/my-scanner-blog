@@ -754,73 +754,70 @@ async function openPostBySlug(slug) {
     els.postContent.innerHTML = safeHTML(marked.parse(decodeHtmlEntities(body)));
     els.postContent.querySelectorAll('img').forEach(img => img.setAttribute('loading', 'lazy'));
 
-    // YouTube → плеєр
-    els.postContent.querySelectorAll('a').forEach(link => {
-      const href = link.getAttribute('href') || '';
-      const yt = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-      if (yt) {
-        const wrap = document.createElement('div');
-        wrap.className = 'youtube-wrap';
-        wrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen loading="lazy" title="YouTube відео"></iframe>`;
-        link.parentNode.replaceChild(wrap, link);
-      }
-    });
-
-    // Spotify, Cloudinary, MP3
-    els.postContent.querySelectorAll('a').forEach(link => {
-      const href = link.getAttribute('href') || '';
-      const sp = href.match(/open\.spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
-      if (sp) {
-        const frame = document.createElement('div');
-        frame.style.margin = '1.5rem 0';
-        frame.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify плеєр"></iframe>`;
-        link.parentNode.replaceChild(frame, link);
-        return;
-      }
-      let audioSrc = null;
-      if (href.includes('player.cloudinary.com')) {
-        const p = new URLSearchParams(href.split('?')[1]);
-        const cn = p.get('cloud_name'), pi = p.get('public_id');
-        if (cn && pi) {
-          // Визначаємо тип по розширенню public_id
-          const isVideo = /\.(mp4|mov|webm|avi|mkv)/i.test(pi) ||
-                          /VID_|video_|vid_/i.test(pi) ||
-                          !pi.toLowerCase().includes('.mp3');
-          if (isVideo) {
-            // Cloudinary відео плеєр через iframe
-            const wrap = document.createElement('div');
-            wrap.style.cssText = 'position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:4px;margin:1.5rem 0;';
-            wrap.innerHTML = `<iframe
-              src="https://player.cloudinary.com/embed/?cloud_name=${cn}&public_id=${encodeURIComponent(pi)}&fluid=true&controls=true"
-              style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
-              allowfullscreen
-              loading="lazy"
-              title="Відео плеєр"></iframe>`;
-            link.parentNode.replaceChild(wrap, link);
-            return;
-          } else {
-            audioSrc = `https://res.cloudinary.com/${cn}/video/upload/${pi}.mp3`;
-          }
-        }
-      } else if (href.toLowerCase().includes('.mp3')) {
-        audioSrc = href;
-      }
-      if (audioSrc) {
-        const player = document.createElement('div');
-        player.style.margin = '1.5rem 0';
-        player.innerHTML = `<audio controls style="width:100%;"><source src="${audioSrc}" type="audio/mpeg">Ваш браузер не підтримує аудіо.</audio>`;
-        link.parentNode.replaceChild(player, link);
-      }
-    });
-
-    loadAmplenote(body);
-
-  } catch(e) {
-    els.postTitle.textContent = 'Допис не знайдено';
-    els.postContent.innerHTML = '<p>Не вдалось завантажити допис.</p>';
-    console.error('openPostBySlug error:', e);
+   // Знаходимо всі посилання та перетворюємо їх на відповідні плеєри
+els.postContent.querySelectorAll('a').forEach(link => {
+  const href = link.getAttribute('href') || '';
+  
+  // 1. YouTube
+  const yt = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (yt) {
+    const wrap = document.createElement('div');
+    wrap.className = 'youtube-wrap';
+    wrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen loading="lazy" title="YouTube відео"></iframe>`;
+    link.parentNode.replaceChild(wrap, link);
+    return;
   }
-}
+
+  // 2. Spotify
+  const sp = href.match(/open\.spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
+  if (sp) {
+    const frame = document.createElement('div');
+    frame.style.margin = '1.5rem 0';
+    frame.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify плеєр"></iframe>`;
+    link.parentNode.replaceChild(frame, link);
+    return;
+  }
+
+  // 3. Хмарні сервіси та прямі посилання на аудіо (Cloudinary / MP3)
+  let isAudio = false;
+  let audioSrc = null;
+
+  if (href.includes('player.cloudinary.com')) {
+    const p = new URLSearchParams(href.split('?')[1]);
+    const cn = p.get('cloud_name'), pi = p.get('public_id');
+    
+    // Перевіряємо чи це аудіо: за розширенням або якщо в id є "audio" чи "music"
+    const audioKeywords = /\.(mp3|wav|ogg|m4a|flac)/i.test(pi) || /audio|music|track/i.test(pi);
+    const videoKeywords = /\.(mp4|mov|webm|avi|mkv)/i.test(pi) || /video|vid_|VID_/i.test(pi);
+
+    if (audioKeywords && !videoKeywords) {
+      audioSrc = `https://res.cloudinary.com/${cn}/video/upload/${pi}${pi.includes('.') ? '' : '.mp3'}`;
+      isAudio = true;
+    } else if (cn && pi) {
+      // Якщо не визначено як аудіо — вставляємо як Відео плеєр (iframe)
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:4px;margin:1.5rem 0;';
+      wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cn}&public_id=${encodeURIComponent(pi)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>`;
+      link.parentNode.replaceChild(wrap, link);
+      return;
+    }
+  } else if (href.toLowerCase().endsWith('.mp3') || href.toLowerCase().includes('.mp3?')) {
+    audioSrc = href;
+    isAudio = true;
+  }
+
+  // Вставка стандартного браузерного аудіо плеєра
+  if (isAudio && audioSrc) {
+    const playerContainer = document.createElement('div');
+    playerContainer.style.margin = '1.2rem 0';
+    playerContainer.innerHTML = `
+      <audio controls style="width:100%; height: 40px;">
+        <source src="${audioSrc}" type="audio/mpeg">
+        Ваш браузер не підтримує аудіо елемент.
+      </audio>`;
+    link.parentNode.replaceChild(playerContainer, link);
+  }
+});
 
 // --- Amplenote ---
 function loadAmplenote(body) {
