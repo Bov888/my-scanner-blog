@@ -72,12 +72,11 @@ header { border-bottom: 1px solid var(--border); padding: 0.9rem 1.5rem; positio
 .burger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .burger-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
 
-/* Бургер меню */
-.burger-menu { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 99; }
-.burger-menu.open { display: block; }
-.burger-menu a { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 0.9rem 1.5rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: color 0.2s; }
-.burger-menu a:last-child { border-bottom: none; }
-.burger-menu a:hover { color: var(--accent); }
+/* Бургер меню — плитки сіткою */
+.burger-menu { display: none; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 99; padding: 0.75rem; }
+.burger-menu.open { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
+.burger-menu a { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 0.8rem; cursor: pointer; transition: all 0.2s; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.burger-menu a:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
 /* МОБІЛЬНИЙ */
 @media (max-width: 600px) {
