@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Адмін-панель | Успішний Сканер</title>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://media-library.cloudinary.com/global/all.js"></script>
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
@@ -23,61 +22,34 @@
       });
     }
 
-    // 2. РЕЄСТРАЦІЯ КОМПОНЕНТА З КНОПКОЮ
+    // 2. РЕЄСТРАЦІЯ КАСТОМНОГО БЛОКУ
     CMS.registerEditorComponent({
       id: "cloudinary_media",
-      label: "Cloudinary Video",
+      label: "Відео/Аудіо (Cloudinary)",
       icon: 'media',
-      fields: [{ 
-        name: 'url', 
-        label: 'Натисніть кнопку вище для вибору', 
-        widget: 'string' 
-      }],
-      
-      // Логіка відкриття
-      onAdd: function() {
-        // Ми не повертаємо Promise відразу, щоб дати користувачу натиснути кнопку у вікні
-        return { url: "" };
-      },
-
+      // СЕКРЕТ ТУТ: widget: 'file' змушує систему саму відкрити Cloudinary
+      fields: [
+        { 
+          name: 'url', 
+          label: 'Виберіть файл з Cloudinary', 
+          widget: 'file' 
+        }
+      ],
+      // Форматування тексту в Markdown
       toBlock: function(obj) {
+        if (!obj.url) return "";
         return `[${obj.url}](${obj.url})`;
       },
+      // Читання тексту з Markdown
       pattern: /^\[(.+?)\]\((.+?)\)$/,
       fromBlock: function(match) {
-        return { url: match[2] };
+        return { url: match[2] || match[1] };
       },
-      // Додаємо кнопку прямо в інтерфейс адмінки
+      // Відображення прев'ю
       toPreview: function(obj) {
-        return `
-          <div style="padding:15px; border:2px dashed #0075ff; text-align:center; background:#f0f7ff; border-radius:8px;">
-            <button type="button" id="btn-cloud" style="background:#0075ff; color:#fff; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold;">
-              🎬 ВІДКРИТИ CLOUDINARY
-            </button>
-            <p style="font-size:12px; margin-top:10px; color:#666;">${obj.url || 'Файл не вибрано'}</p>
-          </div>
-          <script>
-            document.getElementById('btn-cloud')?.addEventListener('click', function() {
-              window.cloudinary.openMediaLibrary({
-                cloud_name: "dyvv0gduq",
-                api_key: "363277514958419",
-                multiple: false
-              }, {
-                insertHandler: function(data) {
-                  const url = data.assets[0].secure_url;
-                  // Знаходимо інпут і вставляємо туди посилання
-                  const input = document.querySelector('input[id^="url-"]');
-                  if (input) {
-                    input.value = url;
-                    // Провокуємо подію зміни, щоб CMS зберегла дані
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
-                  }
-                  alert('Відео вибрано! Тепер натисніть "Save" у вікні блоку.');
-                }
-              });
-            });
-          <\/script>
-        `;
+        return `<div style="padding:15px; border:1px solid #6ab05f; background:#f9fff8; border-radius:4px; font-family:sans-serif;">
+          🎬 <b>Вибраний файл:</b><br><small style="color: #666; word-break: break-all;">${obj.url || 'Файл ще не вибрано'}</small>
+        </div>`;
       }
     });
   </script>
