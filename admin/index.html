@@ -1,26 +1,82 @@
-<!DOCTYPE html>  
-<html lang="uk">  
-<head>  
-  <meta charset="utf-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
-  <title>Адмін-панель | Успішний Сканер</title>  
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>  
-</head>  
-<body>  
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>  
-  
-  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.0.0/dist/netlify-cms-media-library-cloudinary.js"></script>  
-  
-  <script>  
-    if (window.netlifyIdentity) {  
-      window.netlifyIdentity.on("init", user => {  
-        if (!user) {  
-          window.netlifyIdentity.on("login", () => {  
-            document.location.href = "/admin/";  
-          });  
-        }  
-      });  
-    }  
-  </script>  
-</body>  
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Адмін-панель | Успішний Сканер</title>
+  <meta name="robots" content="noindex, nofollow">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <!-- Фіксована версія Decap CMS -->
+  <script src="https://unpkg.com/decap-cms@3.11.0/dist/decap-cms.js"></script>
+
+  <!-- Cloudinary media library -->
+  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@1.0.3/dist/netlify-cms-media-library-cloudinary.js"></script>
+
+  <script>
+    // Netlify Identity
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+
+    // Кастомний EditorComponent для вставки медіа з Cloudinary
+    // Додає кнопку "Відео / Аудіо" в тулбар редактора
+    CMS.registerEditorComponent({
+      id: "cloudinary-media",
+      label: "Відео / Аудіо",
+      icon: "film",
+
+      fields: [
+        {
+          name: "url",
+          label: "Файл з хмари",
+          widget: "file",
+          media_library: {
+            config: { multiple: false }
+          }
+        },
+        {
+          name: "label",
+          label: "Підпис",
+          widget: "string",
+          required: false,
+          default: "Медіа"
+        }
+      ],
+
+      // Вставляється в markdown як звичайне посилання
+      // Сайт автоматично розпізнає і замінює на плеєр
+      toBlock: ({ url, label }) => {
+        if (!url) return '';
+        return `[${label || 'Медіа'}](${url})`;
+      },
+
+      // Превʼю в редакторі
+      toPreview: ({ url, label }) => {
+        if (!url) return '';
+        const name = label || url.split('/').pop();
+        const isVideo = /\.(mp4|mov|webm|avi|mkv)/i.test(url) || /VID_|vid_/i.test(url);
+        const icon = isVideo ? '🎬' : '🎵';
+        const type = isVideo ? 'Відео' : 'Аудіо';
+        return `<div style="background:#1e1d1b;padding:0.8rem 1rem;border-radius:4px;border:1px solid #2e2d2a;color:#6ab05f;font-family:monospace;font-size:0.75rem;">
+          ${icon} ${type}: <strong>${name}</strong>
+        </div>`;
+      },
+
+      // Розпізнає вже вставлені посилання на cloudinary/mp3/mp4
+      pattern: /^\[([^\]]*)\]\((https?:\/\/[^)]*(?:cloudinary\.com|\.mp3|\.mp4|\.mov|\.webm)[^)]*)\)$/,
+      fromBlock: match => ({
+        label: match[1],
+        url: match[2]
+      })
+    });
+  </script>
+</body>
 </html>
