@@ -1,26 +1,72 @@
-<!DOCTYPE html>  
-<html lang="uk">  
-<head>  
-  <meta charset="utf-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
-  <title>Адмін-панель | Успішний Сканер</title>  
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>  
-</head>  
-<body>  
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>  
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Адмін-панель | Успішний Сканер</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="https://media-library.cloudinary.com/global/all.js"></script>
+</head>
+<body>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
-  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.0.0/dist/netlify-cms-media-library-cloudinary.js"></script>  
+  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.0.0/dist/netlify-cms-media-library-cloudinary.js"></script>
   
-  <script>  
-    if (window.netlifyIdentity) {  
-      window.netlifyIdentity.on("init", user => {  
-        if (!user) {  
-          window.netlifyIdentity.on("login", () => {  
-            document.location.href = "/admin/";  
-          });  
-        }  
-      });  
-    }  
-  </script>  
-</body>  
+  <script>
+    // 1. ЛОГІКА АВТОРИЗАЦІЇ (ВАШ СТАРИЙ КОД)
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+
+    // 2. РЕЄСТРАЦІЯ КНОПКИ 🎬 У ТУЛБАРІ РЕДАКТОРА
+    CMS.registerEditorComponent({
+      id: "cloudinary_media",
+      label: "Медіа з Cloudinary",
+      icon: 'media', // стандартна іконка відеокамери в Decap
+      fields: [
+        {
+          name: 'url',
+          label: 'URL посилання',
+          widget: 'string'
+        }
+      ],
+      // Відкриваємо вікно вибору файлу
+      onAdd: function() {
+        return new Promise((resolve) => {
+          window.cloudinary.openMediaLibrary(
+            {
+              cloud_name: "ВАШ_CLOUD_NAME", // ЗАМІНІТЬ НА ВЛАШНИЙ
+              api_key: "ВАШ_API_KEY",       // ЗАМІНІТЬ НА ВЛАШНИЙ
+              multiple: false,
+              insert_caption: "Вставити в нотатку"
+            },
+            {
+              insertHandler: function(data) {
+                const asset = data.assets[0];
+                resolve({ url: asset.secure_url });
+              }
+            }
+          );
+        });
+      },
+      // Записуємо в Markdown як посилання, яке наш блог вміє перетворювати на плеєр
+      toBlock: function(obj) {
+        return `[${obj.url}](${obj.url})`;
+      },
+      fromBlock: function(match) {
+        return { url: match[1] };
+      },
+      // Візуалізація в прев'ю адмінки
+      toPreview: function(obj) {
+        return `<div style="padding:10px; border:1px dashed #6ab05f; border-radius:4px; background:#f9fff8;">🎬 <b>Медіа-файл:</b> <br><small>${obj.url}</small></div>`;
+      }
+    });
+  </script>
+</body>
 </html>
