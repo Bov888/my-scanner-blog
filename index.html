@@ -457,26 +457,39 @@ async function openPostBySlug(slug) {
       const container = document.createElement('div');
       container.style.margin = '1.5rem 0';
 
-      // 1. CLOUDINARY (Виправлений блок для Аудіо/Відео)
+       // 1. CLOUDINARY (ПОВНЕ ВИПРАВЛЕННЯ)
       if (href.includes('cloudinary.com')) {
-        // ПЕРШИМ ДІЛОМ перевіряємо розширення файлу
-        const isAudioFile = href.match(/\.(mp3|wav|ogg|m4a|flac|aac)(?:\?|$)/i);
-        
-        if (isAudioFile) {
-          // Якщо це аудіо-розширення — ТОЛЬКИ аудіо-плеєр
-          container.innerHTML = `<audio controls style="width:100%; margin: 15px 0;"><source src="${href}">Ваш браузер не підтримує аудіо.</audio>`;
-        } else if (href.includes('/video/') || href.includes('player.cloudinary.com') || href.match(/\.(mp4|mov|webm|ogv)(?:\?|$)/i)) {
-          // Якщо це відео-шлях або відео-розширення — відеоплеєр
+        // Витягуємо чисте розширення (без параметрів після ?)
+        const extension = href.split(/[#?]/)[0].split('.').pop().toLowerCase();
+        const audioExts = ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'];
+        const videoExts = ['mp4', 'mov', 'webm', 'ogv'];
+
+        if (audioExts.includes(extension)) {
+          // Тільки АУДІО плеєр
+          container.innerHTML = `
+            <div style="margin: 1rem 0; background: var(--surface); padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+              <audio controls style="width:100%; display: block;">
+                <source src="${href}">
+                Ваш браузер не підтримує аудіо.
+              </audio>
+            </div>`;
+        } else if (videoExts.includes(extension) || href.includes('player.cloudinary.com')) {
+          // Тільки ВІДЕО плеєр (16:9)
           container.className = 'youtube-wrap'; 
           container.innerHTML = `<video controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;background:#000;"><source src="${href}">Ваш браузер не підтримує відео.</video>`;
         } else {
-          // Для всіх інших файлів з Cloudinary (наприклад, raw файли)
-          container.innerHTML = `<audio controls style="width:100%; margin: 15px 0;"><source src="${href}">Ваш браузер не підтримує аудіо.</audio>`;
+          // Якщо розширення немає в списку, але це cloudinary (наприклад /video/upload/...)
+          // Перевіряємо чи немає слова /video/ у самому шляху, якщо немає - вважаємо аудіо
+          if (href.includes('/video/') && !href.includes('/raw/')) {
+             container.className = 'youtube-wrap';
+             container.innerHTML = `<video controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;background:#000;"><source src="${href}"></video>`;
+          } else {
+             container.innerHTML = `<audio controls style="width:100%; margin: 1rem 0;"><source src="${href}"></audio>`;
+          }
         }
         link.parentNode.replaceChild(container, link);
       }
 
-  
       // 2. YOUTUBE
       else if (href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)) {
         const id = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)[1];
