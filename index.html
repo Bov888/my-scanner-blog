@@ -457,21 +457,33 @@ async function openPostBySlug(slug) {
       const container = document.createElement('div');
       container.style.margin = '1.5rem 0';
 
-            // 1. CLOUDINARY (Аудіо та Відео)
+                  // 1. CLOUDINARY (Аудіо та Відео)
       if (href.includes('cloudinary.com')) {
-        // Перевіряємо, чи є розширення аудіо-файлом
-        const isAudio = href.match(/\.(mp3|wav|ogg|m4a|flac|aac)$/i);
-        
-        if (isAudio) {
-          // Рендеримо стандартний аудіо-плеєр браузера
-          container.innerHTML = `<audio controls style="width:100%; margin: 10px 0;"><source src="${href}">Ваш браузер не підтримує аудіо.</audio>`;
+        // Перевіряємо: чи є розширення аудіо АБО чи містить шлях слово /audio/
+        const isAudioFile = href.match(/\.(mp3|wav|ogg|m4a|flac|aac)(?:\?|$)/i);
+        const isAudioFolder = href.includes('/audio/');
+
+        if (isAudioFile || isAudioFolder) {
+          // Рендеримо АУДІО-плеєр
+          container.innerHTML = `
+            <div style="padding: 10px 0;">
+              <audio controls style="width:100%; height: 45px;">
+                <source src="${href}">
+                Ваш браузер не підтримує аудіо.
+              </audio>
+            </div>`;
         } else {
-          // Якщо не аудіо — рендеримо як відео (відео-плеєр 16:9)
+          // Рендеримо ВІДЕО-плеєр
           container.className = 'youtube-wrap'; 
-          container.innerHTML = `<video controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;background:#000;"><source src="${href}">Ваш браузер не підтримує відео.</video>`;
+          container.innerHTML = `
+            <video controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;background:#000;">
+              <source src="${href}">
+              Ваш браузер не підтримує відео.
+            </video>`;
         }
         link.parentNode.replaceChild(container, link);
-      }  
+      }
+  
       // 2. YOUTUBE
       else if (href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)) {
         const id = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)[1];
@@ -479,6 +491,7 @@ async function openPostBySlug(slug) {
         container.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen loading="lazy"></iframe>`;
         link.parentNode.replaceChild(container, link);
       }
+
       // 3. SPOTIFY
       else if (href.includes('open.spotify.com')) {
         const sp = href.match(/spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
