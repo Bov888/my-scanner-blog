@@ -457,32 +457,25 @@ async function openPostBySlug(slug) {
       const container = document.createElement('div');
       container.style.margin = '1.5rem 0';
 
-                  // 1. CLOUDINARY (Аудіо та Відео)
+      // 1. CLOUDINARY (Виправлений блок для Аудіо/Відео)
       if (href.includes('cloudinary.com')) {
-        // Перевіряємо: чи є розширення аудіо АБО чи містить шлях слово /audio/
+        // ПЕРШИМ ДІЛОМ перевіряємо розширення файлу
         const isAudioFile = href.match(/\.(mp3|wav|ogg|m4a|flac|aac)(?:\?|$)/i);
-        const isAudioFolder = href.includes('/audio/');
-
-        if (isAudioFile || isAudioFolder) {
-          // Рендеримо АУДІО-плеєр
-          container.innerHTML = `
-            <div style="padding: 10px 0;">
-              <audio controls style="width:100%; height: 45px;">
-                <source src="${href}">
-                Ваш браузер не підтримує аудіо.
-              </audio>
-            </div>`;
-        } else {
-          // Рендеримо ВІДЕО-плеєр
+        
+        if (isAudioFile) {
+          // Якщо це аудіо-розширення — ТОЛЬКИ аудіо-плеєр
+          container.innerHTML = `<audio controls style="width:100%; margin: 15px 0;"><source src="${href}">Ваш браузер не підтримує аудіо.</audio>`;
+        } else if (href.includes('/video/') || href.includes('player.cloudinary.com') || href.match(/\.(mp4|mov|webm|ogv)(?:\?|$)/i)) {
+          // Якщо це відео-шлях або відео-розширення — відеоплеєр
           container.className = 'youtube-wrap'; 
-          container.innerHTML = `
-            <video controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;background:#000;">
-              <source src="${href}">
-              Ваш браузер не підтримує відео.
-            </video>`;
+          container.innerHTML = `<video controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;background:#000;"><source src="${href}">Ваш браузер не підтримує відео.</video>`;
+        } else {
+          // Для всіх інших файлів з Cloudinary (наприклад, raw файли)
+          container.innerHTML = `<audio controls style="width:100%; margin: 15px 0;"><source src="${href}">Ваш браузер не підтримує аудіо.</audio>`;
         }
         link.parentNode.replaceChild(container, link);
       }
+
   
       // 2. YOUTUBE
       else if (href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)) {
