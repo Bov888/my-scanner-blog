@@ -1,78 +1,59 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Адмін-панель | Успішний Сканер</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://media-library.cloudinary.com/global/all.js"></script>
-</head>
-<body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.0.0/dist/netlify-cms-media-library-cloudinary.js"></script>
-  
-  <script>
-    // 1. АВТОРИЗАЦІЯ
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
-    }
-
-    // 2. РЕЄСТРАЦІЯ КОМПОНЕНТА
-    CMS.registerEditorComponent({
-      id: "cloudinary_media",
-      label: "Cloudinary Video",
-      icon: 'media',
-      fields: [{ name: 'url', label: 'Video URL', widget: 'string' }],
-      
-      // Функція додавання
-      onAdd: function() {
-        return new Promise((resolve, reject) => {
-          if (!window.cloudinary) {
-            alert("Помилка: Бібліотека Cloudinary не завантажилась");
-            return reject();
-          }
-
-          window.cloudinary.openMediaLibrary(
-            {
-              cloud_name: "dyvv0gduq",
-              api_key: "363277514958419",
-              multiple: false,
-              inline_container: null, // відкривати модальним вікном
-              insert_caption: "Вставити відео"
-            },
-            {
-              insertHandler: function(data) {
-                const asset = data.assets[0];
-                console.log("Вибрано файл:", asset.secure_url);
-                resolve({ url: asset.secure_url });
-              }
-            }
-          );
+<script>
+  // 1. АВТОРИЗАЦІЯ (залишаємо як було)
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
         });
-      },
-      
-      // Що бачимо в коді Markdown
-      toBlock: function(obj) {
-        return `[${obj.url}](${obj.url})`;
-      },
-      
-      // Розпізнавання
-      pattern: /^\[(.+?)\]\((.+?)\)$/,
-      fromBlock: function(match) {
-        return { url: match[2] };
-      },
-      
-      // Прев'ю в адмінці
-      toPreview: function(obj) {
-        return `<div style="padding:10px; background:#e8f0e6; border-radius:4px; font-family:sans-serif;">🎬 <b>Відео:</b> ${obj.url}</div>`;
       }
     });
-  </script>
-</body>
-</html>
+  }
+
+  // 2. ОНОВЛЕНА РЕЄСТРАЦІЯ 🎬
+  CMS.registerEditorComponent({
+    id: "cloudinary_media",
+    label: "Cloudinary Video",
+    icon: 'media',
+    // Ми залишаємо порожній масив полів, щоб CMS не малювала інпути
+    fields: [],
+    
+    // Викликаємо хмару відразу
+    onAdd: function() {
+      return new Promise((resolve) => {
+        if (!window.cloudinary) {
+          alert("Бібліотека Cloudinary ще завантажується...");
+          return;
+        }
+
+        window.cloudinary.openMediaLibrary(
+          {
+            cloud_name: "dyvv0gduq",
+            api_key: "363277514958419",
+            multiple: false,
+            // Додаємо цей параметр для примусового відкриття поверх всього
+            z_index: 99999 
+          },
+          {
+            insertHandler: function(data) {
+              const url = data.assets[0].secure_url;
+              resolve({ url: url });
+            }
+          }
+        );
+      });
+    },
+    
+    // Обробка результату
+    toBlock: function(obj) {
+      return `[${obj.url}](${obj.url})`;
+    },
+    pattern: /^\[(.+?)\]\((.+?)\)$/,
+    fromBlock: function(match) {
+      return { url: match[2] };
+    },
+    toPreview: function(obj) {
+      return `<div style="padding:8px; background:#f0f7ff; border:1px solid #0075ff; border-radius:4px;">🎬 <b>Відео додано</b></div>`;
+    }
+  });
+</script>
