@@ -457,15 +457,22 @@ async function openPostBySlug(slug) {
       const container = document.createElement('div');
       container.style.margin = '1.5rem 0';
 
-      // 1. CLOUDINARY (res. або player.)
+            // 1. CLOUDINARY (Аудіо та Відео)
       if (href.includes('cloudinary.com')) {
-        if (href.includes('/video/') || href.match(/\.(mp4|mov|webm|ogv)$/i) || href.includes('player.cloudinary.com')) {
-          container.className = 'youtube-wrap'; // 16:9 стиль
-          container.innerHTML = `<video controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;background:#000;"><source src="${href}">Ваш браузер не підтримує відео.</video>`;
+        // Перевіряємо, чи є розширення аудіо-файлом
+        const isAudio = href.match(/\.(mp3|wav|ogg|m4a|flac|aac)$/i);
+        
+        if (isAudio) {
+          // Рендеримо стандартний аудіо-плеєр браузера
+          container.innerHTML = `<audio controls style="width:100%; margin: 10px 0;"><source src="${href}">Ваш браузер не підтримує аудіо.</audio>`;
         } else {
-          container.innerHTML = `<audio controls style="width:100%;"><source src="${href}">Ваш браузер не підтримує аудіо.</audio>`;
+          // Якщо не аудіо — рендеримо як відео (відео-плеєр 16:9)
+          container.className = 'youtube-wrap'; 
+          container.innerHTML = `<video controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;background:#000;"><source src="${href}">Ваш браузер не підтримує відео.</video>`;
         }
         link.parentNode.replaceChild(container, link);
+      } 
+
       } 
       // 2. YOUTUBE
       else if (href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)) {
