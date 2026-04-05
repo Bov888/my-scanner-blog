@@ -1,57 +1,26 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Адмін-панель | Успішний Сканер</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-</head>
-<body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.0.0/dist/netlify-cms-media-library-cloudinary.js"></script>
+<!DOCTYPE html>  
+<html lang="uk">  
+<head>  
+  <meta charset="utf-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+  <title>Адмін-панель | Успішний Сканер</title>  
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>  
+</head>  
+<body>  
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>  
   
-  <script>
-    // 1. АВТОРИЗАЦІЯ
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
-    }
-
-    // 2. РЕЄСТРАЦІЯ КАСТОМНОГО БЛОКУ
-    CMS.registerEditorComponent({
-      id: "cloudinary_media",
-      label: "Відео/Аудіо (Cloudinary)",
-      icon: 'media',
-      // СЕКРЕТ ТУТ: widget: 'file' змушує систему саму відкрити Cloudinary
-      fields: [
-        { 
-          name: 'url', 
-          label: 'Виберіть файл з Cloudinary', 
-          widget: 'file' 
-        }
-      ],
-      // Форматування тексту в Markdown
-      toBlock: function(obj) {
-        if (!obj.url) return "";
-        return `[${obj.url}](${obj.url})`;
-      },
-      // Читання тексту з Markdown
-      pattern: /^\[(.+?)\]\((.+?)\)$/,
-      fromBlock: function(match) {
-        return { url: match[2] || match[1] };
-      },
-      // Відображення прев'ю
-      toPreview: function(obj) {
-        return `<div style="padding:15px; border:1px solid #6ab05f; background:#f9fff8; border-radius:4px; font-family:sans-serif;">
-          🎬 <b>Вибраний файл:</b><br><small style="color: #666; word-break: break-all;">${obj.url || 'Файл ще не вибрано'}</small>
-        </div>`;
-      }
-    });
-  </script>
-</body>
+  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@^1.0.0/dist/netlify-cms-media-library-cloudinary.js"></script>  
+  
+  <script>  
+    if (window.netlifyIdentity) {  
+      window.netlifyIdentity.on("init", user => {  
+        if (!user) {  
+          window.netlifyIdentity.on("login", () => {  
+            document.location.href = "/admin/";  
+          });  
+        }  
+      });  
+    }  
+  </script>  
+</body>  
 </html>
