@@ -580,261 +580,170 @@ function renderPostsList() {
   els.postsContainer.appendChild(fragment);
 }
 
-// --- Завантаження дописів ---
+// --- Завантаження дописів (Оптимізовано через індекс) ---
 async function loadPosts() {
   if (postsCachedAt && Date.now() - postsCachedAt < CACHE_TTL && allPosts.length > 0) {
     renderPostsList();
     return;
   }
+
   try {
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
-    if (res.status === 403) {
-      els.postsContainer.innerHTML = `<div class="empty-state"><p>GitHub API обмеження — спробуйте пізніше</p></div>`;
-      return;
-    }
-    if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-
-    const files = await res.json();
-    const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
-
-    if (mdFiles.length === 0) {
-      els.postsContainer.innerHTML = `<div class="empty-state"><p>Поки що дописів немає</p></div>`;
-      return;
-    }
-
-    const results = await Promise.all(mdFiles.map(async file => {
-      const r = await fetch(file.download_url);
-      if (!r.ok) throw new Error(`Fetch error: ${file.name}`);
-      const text = await r.text();
-      return { file, text };
-    }));
-
-    allPosts = [];
-    const tags = new Set();
-
-    for (const { file, text } of results) {
-      const slug = file.name.replace('.md', '');
-      postsCache[slug] = { text };
-      const title = parseMeta(text, 'title') || 'Без назви';
-      const excerpt = parseMeta(text, 'excerpt') || '';
-      const dateStr = parseMeta(text, 'date') || '';
-      const tag = parseMeta(text, 'tag') || 'Допис';
-      const date = new Date(dateStr);
-      const displayDate = isNaN(date.getTime()) ? 'НОВЕ' : `${MONTHS[date.getMonth()]}<br>${date.getFullYear()}`;
-      tags.add(tag);
-      allPosts.push({ slug, title, excerpt, tag, displayDate });
-    }
+    // 1. Завантажуємо ОДИН файл з метаданими замість десятків запитів до API
+    const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/posts.json`);
+    
+    if (!res.ok) throw new Error('Не вдалося завантажити індекс постів');
+    
+    allPosts = await res.json();
+    
+    // Форматуємо дати для списку
+    allPosts.forEach(p => {
+      const d = new Date(p.date);
+      p.displayDate = `<span>${d.getDate()}</span> ${MONTHS[d.getMonth()]}`;
+    });
 
     postsCachedAt = Date.now();
-    els.tagFilters.innerHTML = [...tags].map(tag =>
-      `<button class="tag-filter" data-tag="${tag}">${tag}</button>`
-    ).join('');
-    els.tagFilters.addEventListener('click', e => {
-      const btn = e.target.closest('.tag-filter');
-      if (btn) filterByTag(btn.dataset.tag);
-    });
+    
+    renderFilters(); 
     renderPostsList();
 
-  } catch(e) {
-    els.postsContainer.innerHTML = `<div class="empty-state"><p>Не вдалось завантажити дописи</p></div>`;
-    console.error('loadPosts:', e);
+  } catch (e) {
+    els.postsContainer.innerHTML = `<div class="empty-state"><p>Помилка завантаження списку. Спробуйте оновити сторінку.</p></div>`;
+    console.error('loadPosts error:', e);
   }
 }
 
-// --- Завантаження сторінок ---
-// Читаємо тільки перші 300 байт — достатньо для frontmatter з title
+// --- Відкриття конкретного допису (Завантаження за вимогою) ---
+async function openPostBySlug(slug) {
+  showPage('post');
+  
+  // Показуємо метадані з JSON, поки вантажиться основний текст
+  const meta = allPosts.find(p => p.slug === slug);
+  if (meta) {
+    els.postTitle.textContent = meta.title;
+    els.postDate.textContent = formatDateFull(meta.date);
+    els.postTag.textContent = meta.tag;
+    setPageTitle(meta.title);
+  }
+
+  els.postContent.innerHTML = '<p class="loading">Завантаження змісту...</p>';
+
+  try {
+    // Перевіряємо кеш тексту
+    if (!postsCache[slug] || !postsCache[slug].text) {
+      const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/posts/${slug}.md`);
+      if (!res.ok) throw new Error('Текст не знайдено');
+      postsCache[slug] = { text: await res.text() };
+    }
+
+    const rawContent = postsCache[slug].text;
+    const cleanMd = rawContent.replace(/^---[\s\S]*?---/, '').trim();
+    
+    els.postContent.innerHTML = safeHTML(marked.parse(cleanMd));
+    els.postTime.textContent = calcReadingTime(cleanMd);
+
+    // Активуємо плеєри (YouTube, Cloudinary)
+    processMediaLinks();
+
+  } catch (e) {
+    els.postTitle.textContent = 'Помилка';
+    els.postContent.innerHTML = '<p>Не вдалося завантажити текст допису.</p>';
+    console.error('openPostBySlug error:', e);
+  }
+}
+
+// --- Робота зі сторінками (About та інше) ---
 async function loadPages() {
   try {
     const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/pages`);
-    if (!res.ok) return;
-    const files = await res.json();
-    const mdFiles = files.filter(f => f.name.endsWith('.md'));
-    if (mdFiles.length === 0) return;
-
-    const results = await Promise.all(mdFiles.map(async file => {
-      const r = await fetch(file.download_url, { headers: { Range: 'bytes=0-300' } });
-      const text = await r.text();
-      return { file, text };
-    }));
-
-    for (const { file, text } of results) {
-      // Беремо title з frontmatter, fallback — красива назва з slug
-      const title = parseMeta(text, 'title') ||
-        file.name.replace('.md', '').replace(/-/g, ' ');
-      const slug = file.name.replace('.md', '');
-
-      const a = document.createElement('a');
-      a.textContent = title;
-      a.href = `#page-${slug}`;
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        navigateTo('page-' + slug);
-        closeBurger();
-      });
-      els.burgerMenuInner.appendChild(a);
+    if (res.ok) {
+      const files = await res.json();
+      const mdFiles = files.filter(f => f.name.endsWith('.md'));
+      for (const f of mdFiles) {
+        const r = await fetch(f.download_url);
+        if (r.ok) postsCache['page-' + f.name.replace('.md', '')] = { text: await r.text() };
+      }
     }
-  } catch(e) {
-    console.error('loadPages:', e);
-  }
+  } catch (e) { console.error('loadPages error:', e); }
 }
 
-// --- Відкрити статичну сторінку ---
 async function openPageBySlug(slug) {
   showPage('page');
-  els.pageTitle.textContent = 'Завантаження...';
-  els.pageContent.innerHTML = '';
+  els.pageContent.innerHTML = '<p class="loading">Завантаження...</p>';
   try {
-    const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text = await res.text();
-    const title = parseMeta(text, 'title') || slug.replace(/-/g, ' ');
-    const body = text.replace(/^---[\s\S]*?---\n?/, '');
+    const key = 'page-' + slug;
+    if (!postsCache[key]) {
+       const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`);
+       if (res.ok) postsCache[key] = { text: await res.text() };
+    }
+    const text = postsCache[key].text;
+    const title = parseMeta(text, 'title') || slug;
     els.pageTitle.textContent = title;
     setPageTitle(title);
-    // Фікс баг з обрізаним контентом: додаємо padding-bottom щоб останній рядок не обрізався
-    els.pageContent.style.paddingBottom = '2rem';
-    els.pageContent.innerHTML = safeHTML(marked.parse(decodeHtmlEntities(body)));
-    els.pageContent.querySelectorAll('img').forEach(img => img.setAttribute('loading', 'lazy'));
-  } catch(e) {
-    els.pageTitle.textContent = 'Сторінку не знайдено';
-    els.pageContent.innerHTML = '<p>Не вдалось завантажити сторінку.</p>';
-    console.error('openPageBySlug:', e);
+    els.pageContent.innerHTML = safeHTML(marked.parse(text.replace(/^---[\s\S]*?---/, '').trim()));
+  } catch (e) {
+    els.pageTitle.textContent = 'Помилка';
+    els.pageContent.innerHTML = '<p>Сторінку не знайдено.</p>';
   }
 }
 
-// --- Відкрити допис ---
-async function openPostBySlug(slug) {
-  showPage('post');
-  els.postTitle.textContent = 'Завантаження...';
-  els.postDate.textContent = '';
-  els.postTag.textContent = '';
-  els.postTime.textContent = '';
-  els.postContent.innerHTML = '';
-  els.shareBtn.textContent = '↗ поділитись';
-  els.shareBtn.classList.remove('copied');
+// --- Допоміжні функції рендеру ---
+function renderFilters() {
+  const tags = new Set(allPosts.map(p => p.tag));
+  els.tagFilters.innerHTML = Array.from(tags).map(tag => 
+    `<button class="tag-filter" data-tag="${tag}">${tag}</button>`
+  ).join('');
+  
+  els.tagFilters.querySelectorAll('.tag-filter').forEach(btn => {
+    btn.addEventListener('click', () => filterByTag(btn.dataset.tag));
+  });
+}
 
-  try {
-    let text;
-    if (postsCache[slug]?.text) {
-      text = postsCache[slug].text;
-    } else {
-      const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_FOLDER}/${slug}.md`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      text = await res.text();
-      postsCache[slug] = { text }; // зберігаємо в кеш
+function formatDateFull(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return `${d.getDate()} ${MONTHS_UA[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function processMediaLinks() {
+  const links = els.postContent.querySelectorAll('a');
+  links.forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href) return;
+
+    // Логіка для Cloudinary (Video/Audio)
+    if (href.includes('res.cloudinary.com')) {
+      const m = href.match(/res\.cloudinary\.com\/([^/]+)\/(?:video|image|raw)\/upload\/(?:v\d+\/)?(.+?)(\.[^.]+)?$/);
+      if (m) {
+        const cloudName = m[1];
+        const publicId = m[2];
+        const isVideo = /^VID_/i.test(publicId.split('/').pop());
+
+        if (isVideo) {
+          const wrap = document.createElement('div');
+          wrap.className = 'youtube-wrap';
+          wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cloudName}&public_id=${encodeURIComponent(publicId)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>`;
+          link.parentNode.replaceChild(wrap, link);
+        } else {
+          // Аудіо-плеєр
+          const wrap = document.createElement('div');
+          wrap.style.margin = '1.2rem 0';
+          wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cloudName}&public_id=${encodeURIComponent(publicId)}&fluid=true&controls=true" width="100%" height="90" style="border:none;border-radius:4px;" loading="lazy" title="Аудіо"></iframe>`;
+          link.parentNode.replaceChild(wrap, link);
+        }
+      }
     }
-
-    const title = parseMeta(text, 'title') || 'Без назви';
-    const dateStr = parseMeta(text, 'date') || '';
-    const tag = parseMeta(text, 'tag') || '';
-    const body = text.replace(/^---[\s\S]*?---\n?/, '');
-
-    const date = new Date(dateStr);
-    const dispDate = isNaN(date.getTime())
-      ? ''
-      : `${date.getDate()} ${MONTHS_UA[date.getMonth()]} ${date.getFullYear()}`;
-
-    els.postTitle.textContent = title;
-    els.postDate.textContent = dispDate;
-    els.postTime.textContent = calcReadingTime(body);
-    els.postTag.textContent = tag;
-    els.postTag.onclick = () => filterByTag(tag, false);
-    setPageTitle(title);
-
-    els.postContent.innerHTML = safeHTML(marked.parse(decodeHtmlEntities(body)));
-    els.postContent.querySelectorAll('img').forEach(img => img.setAttribute('loading', 'lazy'));
-
-    // Медіа-плеєри
-    els.postContent.querySelectorAll('a').forEach(link => {
-      const href = link.getAttribute('href') || '';
-
-      // YouTube
-      const yt = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-      if (yt) {
-        const wrap = document.createElement('div');
-        wrap.className = 'youtube-wrap';
-        wrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen loading="lazy" title="YouTube відео"></iframe>`;
-        link.parentNode.replaceChild(wrap, link);
-        return;
-      }
-
-      // Spotify
-      const sp = href.match(/open\.spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
-      if (sp) {
-        const frame = document.createElement('div');
-        frame.style.margin = '1.5rem 0';
-        frame.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify"></iframe>`;
-        link.parentNode.replaceChild(frame, link);
-        return;
-      }
-
-      // Cloudinary — embed плеєр (https://player.cloudinary.com/embed/...)
-      if (href.includes('player.cloudinary.com')) {
-        const p = new URLSearchParams(href.split('?')[1]);
-        const cn = p.get('cloud_name'), pi = p.get('public_id');
-        if (cn && pi) {
-          const isVideo = /\.(mp4|mov|webm|avi|mkv)/i.test(pi) || /video|vid_|VID_/i.test(pi);
-          if (isVideo) {
-            const wrap = document.createElement('div');
-            wrap.className = 'youtube-wrap';
-            wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cn}&public_id=${encodeURIComponent(pi)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy" title="Відео"></iframe>`;
-            link.parentNode.replaceChild(wrap, link);
-          } else {
-            const audioSrc = `https://res.cloudinary.com/${cn}/video/upload/${pi}${pi.includes('.') ? '' : '.mp3'}`;
-            const player = document.createElement('div');
-            player.style.margin = '1.2rem 0';
-            player.innerHTML = `<audio controls style="width:100%;"><source src="${audioSrc}" type="audio/mpeg">Браузер не підтримує аудіо.</audio>`;
-            link.parentNode.replaceChild(player, link);
-          }
-        }
-        return;
-      }
-
-      // Cloudinary — пряме посилання (https://res.cloudinary.com/...)
-      // Саме такий формат вставляє адмінка Decap CMS
-      if (href.includes('res.cloudinary.com')) {
-        // Витягуємо cloud_name і public_id
-        // URL формат: https://res.cloudinary.com/{cloud_name}/video/upload/{version}/{public_id}.mp4
-        const m = href.match(/res\.cloudinary\.com\/([^/]+)\/(?:video|image|raw)\/upload\/(?:v\d+\/)?(.+?)(\.[^.]+)?$/);
-        if (m) {
-          const cn = m[1];
-          const pi = m[2]; // public_id без розширення
-          // VID_ на початку назви = відео, інше = аудіо
-          const fileName = pi.split('/').pop();
-          const isVideo = /^VID_/i.test(fileName);
-          if (isVideo) {
-            const wrap = document.createElement('div');
-            wrap.className = 'youtube-wrap';
-            wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cn}&public_id=${encodeURIComponent(pi)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy" title="Відео"></iframe>`;
-            link.parentNode.replaceChild(wrap, link);
-          } else {
-            // Аудіо через стандартний плеєр браузера
-            const player = document.createElement('div');
-            player.style.margin = '1.2rem 0';
-            player.innerHTML = `<audio controls style="width:100%;"><source src="${href}">Ваш браузер не підтримує аудіо.</audio>`;
-            link.parentNode.replaceChild(player, link);
-          }
-        }
-        return;
-      }
-
-      // Прямий MP3
-      if (href.toLowerCase().endsWith('.mp3') || href.toLowerCase().includes('.mp3?')) {
-        const player = document.createElement('div');
-        player.style.margin = '1.2rem 0';
-        player.innerHTML = `<audio controls style="width:100%;"><source src="${href}" type="audio/mpeg">Браузер не підтримує аудіо.</audio>`;
-        link.parentNode.replaceChild(player, link);
-      }
-    });
-
-  } catch(e) {
-    els.postTitle.textContent = 'Допис не знайдено';
-    els.postContent.innerHTML = '<p>Не вдалось завантажити допис.</p>';
-    console.error('openPostBySlug:', e);
-  }
+    
+    // Прямий MP3
+    if (href.toLowerCase().endsWith('.mp3')) {
+      const player = document.createElement('div');
+      player.style.margin = '1.2rem 0';
+      player.innerHTML = `<audio controls style="width:100%;"><source src="${href}" type="audio/mpeg"></audio>`;
+      link.parentNode.replaceChild(player, link);
+    }
+  });
 }
 
-// --- Netlify Identity (тільки для /admin/) ---
+// --- Netlify Identity ---
 if (window.location.pathname.startsWith('/admin')) {
   const script = document.createElement('script');
   script.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
@@ -842,14 +751,11 @@ if (window.location.pathname.startsWith('/admin')) {
   script.onload = () => {
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on('init', user => {
-        if (!user) window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
+        if (!user) window.netlifyIdentity.on('login', () => { window.location.reload(); });
       });
     }
   };
 }
 </script>
-
-<script data-goatcounter="https://uspishnyskaner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
-
 </body>
 </html>
