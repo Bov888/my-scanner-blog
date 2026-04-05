@@ -26,9 +26,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap&font-display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
 
-<!-- DOMPurify для захисту від XSS -->
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
-<!-- marked — без defer, потрібен одразу -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
@@ -70,7 +68,7 @@ header.menu-open { border-bottom-color: transparent; }
 .burger-menu a { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 0.8rem; cursor: pointer; transition: all 0.2s; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); display: block; text-decoration: none; }
 .burger-menu a:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
-/* Main зсувається через CSS змінну — без JS layout thrashing */
+/* Main зсувається через CSS змінну */
 main { max-width: var(--max); margin: 0 auto; padding: calc(3rem + var(--menu-height)) 1.5rem 6rem; transition: padding-top 0.2s ease; }
 
 .page { display: none; }
@@ -151,15 +149,8 @@ main { max-width: var(--max); margin: 0 auto; padding: calc(3rem + var(--menu-he
 .share-btn.copied { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
 /* YOUTUBE / ВІДЕО */
-.youtube-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; margin: 1.5rem 0; }
-.youtube-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
-/* ПРО МЕНЕ */
-.about-section h2 { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
-.about-section p { color: var(--muted); margin-bottom: 1rem; font-size: 0.95rem; }
-.about-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
-.about-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); color: var(--muted); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; background: none; transition: all 0.2s; }
-.about-tag:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.youtube-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin: 1.5rem 0; background: #000; }
+.youtube-wrap iframe, .youtube-wrap video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
 /* СТАНИ */
 .loading { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
@@ -228,7 +219,7 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
     <div class="hero">
       <div class="hero-label">Блог</div>
       <h1>Нотатки людини з <em>широкими інтересами</em></h1>
-      <p>Про PKM, ШІ, автоматизацію, спорт і все що зацікавило цього тижня. Без графіку і перфекціонізму.</p>
+      <p>Про PKM, ШІ, автоматизацію, спорт і все що зацікавило цього тижня.</p>
     </div>
     <div class="posts-label">Дописи</div>
     <div class="search-bar" role="search">
@@ -236,14 +227,14 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
       <input class="search-input" id="search-input" type="search" placeholder="Пошук дописів..." aria-label="Пошук дописів">
       <button class="search-clear" id="search-clear" aria-label="Очистити пошук">×</button>
     </div>
-    <div id="tag-filters" class="tag-filters" role="group" aria-label="Фільтри по тегах"></div>
+    <div id="tag-filters" class="tag-filters"></div>
     <div id="posts-container" aria-live="polite">
       <p class="loading">Завантаження дописів...</p>
     </div>
   </div>
 
   <div id="page-post" class="page">
-    <button class="back-btn" id="back-btn-post" aria-label="Повернутись до списку">← до списку</button>
+    <button class="back-btn" id="back-btn-post">← до списку</button>
     <div class="post-header">
       <h2 id="post-title-display"></h2>
       <div class="post-meta">
@@ -259,7 +250,7 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
   </div>
 
   <div id="page-page" class="page">
-    <button class="back-btn" id="back-btn-page" aria-label="Повернутись до списку">← до списку</button>
+    <button class="back-btn" id="back-btn-page">← до списку</button>
     <div class="post-header">
       <h2 id="page-title-display"></h2>
     </div>
@@ -269,10 +260,7 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
   <div id="page-about" class="page">
     <div class="about-section">
       <h2>Про мене</h2>
-      <p>Людина-сканер з Прикарпаття. 7+ років у роздрібній торгівлі та телекомі. Колись керував чотирма магазинами одночасно.</p>
-      <p>Захоплююсь PKM, ШІ, автоматизацією, бігом і ще купою речей. Цей блог — мої нотатки вголос. Пишу, коли є що сказати.</p>
-      <p>Пробіг півмарафон. Скинув 13 кг за 100 днів. Займався силовими тренуваннями і кроссфітом.</p>
-      <p>Маю більше акаунтів у застосунках для нотаток, ніж треба.</p>
+      <p>Людина-сканер з Прикарпаття. Цей блог — мої нотатки вголос.</p>
       <div class="about-tags" id="about-tags"></div>
     </div>
   </div>
@@ -281,13 +269,10 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
 <button class="scroll-top" id="scroll-top" aria-label="Вгору">↑</button>
 
 <footer>
-  <div class="footer-inner">
-    <p>© 2026 Успішний сканер</p>
-  </div>
+  <div class="footer-inner"><p>© 2026 Успішний сканер</p></div>
 </footer>
 
 <script>
-// Ініціалізуємо marked одразу після завантаження скрипта
 const renderer = new marked.Renderer();
 renderer.html = token => typeof token === 'object' ? (token.text || token.raw || '') : token;
 marked.use({ breaks: true, gfm: true, renderer });
@@ -299,529 +284,213 @@ const GITHUB_REPO = 'my-scanner-blog';
 const POSTS_FOLDER = 'posts';
 const SITE_TITLE = 'Як стати успішним сканером';
 const CACHE_TTL = 5 * 60 * 1000;
-
 const MONTHS = ["СІЧ","ЛЮТ","БЕР","КВІ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
 const MONTHS_UA = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
-const ABOUT_TAGS = ['PKM','ШІ та автоматизація','Спорт та дисципліна','Життя сканера','Інструменти','Нотатки'];
+const ABOUT_TAGS = ['PKM','ШІ','Спорт','Життя','Інструменти'];
 
-let postsCache = {};
-let postsCachedAt = null;
-let allPosts = [];
-let activeTag = null;
-let searchQuery = '';
-let searchDebounce = null;
-
+let postsCache = {}, postsCachedAt = null, allPosts = [], activeTag = null, searchQuery = '', searchDebounce = null;
 const $ = id => document.getElementById(id);
 const els = {};
 
 function initApp() {
   Object.assign(els, {
-    header: document.querySelector('header'),
-    main: $('main'),
-    themeToggle: $('theme-toggle'),
-    burgerBtn: $('burger-btn'),
-    burgerMenu: $('burger-menu'),
-    burgerMenuInner: document.querySelector('.burger-menu-inner'),
-    postsContainer: $('posts-container'),
-    tagFilters: $('tag-filters'),
-    searchInput: $('search-input'),
-    searchClear: $('search-clear'),
-    scrollTop: $('scroll-top'),
-    shareBtn: $('share-btn'),
-    postTitle: $('post-title-display'),
-    postDate: $('post-date-display'),
-    postTime: $('post-reading-time'),
-    postTag: $('post-tag-display'),
-    postContent: $('post-content-display'),
-    pageTitle: $('page-title-display'),
-    pageContent: $('page-content-display'),
-    aboutTags: $('about-tags'),
+    header: document.querySelector('header'), main: $('main'), themeToggle: $('theme-toggle'),
+    burgerBtn: $('burger-btn'), burgerMenu: $('burger-menu'), burgerMenuInner: document.querySelector('.burger-menu-inner'),
+    postsContainer: $('posts-container'), tagFilters: $('tag-filters'), searchInput: $('search-input'),
+    searchClear: $('search-clear'), scrollTop: $('scroll-top'), shareBtn: $('share-btn'),
+    postTitle: $('post-title-display'), postDate: $('post-date-display'), postTime: $('post-reading-time'),
+    postTag: $('post-tag-display'), postContent: $('post-content-display'), pageTitle: $('page-title-display'),
+    pageContent: $('page-content-display'), aboutTags: $('about-tags'),
   });
 
-  els.aboutTags.innerHTML = ABOUT_TAGS.map(tag =>
-    `<button class="about-tag" data-tag="${tag}">${tag}</button>`
-  ).join('');
-
-  initTheme();
-  initBurger();
-  initScrollTop();
-  initEvents();
+  els.aboutTags.innerHTML = ABOUT_TAGS.map(tag => `<button class="about-tag" data-tag="${tag}">${tag}</button>`).join('');
+  initTheme(); initBurger(); initScrollTop(); initEvents();
   Promise.all([loadPages(), routeHandler()]);
 }
 
-// --- Тема ---
 function initTheme() {
-  const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const theme = saved || (prefersDark ? 'dark' : 'light');
-  if (theme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    els.themeToggle.textContent = '☀ тема';
-  }
+  const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  if (theme === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); els.themeToggle.textContent = '☀ тема'; }
 }
 function toggleTheme() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const newTheme = isDark ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', newTheme);
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
   els.themeToggle.textContent = isDark ? '☾ тема' : '☀ тема';
-  localStorage.setItem('theme', newTheme);
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
 }
 
-// --- Бургер ---
-// Фікс баг зі зміщенням: використовуємо CSS змінну замість прямої зміни paddingTop
-// Це запобігає layout thrashing при повторних відкриттях/закриттях
 function initBurger() {
-  els.burgerBtn.addEventListener('click', toggleBurger);
-  document.addEventListener('click', e => {
-    if (els.burgerMenu.classList.contains('open') &&
-        !els.burgerMenu.contains(e.target) &&
-        !els.burgerBtn.contains(e.target)) {
-      closeBurger();
-    }
+  els.burgerBtn.addEventListener('click', () => {
+    const isOpen = els.burgerMenu.classList.toggle('open');
+    els.burgerBtn.classList.toggle('open', isOpen);
+    els.header.classList.toggle('menu-open', isOpen);
+    document.documentElement.style.setProperty('--menu-height', isOpen ? `${els.burgerMenu.offsetHeight}px` : '0px');
   });
 }
-
-function toggleBurger() {
-  const isOpen = els.burgerMenu.classList.contains('open');
-  els.burgerBtn.classList.toggle('open', !isOpen);
-  els.burgerMenu.classList.toggle('open', !isOpen);
-  els.header.classList.toggle('menu-open', !isOpen);
-  els.burgerBtn.setAttribute('aria-expanded', String(!isOpen));
-
-  if (!isOpen) {
-    // Відкриваємо — вимірюємо висоту після рендеру і встановлюємо CSS змінну
-    requestAnimationFrame(() => {
-      const h = els.burgerMenu.offsetHeight;
-      document.documentElement.style.setProperty('--menu-height', `${h}px`);
-    });
-  } else {
-    // Закриваємо — скидаємо CSS змінну
-    document.documentElement.style.setProperty('--menu-height', '0px');
-  }
-}
-
 function closeBurger() {
-  if (!els.burgerMenu.classList.contains('open')) return; // вже закрито
-  els.burgerBtn.classList.remove('open');
-  els.burgerMenu.classList.remove('open');
-  els.header.classList.remove('menu-open');
-  els.burgerBtn.setAttribute('aria-expanded', 'false');
-  document.documentElement.style.setProperty('--menu-height', '0px');
+  els.burgerMenu.classList.remove('open'); els.burgerBtn.classList.remove('open');
+  els.header.classList.remove('menu-open'); document.documentElement.style.setProperty('--menu-height', '0px');
 }
 
-// --- Scroll top ---
 function initScrollTop() {
-  window.addEventListener('scroll', () => {
-    els.scrollTop.classList.toggle('visible', window.scrollY > 400);
-  }, { passive: true });
+  window.addEventListener('scroll', () => els.scrollTop.classList.toggle('visible', window.scrollY > 400), { passive: true });
   els.scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
-// --- Події ---
 function initEvents() {
   $('site-title').addEventListener('click', () => { navigateTo('home'); closeBurger(); });
   els.themeToggle.addEventListener('click', toggleTheme);
   els.searchInput.addEventListener('input', e => {
     clearTimeout(searchDebounce);
-    searchDebounce = setTimeout(() => handleSearch(e.target.value), 200);
+    searchDebounce = setTimeout(() => { searchQuery = e.target.value.toLowerCase(); renderPostsList(); }, 200);
   });
-  els.searchClear.addEventListener('click', clearSearch);
   $('back-btn-post').addEventListener('click', () => navigateTo('home'));
   $('back-btn-page').addEventListener('click', () => navigateTo('home'));
   els.shareBtn.addEventListener('click', sharePost);
-  els.aboutTags.addEventListener('click', e => {
-    const btn = e.target.closest('.about-tag');
-    if (btn) filterByTag(btn.dataset.tag, true);
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeBurger();
-  });
   window.addEventListener('hashchange', routeHandler);
 }
 
-// --- Утиліти ---
-function setPageTitle(title) {
-  document.title = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
-}
+function setPageTitle(title) { document.title = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE; }
+function calcReadingTime(text) { return `${Math.max(1, Math.round(text.split(/\s+/).length / 200))} хв`; }
+function safeHTML(html) { return window.DOMPurify ? DOMPurify.sanitize(html) : html; }
+function decodeHtmlEntities(str) { return str.replace(/</g, '<').replace(/>/g, '>'); }
+function parseMeta(text, key) { const m = text.match(new RegExp(`${key}:\\s*"?([^"\\n]+)"?`)); return m ? m[1].trim() : null; }
 
-function calcReadingTime(text) {
-  const words = text.trim().split(/\s+/).length;
-  return `${Math.max(1, Math.round(words / 200))} хв`;
-}
-
-function safeHTML(html) {
-  return window.DOMPurify ? DOMPurify.sanitize(html) : html;
-}
-
-// Виправлений decodeHtmlEntities — правильні ASCII символи
-function decodeHtmlEntities(str) {
-  return str
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'");
-}
-
-function parseMeta(text, key) {
-  const m = text.match(new RegExp(`${key}:\\s*"?([^"\\n]+)"?`));
-  return m ? m[1].trim() : null;
-}
-
-// --- Поділитись ---
 function sharePost() {
   const url = window.location.href;
-  if (navigator.share) {
-    navigator.share({ title: els.postTitle.textContent, url }).catch(() => {});
-  } else {
-    navigator.clipboard.writeText(url).then(() => {
-      els.shareBtn.textContent = '✓ скопійовано';
-      els.shareBtn.classList.add('copied');
-      setTimeout(() => {
-        els.shareBtn.textContent = '↗ поділитись';
-        els.shareBtn.classList.remove('copied');
-      }, 2000);
-    });
-  }
+  if (navigator.share) navigator.share({ title: els.postTitle.textContent, url });
+  else navigator.clipboard.writeText(url).then(() => { els.shareBtn.textContent = '✓ скопійовано'; setTimeout(() => els.shareBtn.textContent = '↗ поділитись', 2000); });
 }
 
-// --- Пошук ---
-function handleSearch(val) {
-  searchQuery = val.trim().toLowerCase();
-  els.searchClear.classList.toggle('visible', searchQuery.length > 0);
-  activeTag = null;
-  document.querySelectorAll('.tag-filter').forEach(b => b.classList.remove('active'));
-  renderPostsList();
-}
-function clearSearch() {
-  els.searchInput.value = '';
-  searchQuery = '';
-  els.searchClear.classList.remove('visible');
-  renderPostsList();
-}
-
-// --- Навігація ---
-function navigateTo(page, slug) {
-  if (slug) { window.location.hash = slug; }
-  else if (page === 'home') { window.location.hash = ''; }
-  else { window.location.hash = page; }
-}
+function navigateTo(page, slug) { window.location.hash = slug || (page === 'home' ? '' : page); }
 
 function routeHandler() {
-  const hash = window.location.hash.replace('#', '');
-  closeBurger();
+  const hash = window.location.hash.replace('#', ''); closeBurger();
   if (!hash || hash === 'home') { showPage('home'); setPageTitle(''); loadPosts(); }
-  else if (hash === 'about') { showPage('about'); setPageTitle('Про мене'); }
-  else if (hash.startsWith('page-')) { openPageBySlug(hash.replace('page-', '')); }
-  else { openPostBySlug(hash); }
+  else if (hash === 'about') showPage('about');
+  else if (hash.startsWith('page-')) openPageBySlug(hash.replace('page-', ''));
+  else openPostBySlug(hash);
 }
 
 function showPage(pageId) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const el = $('page-' + pageId);
-  if (el) el.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + pageId));
   window.scrollTo(0, 0);
 }
 
-// --- Фільтри ---
-function filterByTag(tag, fromAbout = false) {
-  activeTag = (!fromAbout && activeTag === tag) ? null : tag;
-  document.querySelectorAll('.tag-filter').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tag === activeTag);
-  });
-  if (fromAbout) navigateTo('home');
-  setTimeout(() => renderPostsList(), fromAbout ? 80 : 0);
+function filterByTag(tag) {
+  activeTag = (activeTag === tag) ? null : tag;
+  document.querySelectorAll('.tag-filter').forEach(btn => btn.classList.toggle('active', btn.dataset.tag === activeTag));
+  renderPostsList();
 }
 
-// --- Рендер списку ---
 function renderPostsList() {
   let filtered = activeTag ? allPosts.filter(p => p.tag === activeTag) : allPosts;
-  if (searchQuery) {
-    filtered = filtered.filter(p =>
-      p.title.toLowerCase().includes(searchQuery) ||
-      p.excerpt.toLowerCase().includes(searchQuery) ||
-      p.tag.toLowerCase().includes(searchQuery)
-    );
-  }
-  if (filtered.length === 0) {
-    els.postsContainer.innerHTML = `<div class="empty-state"><p>${searchQuery ? 'Нічого не знайдено' : 'Немає дописів у цій категорії'}</p></div>`;
-    return;
-  }
-  const fragment = document.createDocumentFragment();
-  filtered.forEach(p => {
-    const item = document.createElement('div');
-    item.className = 'post-item';
-    item.setAttribute('role', 'article');
-    item.setAttribute('tabindex', '0');
-    item.addEventListener('click', () => navigateTo('post', p.slug));
-    item.addEventListener('keydown', e => { if (e.key === 'Enter') navigateTo('post', p.slug); });
-
-    const dateDiv = document.createElement('div');
-    dateDiv.className = 'post-date';
-    dateDiv.innerHTML = p.displayDate;
-
-    const bodyDiv = document.createElement('div');
-    const titleDiv = document.createElement('div');
-    titleDiv.className = 'post-title';
-    titleDiv.textContent = p.title;
-    const excerptDiv = document.createElement('div');
-    excerptDiv.className = 'post-excerpt';
-    excerptDiv.textContent = p.excerpt;
-    const tagBtn = document.createElement('button');
-    tagBtn.className = 'post-tag';
-    tagBtn.textContent = p.tag;
-    tagBtn.addEventListener('click', e => { e.stopPropagation(); filterByTag(p.tag); });
-
-    bodyDiv.append(titleDiv, excerptDiv, tagBtn);
-    item.append(dateDiv, bodyDiv);
-    fragment.appendChild(item);
-  });
-  els.postsContainer.innerHTML = '';
-  els.postsContainer.appendChild(fragment);
+  if (searchQuery) filtered = filtered.filter(p => p.title.toLowerCase().includes(searchQuery));
+  
+  els.postsContainer.innerHTML = filtered.map(p => `
+    <div class="post-item" onclick="navigateTo('post', '${p.slug}')">
+      <div class="post-date">${p.displayDate}</div>
+      <div>
+        <div class="post-title">${p.title}</div>
+        <div class="post-excerpt">${p.excerpt}</div>
+        <button class="post-tag" onclick="event.stopPropagation(); filterByTag('${p.tag}')">${p.tag}</button>
+      </div>
+    </div>
+  `).join('') || '<p class="empty-state">Нічого не знайдено</p>';
 }
 
-// --- Завантаження дописів ---
 async function loadPosts() {
-  if (postsCachedAt && Date.now() - postsCachedAt < CACHE_TTL && allPosts.length > 0) {
-    renderPostsList();
-    return;
-  }
+  if (postsCachedAt && Date.now() - postsCachedAt < CACHE_TTL) return renderPostsList();
   try {
     const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
-    if (res.status === 403) {
-      els.postsContainer.innerHTML = `<div class="empty-state"><p>GitHub API обмеження — спробуйте пізніше</p></div>`;
-      return;
-    }
-    if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-
-    const files = await res.json();
-    const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
-
-    if (mdFiles.length === 0) {
-      els.postsContainer.innerHTML = `<div class="empty-state"><p>Поки що дописів немає</p></div>`;
-      return;
-    }
-
-    const results = await Promise.all(mdFiles.map(async file => {
-      const r = await fetch(file.download_url);
-      if (!r.ok) throw new Error(`Fetch error: ${file.name}`);
-      const text = await r.text();
-      return { file, text };
-    }));
-
-    allPosts = [];
-    const tags = new Set();
-
-    for (const { file, text } of results) {
+    const files = (await res.json()).filter(f => f.name.endsWith('.md')).reverse();
+    allPosts = await Promise.all(files.map(async file => {
+      const text = await (await fetch(file.download_url)).text();
       const slug = file.name.replace('.md', '');
       postsCache[slug] = { text };
-      const title = parseMeta(text, 'title') || 'Без назви';
-      const excerpt = parseMeta(text, 'excerpt') || '';
-      const dateStr = parseMeta(text, 'date') || '';
-      const tag = parseMeta(text, 'tag') || 'Допис';
-      const date = new Date(dateStr);
-      const displayDate = isNaN(date.getTime()) ? 'НОВЕ' : `${MONTHS[date.getMonth()]}<br>${date.getFullYear()}`;
-      tags.add(tag);
-      allPosts.push({ slug, title, excerpt, tag, displayDate });
-    }
-
-    postsCachedAt = Date.now();
-    els.tagFilters.innerHTML = [...tags].map(tag =>
-      `<button class="tag-filter" data-tag="${tag}">${tag}</button>`
-    ).join('');
-    els.tagFilters.addEventListener('click', e => {
-      const btn = e.target.closest('.tag-filter');
-      if (btn) filterByTag(btn.dataset.tag);
-    });
-    renderPostsList();
-
-  } catch(e) {
-    els.postsContainer.innerHTML = `<div class="empty-state"><p>Не вдалось завантажити дописи</p></div>`;
-    console.error('loadPosts:', e);
-  }
+      const date = new Date(parseMeta(text, 'date'));
+      return { 
+        slug, title: parseMeta(text, 'title'), excerpt: parseMeta(text, 'excerpt'), 
+        tag: parseMeta(text, 'tag'), displayDate: `${MONTHS[date.getMonth()]}<br>${date.getFullYear()}` 
+      };
+    }));
+    const tags = [...new Set(allPosts.map(p => p.tag))];
+    els.tagFilters.innerHTML = tags.map(tag => `<button class="tag-filter" data-tag="${tag}" onclick="filterByTag('${tag}')">${tag}</button>`).join('');
+    postsCachedAt = Date.now(); renderPostsList();
+  } catch(e) { console.error(e); }
 }
 
-// --- Завантаження сторінок ---
-// Читаємо тільки перші 300 байт — достатньо для frontmatter з title
 async function loadPages() {
   try {
     const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/pages`);
-    if (!res.ok) return;
-    const files = await res.json();
-    const mdFiles = files.filter(f => f.name.endsWith('.md'));
-    if (mdFiles.length === 0) return;
-
-    const results = await Promise.all(mdFiles.map(async file => {
-      const r = await fetch(file.download_url, { headers: { Range: 'bytes=0-300' } });
-      const text = await r.text();
-      return { file, text };
-    }));
-
-    for (const { file, text } of results) {
-      // Беремо title з frontmatter, fallback — красива назва з slug
-      const title = parseMeta(text, 'title') ||
-        file.name.replace('.md', '').replace(/-/g, ' ');
+    const files = (await res.json()).filter(f => f.name.endsWith('.md'));
+    files.forEach(file => {
       const slug = file.name.replace('.md', '');
-
-      const a = document.createElement('a');
-      a.textContent = title;
-      a.href = `#page-${slug}`;
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        navigateTo('page-' + slug);
-        closeBurger();
-      });
+      const a = document.createElement('a'); a.textContent = slug.replace(/-/g, ' '); a.href = `#page-${slug}`;
       els.burgerMenuInner.appendChild(a);
-    }
-  } catch(e) {
-    console.error('loadPages:', e);
-  }
+    });
+  } catch(e) {}
 }
 
-// --- Відкрити статичну сторінку ---
 async function openPageBySlug(slug) {
-  showPage('page');
-  els.pageTitle.textContent = 'Завантаження...';
-  els.pageContent.innerHTML = '';
+  showPage('page'); els.pageTitle.textContent = 'Завантаження...';
   try {
-    const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text = await res.text();
-    const title = parseMeta(text, 'title') || slug.replace(/-/g, ' ');
-    const body = text.replace(/^---[\s\S]*?---\n?/, '');
-    els.pageTitle.textContent = title;
-    setPageTitle(title);
-    // Фікс баг з обрізаним контентом: додаємо padding-bottom щоб останній рядок не обрізався
-    els.pageContent.style.paddingBottom = '2rem';
-    els.pageContent.innerHTML = safeHTML(marked.parse(decodeHtmlEntities(body)));
-    els.pageContent.querySelectorAll('img').forEach(img => img.setAttribute('loading', 'lazy'));
-  } catch(e) {
-    els.pageTitle.textContent = 'Сторінку не знайдено';
-    els.pageContent.innerHTML = '<p>Не вдалось завантажити сторінку.</p>';
-    console.error('openPageBySlug:', e);
-  }
+    const text = await (await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`)).text();
+    els.pageTitle.textContent = parseMeta(text, 'title') || slug;
+    els.pageContent.innerHTML = safeHTML(marked.parse(text.replace(/^---[\s\S]*?---\n?/, '')));
+  } catch(e) { els.pageTitle.textContent = 'Не знайдено'; }
 }
 
-// --- Відкрити допис ---
 async function openPostBySlug(slug) {
-  showPage('post');
-  els.postTitle.textContent = 'Завантаження...';
-  els.postDate.textContent = '';
-  els.postTag.textContent = '';
-  els.postTime.textContent = '';
-  els.postContent.innerHTML = '';
-  els.shareBtn.textContent = '↗ поділитись';
-  els.shareBtn.classList.remove('copied');
-
+  showPage('post'); els.postContent.innerHTML = 'Завантаження...';
   try {
-    let text;
-    if (postsCache[slug]?.text) {
-      text = postsCache[slug].text;
-    } else {
-      const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_FOLDER}/${slug}.md`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      text = await res.text();
-      postsCache[slug] = { text }; // зберігаємо в кеш
-    }
-
-    const title = parseMeta(text, 'title') || 'Без назви';
-    const dateStr = parseMeta(text, 'date') || '';
-    const tag = parseMeta(text, 'tag') || '';
-    const body = text.replace(/^---[\s\S]*?---\n?/, '');
-
-    const date = new Date(dateStr);
-    const dispDate = isNaN(date.getTime())
-      ? ''
-      : `${date.getDate()} ${MONTHS_UA[date.getMonth()]} ${date.getFullYear()}`;
-
-    els.postTitle.textContent = title;
-    els.postDate.textContent = dispDate;
-    els.postTime.textContent = calcReadingTime(body);
-    els.postTag.textContent = tag;
-    els.postTag.onclick = () => filterByTag(tag, false);
+    const text = postsCache[slug]?.text || await (await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_FOLDER}/${slug}.md`)).text();
+    const title = parseMeta(text, 'title'), body = text.replace(/^---[\s\S]*?---\n?/, '');
+    els.postTitle.textContent = title; els.postTime.textContent = calcReadingTime(body);
+    els.postTag.textContent = parseMeta(text, 'tag');
+    els.postContent.innerHTML = safeHTML(marked.parse(decodeHtmlEntities(body)));
     setPageTitle(title);
 
-    els.postContent.innerHTML = safeHTML(marked.parse(decodeHtmlEntities(body)));
-    els.postContent.querySelectorAll('img').forEach(img => img.setAttribute('loading', 'lazy'));
-
-    // Медіа-плеєри
+    // ОБРОБКА МЕДІА (YOUTUBE, SPOTIFY, CLOUDINARY)
     els.postContent.querySelectorAll('a').forEach(link => {
       const href = link.getAttribute('href') || '';
+      const container = document.createElement('div');
+      container.style.margin = '1.5rem 0';
 
-      // YouTube
-      const yt = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-      if (yt) {
-        const wrap = document.createElement('div');
-        wrap.className = 'youtube-wrap';
-        wrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen loading="lazy" title="YouTube відео"></iframe>`;
-        link.parentNode.replaceChild(wrap, link);
-        return;
-      }
-
-      // Spotify
-      const sp = href.match(/open\.spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
-      if (sp) {
-        const frame = document.createElement('div');
-        frame.style.margin = '1.5rem 0';
-        frame.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify"></iframe>`;
-        link.parentNode.replaceChild(frame, link);
-        return;
-      }
-
-      // Cloudinary відео або аудіо
-      if (href.includes('player.cloudinary.com')) {
-        const p = new URLSearchParams(href.split('?')[1]);
-        const cn = p.get('cloud_name'), pi = p.get('public_id');
-        if (cn && pi) {
-          const isVideo = /\.(mp4|mov|webm|avi|mkv)/i.test(pi) || /video|vid_|VID_/i.test(pi);
-          if (isVideo) {
-            const wrap = document.createElement('div');
-            wrap.className = 'youtube-wrap'; // той самий стиль 16:9
-            wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cn}&public_id=${encodeURIComponent(pi)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy" title="Відео"></iframe>`;
-            link.parentNode.replaceChild(wrap, link);
-          } else {
-            const audioSrc = `https://res.cloudinary.com/${cn}/video/upload/${pi}${pi.includes('.') ? '' : '.mp3'}`;
-            const player = document.createElement('div');
-            player.style.margin = '1.2rem 0';
-            player.innerHTML = `<audio controls style="width:100%;"><source src="${audioSrc}" type="audio/mpeg">Браузер не підтримує аудіо.</audio>`;
-            link.parentNode.replaceChild(player, link);
-          }
+      // 1. CLOUDINARY (res. або player.)
+      if (href.includes('cloudinary.com')) {
+        if (href.includes('/video/') || href.match(/\.(mp4|mov|webm|ogv)$/i) || href.includes('player.cloudinary.com')) {
+          container.className = 'youtube-wrap'; // 16:9 стиль
+          container.innerHTML = `<video controls playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;background:#000;"><source src="${href}">Ваш браузер не підтримує відео.</video>`;
+        } else {
+          container.innerHTML = `<audio controls style="width:100%;"><source src="${href}">Ваш браузер не підтримує аудіо.</audio>`;
         }
-        return;
+        link.parentNode.replaceChild(container, link);
+      } 
+      // 2. YOUTUBE
+      else if (href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)) {
+        const id = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)[1];
+        container.className = 'youtube-wrap';
+        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen loading="lazy"></iframe>`;
+        link.parentNode.replaceChild(container, link);
       }
-
-      // Прямий MP3
-      if (href.toLowerCase().endsWith('.mp3') || href.toLowerCase().includes('.mp3?')) {
-        const player = document.createElement('div');
-        player.style.margin = '1.2rem 0';
-        player.innerHTML = `<audio controls style="width:100%;"><source src="${href}" type="audio/mpeg">Браузер не підтримує аудіо.</audio>`;
-        link.parentNode.replaceChild(player, link);
+      // 3. SPOTIFY
+      else if (href.includes('open.spotify.com')) {
+        const sp = href.match(/spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
+        if (sp) {
+          container.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+          link.parentNode.replaceChild(container, link);
+        }
       }
     });
-
-  } catch(e) {
-    els.postTitle.textContent = 'Допис не знайдено';
-    els.postContent.innerHTML = '<p>Не вдалось завантажити допис.</p>';
-    console.error('openPostBySlug:', e);
-  }
+  } catch(e) { console.error(e); }
 }
 
-// --- Netlify Identity (тільки для /admin/) ---
 if (window.location.pathname.startsWith('/admin')) {
-  const script = document.createElement('script');
-  script.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
-  document.head.appendChild(script);
-  script.onload = () => {
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', user => {
-        if (!user) window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
-      });
-    }
-  };
+  const s = document.createElement('script'); s.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+  document.head.appendChild(s);
 }
 </script>
-
 <script data-goatcounter="https://uspishnyskaner.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
-
 </body>
 </html>
