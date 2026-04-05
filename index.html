@@ -287,7 +287,7 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
 </footer>
 
 <script>
-// Ініціалізуємо marked одразу після завантаження скрипта
+// Ініціалізуємо marked
 const renderer = new marked.Renderer();
 renderer.html = token => typeof token === 'object' ? (token.text || token.raw || '') : token;
 marked.use({ breaks: true, gfm: true, renderer });
@@ -368,8 +368,6 @@ function toggleTheme() {
 }
 
 // --- Бургер ---
-// Фікс баг зі зміщенням: використовуємо CSS змінну замість прямої зміни paddingTop
-// Це запобігає layout thrashing при повторних відкриттях/закриттях
 function initBurger() {
   els.burgerBtn.addEventListener('click', toggleBurger);
   document.addEventListener('click', e => {
@@ -389,19 +387,17 @@ function toggleBurger() {
   els.burgerBtn.setAttribute('aria-expanded', String(!isOpen));
 
   if (!isOpen) {
-    // Відкриваємо — вимірюємо висоту після рендеру і встановлюємо CSS змінну
     requestAnimationFrame(() => {
       const h = els.burgerMenu.offsetHeight;
       document.documentElement.style.setProperty('--menu-height', `${h}px`);
     });
   } else {
-    // Закриваємо — скидаємо CSS змінну
     document.documentElement.style.setProperty('--menu-height', '0px');
   }
 }
 
 function closeBurger() {
-  if (!els.burgerMenu.classList.contains('open')) return; // вже закрито
+  if (!els.burgerMenu.classList.contains('open')) return;
   els.burgerBtn.classList.remove('open');
   els.burgerMenu.classList.remove('open');
   els.header.classList.remove('menu-open');
@@ -453,19 +449,15 @@ function safeHTML(html) {
   return window.DOMPurify ? DOMPurify.sanitize(html) : html;
 }
 
-// Виправлений decodeHtmlEntities — правильні ASCII символи
-function decodeHtmlEntities(str) {
-  return str
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'");
-}
-
 function parseMeta(text, key) {
   const m = text.match(new RegExp(`${key}:\\s*"?([^"\\n]+)"?`));
   return m ? m[1].trim() : null;
+}
+
+function formatDateFull(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return `${d.getDate()} ${MONTHS_UA[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 // --- Поділитись ---
@@ -551,28 +543,20 @@ function renderPostsList() {
   filtered.forEach(p => {
     const item = document.createElement('div');
     item.className = 'post-item';
-    item.setAttribute('role', 'article');
-    item.setAttribute('tabindex', '0');
     item.addEventListener('click', () => navigateTo('post', p.slug));
-    item.addEventListener('keydown', e => { if (e.key === 'Enter') navigateTo('post', p.slug); });
-
+    
     const dateDiv = document.createElement('div');
     dateDiv.className = 'post-date';
     dateDiv.innerHTML = p.displayDate;
 
     const bodyDiv = document.createElement('div');
-    const titleDiv = document.createElement('div');
-    titleDiv.className = 'post-title';
-    titleDiv.textContent = p.title;
-    const excerptDiv = document.createElement('div');
-    excerptDiv.className = 'post-excerpt';
-    excerptDiv.textContent = p.excerpt;
-    const tagBtn = document.createElement('button');
-    tagBtn.className = 'post-tag';
-    tagBtn.textContent = p.tag;
-    tagBtn.addEventListener('click', e => { e.stopPropagation(); filterByTag(p.tag); });
+    bodyDiv.innerHTML = `
+      <div class="post-title">${p.title}</div>
+      <div class="post-excerpt">${p.excerpt}</div>
+      <button class="post-tag">${p.tag}</button>
+    `;
+    bodyDiv.querySelector('.post-tag').onclick = (e) => { e.stopPropagation(); filterByTag(p.tag); };
 
-    bodyDiv.append(titleDiv, excerptDiv, tagBtn);
     item.append(dateDiv, bodyDiv);
     fragment.appendChild(item);
   });
@@ -580,38 +564,59 @@ function renderPostsList() {
   els.postsContainer.appendChild(fragment);
 }
 
-// --- Завантаження дописів (Оптимізовано через індекс) ---
+// --- ЗАВАНТАЖЕННЯ СПИСКУ ---
 async function loadPosts() {
   if (postsCachedAt && Date.now() - postsCachedAt < CACHE_TTL && allPosts.length > 0) {
     renderPostsList();
     return;
   }
-
   try {
-    const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/posts.json`);
-    if (!res.ok) throw new Error('Не вдалося завантажити індекс');
-    
-    allPosts = await res.json();
-    
-    allPosts.forEach(p => {
-      const d = new Date(p.date);
-      p.displayDate = `<span>${d.getDate()}</span> ${MONTHS[d.getMonth()]}`;
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
+    if (!res.ok) throw new Error('API Error');
+
+    const files = await res.json();
+    const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
+
+    const results = await Promise.all(mdFiles.map(async file => {
+      const r = await fetch(file.download_url);
+      const text = await r.text();
+      return { name: file.name, text };
+    }));
+
+    allPosts = [];
+    const tags = new Set();
+
+    results.forEach(({ name, text }) => {
+      const slug = name.replace('.md', '');
+      postsCache[slug] = { text };
+      const dateStr = parseMeta(text, 'date') || '';
+      const tag = parseMeta(text, 'tag') || 'Допис';
+      const d = new Date(dateStr);
+      
+      allPosts.push({
+        slug,
+        title: parseMeta(text, 'title') || 'Без назви',
+        excerpt: parseMeta(text, 'excerpt') || '',
+        date: dateStr,
+        displayDate: `<span>${d.getDate()}</span> ${MONTHS[d.getMonth()]}`,
+        tag
+      });
+      tags.add(tag);
     });
 
+    allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
     postsCachedAt = Date.now();
-    renderFilters(); 
+    renderFilters(Array.from(tags));
     renderPostsList();
 
   } catch (e) {
-    els.postsContainer.innerHTML = `<div class="empty-state"><p>Помилка завантаження списку.</p></div>`;
-    console.error('loadPosts error:', e);
+    console.error(e);
   }
 }
 
-// --- Відкриття конкретного допису ---
+// --- ВІДКРИТТЯ ДОПИСУ ТА ОБРОБКА МЕДІА ---
 async function openPostBySlug(slug) {
   showPage('post');
-  
   const meta = allPosts.find(p => p.slug === slug);
   if (meta) {
     els.postTitle.textContent = meta.title;
@@ -620,128 +625,115 @@ async function openPostBySlug(slug) {
     setPageTitle(meta.title);
   }
 
-  els.postContent.innerHTML = '<p class="loading">Завантаження змісту...</p>';
-
   try {
     if (!postsCache[slug] || !postsCache[slug].text) {
-      const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/posts/${slug}.md`);
-      if (!res.ok) throw new Error('Текст не знайдено');
+      const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_FOLDER}/${slug}.md`);
       postsCache[slug] = { text: await res.text() };
     }
 
-    const rawContent = postsCache[slug].text;
-    const cleanMd = rawContent.replace(/^---[\s\S]*?---/, '').trim();
-    
-    // 1. Рендеримо текст
+    const cleanMd = postsCache[slug].text.replace(/^---[\s\S]*?---/, '').trim();
     els.postContent.innerHTML = safeHTML(marked.parse(cleanMd));
     els.postTime.textContent = calcReadingTime(cleanMd);
 
-    // 2. ЗАПУСКАЄМО ОБРОБКУ ВІДЕО ТА АУДІО
-    processMediaLinks();
+    // ОБРОБКА ПОСИЛАНЬ (YouTube, Cloudinary, Spotify, MP3)
+    const links = els.postContent.querySelectorAll('a');
+    links.forEach(link => {
+      const href = link.getAttribute('href');
+      if (!href) return;
+
+      // 1. YouTube
+      const yt = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+      if (yt) {
+        const div = document.createElement('div');
+        div.className = 'youtube-wrap';
+        div.innerHTML = `<iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen loading="lazy"></iframe>`;
+        link.parentNode.replaceChild(div, link);
+        return;
+      }
+
+      // 2. Spotify
+      const sp = href.match(/open\.spotify\.com\/(track|episode|playlist)\/([a-zA-Z0-9]+)/);
+      if (sp) {
+        const div = document.createElement('div');
+        div.style.margin = '1.2rem 0';
+        div.innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}" width="100%" height="152" frameBorder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+        link.parentNode.replaceChild(div, link);
+        return;
+      }
+
+      // 3. Cloudinary
+      if (href.includes('res.cloudinary.com')) {
+        const m = href.match(/res\.cloudinary\.com\/([^/]+)\/(?:video|image|raw)\/upload\/(?:v\d+\/)?(.+?)(\.[^.]+)?$/);
+        if (m) {
+          const cloudName = m[1];
+          const publicId = m[2];
+          const isVid = href.includes('/video/') || /^VID_/i.test(publicId.split('/').pop());
+          const wrap = document.createElement('div');
+          if (isVid) {
+            wrap.className = 'youtube-wrap';
+            wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cloudName}&public_id=${encodeURIComponent(publicId)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>`;
+          } else {
+            wrap.style.margin = '1.2rem 0';
+            wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cloudName}&public_id=${encodeURIComponent(publicId)}&fluid=true&controls=true" width="100%" height="90" style="border:none;border-radius:4px;" loading="lazy"></iframe>`;
+          }
+          link.parentNode.replaceChild(wrap, link);
+        }
+        return;
+      }
+
+      // 4. Прямі MP3
+      if (href.toLowerCase().endsWith('.mp3')) {
+        const player = document.createElement('div');
+        player.style.margin = '1.2rem 0';
+        player.innerHTML = `<audio controls style="width:100%;"><source src="${href}" type="audio/mpeg"></audio>`;
+        link.parentNode.replaceChild(player, link);
+      }
+    });
 
   } catch (e) {
-    els.postTitle.textContent = 'Помилка';
-    els.postContent.innerHTML = '<p>Не вдалося завантажити текст допису.</p>';
+    els.postContent.innerHTML = '<p>Помилка завантаження.</p>';
   }
 }
 
-// --- ФУНКЦІЯ ОБРОБКИ ВІДЕО ТА АУДІО (Cloudinary, YouTube, MP3) ---
-function processMediaLinks() {
-  const links = els.postContent.querySelectorAll('a');
-  
-  links.forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href) return;
-
-    // 1. YouTube
-    const ytMatch = href.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-    if (ytMatch) {
-      const wrap = document.createElement('div');
-      wrap.className = 'youtube-wrap';
-      wrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytMatch[1]}" allowfullscreen loading="lazy"></iframe>`;
-      link.parentNode.replaceChild(wrap, link);
-      return;
-    }
-
-    // 2. Cloudinary (Video & Audio)
-    if (href.includes('res.cloudinary.com')) {
-      const m = href.match(/res\.cloudinary\.com\/([^/]+)\/(?:video|image|raw)\/upload\/(?:v\d+\/)?(.+?)(\.[^.]+)?$/);
-      if (m) {
-        const cloudName = m[1];
-        const publicId = m[2];
-        const isVideo = /^VID_/i.test(publicId.split('/').pop()) || href.includes('/video/');
-
-        if (isVideo) {
-          const wrap = document.createElement('div');
-          wrap.className = 'youtube-wrap';
-          wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cloudName}&public_id=${encodeURIComponent(publicId)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>`;
-          link.parentNode.replaceChild(wrap, link);
-        } else {
-          const wrap = document.createElement('div');
-          wrap.style.margin = '1.2rem 0';
-          wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cloudName}&public_id=${encodeURIComponent(publicId)}&fluid=true&controls=true" width="100%" height="90" style="border:none;border-radius:4px;" loading="lazy"></iframe>`;
-          link.parentNode.replaceChild(wrap, link);
-        }
-      }
-      return;
-    }
-    
-    // 3. Прямі посилання на MP3
-    if (href.toLowerCase().endsWith('.mp3') || href.toLowerCase().includes('.mp3?')) {
-      const player = document.createElement('div');
-      player.style.margin = '1.2rem 0';
-      player.innerHTML = `<audio controls style="width:100%;"><source src="${href}" type="audio/mpeg">Браузер не підтримує аудіо</audio>`;
-      link.parentNode.replaceChild(player, link);
-    }
-  });
-}
-
-// --- Інші допоміжні функції ---
+// --- СТАТИЧНІ СТОРІНКИ ТА ФІЛЬТРИ ---
 async function loadPages() {
   try {
     const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/pages`);
     if (res.ok) {
       const files = await res.json();
-      const mdFiles = files.filter(f => f.name.endsWith('.md'));
-      for (const f of mdFiles) {
+      for (const f of files.filter(f => f.name.endsWith('.md'))) {
         const r = await fetch(f.download_url);
-        if (r.ok) postsCache['page-' + f.name.replace('.md', '')] = { text: await r.text() };
+        const text = await r.text();
+        const slug = f.name.replace('.md', '');
+        postsCache['page-' + slug] = { text };
+        const a = document.createElement('a');
+        a.textContent = parseMeta(text, 'title') || slug;
+        a.href = `#page-${slug}`;
+        els.burgerMenuInner.appendChild(a);
       }
     }
-  } catch (e) { console.error(e); }
+  } catch (e) {}
 }
 
 async function openPageBySlug(slug) {
   showPage('page');
   const key = 'page-' + slug;
-  try {
-    if (!postsCache[key]) {
-       const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`);
-       if (res.ok) postsCache[key] = { text: await res.text() };
-    }
-    const text = postsCache[key].text;
-    els.pageTitle.textContent = parseMeta(text, 'title') || slug;
-    els.pageContent.innerHTML = safeHTML(marked.parse(text.replace(/^---[\s\S]*?---/, '').trim()));
-  } catch (e) {
-    els.pageContent.innerHTML = '<p>Сторінку не знайдено.</p>';
+  if (!postsCache[key]) {
+    const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`);
+    if (res.ok) postsCache[key] = { text: await res.text() };
   }
+  const text = postsCache[key].text;
+  els.pageTitle.textContent = parseMeta(text, 'title') || slug;
+  els.pageContent.innerHTML = safeHTML(marked.parse(text.replace(/^---[\s\S]*?---/, '').trim()));
 }
 
-function renderFilters() {
-  const tags = new Set(allPosts.map(p => p.tag));
-  els.tagFilters.innerHTML = Array.from(tags).map(tag => 
+function renderFilters(tags) {
+  els.tagFilters.innerHTML = tags.map(tag => 
     `<button class="tag-filter" data-tag="${tag}">${tag}</button>`
   ).join('');
-  
   els.tagFilters.querySelectorAll('.tag-filter').forEach(btn => {
-    btn.addEventListener('click', () => filterByTag(btn.dataset.tag));
+    btn.onclick = () => filterByTag(btn.dataset.tag);
   });
-}
-
-function formatDateFull(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  return `${d.getDate()} ${MONTHS_UA[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 // Netlify Identity
@@ -749,13 +741,6 @@ if (window.location.pathname.startsWith('/admin')) {
   const script = document.createElement('script');
   script.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
   document.head.appendChild(script);
-  script.onload = () => {
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', user => {
-        if (!user) window.netlifyIdentity.on('login', () => { window.location.reload(); });
-      });
-    }
-  };
 }
 </script>
 </body>
