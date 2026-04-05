@@ -23,43 +23,54 @@
       });
     }
 
-    // 2. КНОПКА ШВИДКОЇ ВСТАВКИ 🎬
+    // 2. РЕЄСТРАЦІЯ КОМПОНЕНТА
     CMS.registerEditorComponent({
       id: "cloudinary_media",
-      label: "Cloudinary Video/Audio",
+      label: "Cloudinary Video",
       icon: 'media',
-      // Поля залишаємо для технічної валідації, але ми їх "проскочимо"
-      fields: [{ name: 'url', widget: 'hidden' }],
+      fields: [{ name: 'url', label: 'Video URL', widget: 'string' }],
       
-      // Головна зміна тут: ми викликаємо Cloudinary відразу
+      // Функція додавання
       onAdd: function() {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
+          if (!window.cloudinary) {
+            alert("Помилка: Бібліотека Cloudinary не завантажилась");
+            return reject();
+          }
+
           window.cloudinary.openMediaLibrary(
             {
               cloud_name: "dyvv0gduq",
               api_key: "363277514958419",
-              multiple: false
+              multiple: false,
+              inline_container: null, // відкривати модальним вікном
+              insert_caption: "Вставити відео"
             },
             {
               insertHandler: function(data) {
                 const asset = data.assets[0];
-                // Повертаємо посилання прямо в Markdown форматі
+                console.log("Вибрано файл:", asset.secure_url);
                 resolve({ url: asset.secure_url });
               }
             }
           );
         });
       },
-      // Формат, який вставиться в текст
+      
+      // Що бачимо в коді Markdown
       toBlock: function(obj) {
         return `[${obj.url}](${obj.url})`;
       },
+      
+      // Розпізнавання
       pattern: /^\[(.+?)\]\((.+?)\)$/,
       fromBlock: function(match) {
         return { url: match[2] };
       },
+      
+      // Прев'ю в адмінці
       toPreview: function(obj) {
-        return `<div style="color: #2d5a27; font-size: 0.8rem; border: 1px solid #e2e1db; padding: 5px; border-radius: 4px;">🎬 Media: ${obj.url}</div>`;
+        return `<div style="padding:10px; background:#e8f0e6; border-radius:4px; font-family:sans-serif;">🎬 <b>Відео:</b> ${obj.url}</div>`;
       }
     });
   </script>
