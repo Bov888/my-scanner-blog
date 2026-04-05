@@ -795,19 +795,16 @@ async function openPostBySlug(slug) {
       if (href.includes('res.cloudinary.com')) {
         const isVideo = /\.(mp4|mov|webm|avi|mkv)/i.test(href) || /VID_|vid_|\/video\//i.test(href);
         if (isVideo) {
-          // Витягуємо cloud_name і public_id з URL
-          // URL формат: https://res.cloudinary.com/{cloud_name}/video/upload/{public_id}
-          const m = href.match(/res\.cloudinary\.com\/([^/]+)\/(?:video|image)\/upload\/(.+)/);
-          if (m) {
-            const cn = m[1];
-            const pi = m[2].replace(/\.[^.]+$/, ''); // прибираємо розширення
-            const wrap = document.createElement('div');
-            wrap.className = 'youtube-wrap';
-            wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cn}&public_id=${encodeURIComponent(pi)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy" title="Відео"></iframe>`;
-            link.parentNode.replaceChild(wrap, link);
-          }
+          // Нативний <video> тег — працює без авторизації на відміну від iframe плеєра
+          const wrap = document.createElement('div');
+          wrap.style.margin = '1.5rem 0';
+          wrap.innerHTML = `<video controls style="width:100%;border-radius:4px;background:#000;" preload="metadata">
+            <source src="${href}" type="video/mp4">
+            Браузер не підтримує відео.
+          </video>`;
+          link.parentNode.replaceChild(wrap, link);
         } else {
-          // Аудіо — використовуємо пряме посилання
+          // Аудіо — пряме посилання
           const player = document.createElement('div');
           player.style.margin = '1.2rem 0';
           player.innerHTML = `<audio controls style="width:100%;"><source src="${href}" type="audio/mpeg">Браузер не підтримує аудіо.</audio>`;
