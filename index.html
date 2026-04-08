@@ -40,6 +40,17 @@
   --accent: #6ab05f; --accent-light: #1e2e1c; --border: #2e2d2a;
 }
 
+#reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: var(--accent);
+  z-index: 1001;
+  transition: width 0.1s ease;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 18px; }
 body { background: var(--bg); color: var(--text); font-family: 'Literata', Georgia, serif; font-weight: 300; line-height: 1.75; min-height: 100vh; }
@@ -98,9 +109,9 @@ main { max-width: var(--max); margin: 0 auto; padding: calc(3rem + var(--menu-he
 .tag-filter:hover { border-color: var(--accent); color: var(--accent); }
 .tag-filter.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
-.post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: opacity 0.2s; }
+.post-item { display: grid; grid-template-columns: 80px 1fr; gap: 1.2rem; padding: 1.5rem 0.8rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 4px; margin: 0 -0.8rem; }
 .post-item:first-of-type { border-top: 1px solid var(--border); }
-.post-item:hover { opacity: 0.7; }
+.post-item:hover { background: var(--surface); transform: translateX(8px); opacity: 1; }
 .post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); padding-top: 0.3rem; line-height: 1.4; }
 .post-title { font-size: 1.05rem; font-weight: 400; line-height: 1.4; margin-bottom: 0.4rem; }
 .post-excerpt { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
@@ -161,6 +172,8 @@ footer p { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: 
 </head>
 
 <body>
+
+<div id="reading-progress"></div>
 
 <header>
   <div class="header-inner">
@@ -394,8 +407,39 @@ function closeBurger() {
 function initScrollTop() {
   window.addEventListener('scroll', () => {
     els.scrollTop.classList.toggle('visible', window.scrollY > 400);
+    updateReadingProgress();
   }, { passive: true });
   els.scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+function updateReadingProgress() {
+  const isPostActive = $('page-post').classList.contains('active');
+  const bar = $('reading-progress');
+  if (isPostActive) {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    bar.style.width = scrolled + "%";
+    bar.style.opacity = '1';
+  } else {
+    bar.style.width = "0%";
+    bar.style.opacity = '0';
+  }
+}
+
+function slugify(text) {
+  const ua = 'абвгґдеєжзиіїйклмнопрстуфхцчшщьюя';
+  const en = 'abvhgdeiezhzyiiiklmnoprstufkhtschshshch_iuia';
+  const map = {
+    'а':'a','б':'b','в':'v','г':'h','ґ':'g','д':'d','е':'e','є':'ie','ж':'zh','з':'z','и':'y','і':'i','ї':'i','й':'i','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'kh','ц':'ts','ч':'ch','ш':'sh','щ':'shch','ь':'','ю':'iu','я':'ia'
+  };
+  return text.toString().toLowerCase().trim()
+    .replace(/[а-яєіїґ]/g, char => map[char] || char)
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
 }
 
 // --- Події ---

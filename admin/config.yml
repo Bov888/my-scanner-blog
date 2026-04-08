@@ -1,6 +1,12 @@
 backend:
   name: git-gateway
-  branch: main # Перевір, чи у тебе на GitHub гілка main, а не master
+  branch: main
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
 # Налаштування хмари Cloudinary
 media_library:
   name: cloudinary
