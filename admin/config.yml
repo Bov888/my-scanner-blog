@@ -2,13 +2,11 @@ backend:
   name: git-gateway
   branch: main
 
-# Налаштування автоматичної транслітерації
 slug:
   encoding: "ascii"
   clean_accents: true
   sanitize_replacement: "-"
 
-# Налаштування хмари Cloudinary
 media_library:
   name: cloudinary
   config:
@@ -16,7 +14,6 @@ media_library:
     api_key: "363277514958419"
     use_secure_url: true
 
-# Ці папки мають бути в репозиторії для технічних потреб CMS
 media_folder: "images"
 public_folder: "/images"
 
@@ -25,22 +22,16 @@ collections:
     label: "Дописи"
     folder: "posts"
     create: true
-    # Автоматична генерація slug із заголовка
     slug: "{{slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "URL", name: "slug", widget: "string", required: false, hint: "Автоматично заповниться при збереженні" }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       - label: "Тег"
         name: "tag"
         widget: "select"
-        options:
-          - { label: "PKM", value: "PKM" }
-          - { label: "ШІ та автоматизація", value: "ШІ та автоматизація" }
-          - { label: "Спорт та дисципліна", value: "Спорт та дисципліна" }
-          - { label: "Життя сканера", value: "Життя сканера" }
-          - { label: "Інструменти", value: "Інструменти" }
-          - { label: "Нотатки", value: "Нотатки" }
+        options: ["PKM", "ШІ та автоматизація", "Спорт та дисципліна", "Життя сканера", "Інструменти", "Нотатки"]
       - { label: "Вміст", name: "body", widget: "markdown" }
 
   - name: "pages"
