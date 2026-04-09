@@ -23,8 +23,8 @@
       });
     }
 
-    // Транслітерація
-    function transliterate(text) {
+    // Функція транслітерації (глобальна)
+    window.slugify = function(text) {
       const tr = {
         "а":"a", "б":"b", "в":"v", "г":"h", "ґ":"g", "д":"d", "е":"e", "є":"ye", "ж":"zh",
         "з":"z", "и":"y", "і":"i", "ї":"yi", "й":"y", "к":"k", "л":"l", "м":"m", "н":"n",
@@ -43,8 +43,8 @@
       handler: ({ entry }) => {
         const title = entry.getIn(['data', 'title']);
         const slug = entry.getIn(['data', 'slug']);
-        if (!slug) {
-          return entry.setIn(['data', 'slug'], slugify(title));
+        if (!slug && title) {
+          return entry.setIn(['data', 'slug'], window.slugify(title));
         }
         return entry;
       },
