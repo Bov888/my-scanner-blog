@@ -1,4 +1,3 @@
-
 import os
 import json
 import re
@@ -7,13 +6,15 @@ from datetime import datetime
 def parse_markdown_meta(content):
     meta = {}
     # Regex to find YAML front matter
-    match = re.match(r'---
+    # Виправлення: Використано потрійні лапки для багаторядкового raw string,
+    # щоб коректно визначити регулярний вираз для YAML frontmatter.
+    match = re.match(r'''---
 ([\s\S]*?)
----', content)
+---''', content)
     if match:
         front_matter = match.group(1)
         for line in front_matter.split('
-'):
+'): # Додано перенесення рядка для split
             if ':' in line:
                 key, value = line.split(':', 1)
                 meta[key.strip()] = value.strip().strip('"')
