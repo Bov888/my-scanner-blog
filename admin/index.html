@@ -12,7 +12,6 @@
   <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@1.0.3/dist/netlify-cms-media-library-cloudinary.js"></script>
 
   <script>
-    // Netlify Identity — редирект після логіну
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
@@ -23,114 +22,20 @@
       });
     }
 
-    // Функція транслітерації (глобальна)
-    window.slugify = function(text) {
-      const tr = {
-        "а":"a", "б":"b", "в":"v", "г":"h", "ґ":"g", "д":"d", "е":"e", "є":"ye", "ж":"zh",
-        "з":"z", "и":"y", "і":"i", "ї":"yi", "й":"y", "к":"k", "л":"l", "м":"m", "н":"n",
-        "о":"o", "п":"p", "р":"r", "с":"s", "т":"t", "у":"u", "ф":"f", "х":"kh", "ц":"ts",
-        "ч":"ch", "ш":"sh", "щ":"shch", "ю":"yu", "я":"ya"
-      };
-      return text.toLowerCase()
-        .replace(/[а-щьюяґєії]/g, m => tr[m] || "")
-        .replace(/[^a-z0-9]/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-    }
-
-    CMS.registerEventListener({
-      name: 'preSave',
-      handler: ({ entry }) => {
-        const title = entry.getIn(['data', 'title']);
-        const slug = entry.getIn(['data', 'slug']);
-        if (!slug && title) {
-          return entry.setIn(['data', 'slug'], window.slugify(title));
-        }
-        return entry;
-      },
-    });
-
-    // Кастомний EditorComponent для вставки медіа з Cloudinary
+    // Кастомний EditorComponent для вставки медіа
     CMS.registerEditorComponent({
       id: "cloudinary-media",
       label: "Відео / Аудіо",
       icon: "film",
-
       fields: [
-        {
-          name: "url",
-          label: "Файл з хмари",
-          widget: "file",
-          media_library: {
-            config: { multiple: false }
-          }
-        },
-        {
-          name: "label",
-          label: "Підпис",
-          widget: "string",
-          required: false,
-          default: "Медіа"
-        }
+        { name: "url", label: "Файл з хмари", widget: "file" },
+        { name: "label", label: "Підпис", widget: "string", required: false }
       ],
-
-      toBlock: ({ url, label }) => {
-        if (!url) return '';
-        return `[${label || 'Медіа'}](${url})`;
-      },
-
-      toPreview: ({ url, label }) => {
-        if (!url) return '';
-        const name = label || url.split('/').pop();
-        const isVideo = /\.(mp4|mov|webm|avi|mkv)/i.test(url) || /VID_|vid_/i.test(url);
-        const icon = isVideo ? '🎬' : '🎵';
-        const type = isVideo ? 'Відео' : 'Аудіо';
-        return `<div style="background:#1e1d1b;padding:0.8rem 1rem;border-radius:4px;border:1px solid #2e2d2a;color:#6ab05f;font-family:monospace;font-size:0.75rem;">
-          ${icon} ${type}: <strong>${name}</strong>
-        </div>`;
-      },
-
-      pattern: /^\[([^\]]*)\]\((https?:\/\/[^)]*(?:cloudinary\.com|\.mp3|\.mp4|\.mov|\.webm)[^)]*)\)$/,
-      fromBlock: match => ({
-        label: match[1],
-        url: match[2]
-      })
+      toBlock: ({ url, label }) => `[${label || 'Медіа'}](${url})`,
+      toPreview: ({ url, label }) => `<div style="padding:10px;border:1px solid #ccc;">${label || 'Медіа'}</div>`,
+      pattern: /^\[([^\]]*)\]\((https?:\/\/[^)]*)\)$/,
+      fromBlock: match => ({ label: match[1], url: match[2] })
     });
-
-    // Попередній перегляд дописів
-    CMS.registerPreviewTemplate("posts", createClass({
-      render: function() {
-        const entry = this.props.entry;
-        const title = entry.getIn(["data", "title"]);
-        const date = entry.getIn(["data", "date"]);
-        const body = this.props.widgetFor("body");
-        
-        return h('div', { style: { 
-          padding: '2rem', 
-          maxWidth: '680px', 
-          margin: '0 auto', 
-          fontFamily: 'Literata, serif', 
-          lineHeight: '1.75', 
-          background: '#fafaf8', 
-          color: '#1a1917' 
-        }},
-          h('h1', { style: { 
-            fontSize: '1.8rem', 
-            fontWeight: '300', 
-            marginBottom: '1rem', 
-            borderBottom: '1px solid #e2e1db', 
-            paddingBottom: '1rem' 
-          }}, title),
-          h('div', { style: { 
-            fontSize: '0.8rem', 
-            color: '#6b6963', 
-            marginBottom: '2rem', 
-            fontFamily: 'JetBrains Mono, monospace' 
-          }}, date ? new Date(date).toLocaleDateString('uk-UA') : ''),
-          h('div', { className: 'post-content' }, body)
-        );
-      }
-    }));
   </script>
 </body>
 </html>
