@@ -23,20 +23,57 @@ collections:
     label: "Дописи"
     folder: "posts"
     create: true
-    slug: "{{slug}}"
+    slug: "{{fields.slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
+      - label: "Slug (адреса посту латиницею)"
+        name: "slug"
+        widget: "string"
+        hint: "Тільки латинські літери, цифри та дефіси. Наприклад: miy-pershyi-post"
+        pattern:
+          - "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          - "Лише малі латинські літери, цифри та дефіси (-)"
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
-      - { label: "Тег", name: "tag", widget: "select", options: ["PKM", "ШІ та автоматизація", "Спорт та дисципліна", "Життя сканера", "Інструменти", "Нотатки"] }
+      - label: "Теги"
+        name: "tag"
+        widget: "relation"
+        collection: "tags"
+        search_fields: ["name"]
+        value_field: "name"
+        display_fields: ["name"]
       - { label: "Вміст", name: "body", widget: "markdown" }
 
   - name: "pages"
     label: "Сторінки"
     folder: "pages"
     create: true
-    slug: "{{slug}}"
+    slug: "{{fields.slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
+      - label: "Slug (адреса сторінки латиницею)"
+        name: "slug"
+        widget: "string"
+        hint: "Тільки латинські літери, цифри та дефіси"
+        pattern:
+          - "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          - "Лише малі латинські літери, цифри та дефіси (-)"
       - { label: "Опис", name: "description", widget: "string", required: false }
       - { label: "Вміст", name: "body", widget: "markdown" }
+
+  - name: "tags"
+    label: "Теги"
+    label_singular: "Тег"
+    folder: "tags"
+    create: true
+    slug: "{{fields.slug}}"
+    identifier_field: "name"
+    fields:
+      - { label: "Назва тегу", name: "name", widget: "string" }
+      - label: "Slug тегу (латиницею)"
+        name: "slug"
+        widget: "string"
+        hint: "Наприклад: pkm, zhyttia-skanera, sport"
+        pattern:
+          - "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          - "Лише малі латинські літери, цифри та дефіси (-)"

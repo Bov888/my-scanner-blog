@@ -1,0 +1,4 @@
+---
+name: Нотатки
+slug: notatky
+---

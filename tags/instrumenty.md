@@ -1,0 +1,4 @@
+---
+name: Інструменти
+slug: instrumenty
+---
