@@ -29,7 +29,7 @@ collections:
     slug: "{{slug}}" 
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Коротке посилання (URL латиницею)", name: "slug", widget: "string", hint: "ОБОВ'ЯЗКОВО. Тільки латиниця та дефіси (наприклад: miy-noviy-dopys).", pattern: ['^[a-z0-9-]+$', "Тільки латиниця, цифри та дефіси!"], required: true }
+      - { label: "Коротке посилання (URL латиницею)", name: "slug", widget: "string", hint: "Можна залишити порожнім — тоді згенерується автоматично латиницею.", required: false }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       - label: "Тег"
