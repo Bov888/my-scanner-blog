@@ -29,7 +29,7 @@ collections:
     slug: "{{slug}}" 
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Коротке посилання (URL)", name: "slug", widget: "slug", from_field: "title" }
+      - { label: "Коротке посилання (URL)", name: "slug", widget: "string", hint: "Тільки латиниця та дефіси (наприклад: miy-dopys). Якщо залишити порожнім, згенерується із заголовка.", required: false }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       - label: "Тег"
