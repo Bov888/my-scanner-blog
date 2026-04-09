@@ -22,7 +22,7 @@
       });
     }
 
-    // ── Таблиця транслітерації (українська → латиниця) ──────────────────────
+    // ── Таблиця транслітерації (українська → латиниця) ───────────────────────
     const TRANSLIT_MAP = {
       'а':'a',  'б':'b',  'в':'v',  'г':'h',  'ґ':'g',
       'д':'d',  'е':'e',  'є':'ie', 'ж':'zh', 'з':'z',
@@ -31,7 +31,6 @@
       'р':'r',  'с':'s',  'т':'t',  'у':'u',  'ф':'f',
       'х':'kh', 'ц':'ts', 'ч':'ch', 'ш':'sh', 'щ':'shch',
       'ь':'',   'ю':'iu', 'я':'ia',
-      // Великі — транслітеруються так само
       'А':'a',  'Б':'b',  'В':'v',  'Г':'h',  'Ґ':'g',
       'Д':'d',  'Е':'e',  'Є':'ie', 'Ж':'zh', 'З':'z',
       'И':'y',  'І':'i',  'Ї':'yi', 'Й':'i',  'К':'k',
@@ -46,84 +45,101 @@
         .split('')
         .map(ch => {
           if (TRANSLIT_MAP[ch] !== undefined) return TRANSLIT_MAP[ch];
-          // латиниця, цифри — залишаємо
           if (/[a-zA-Z0-9]/.test(ch)) return ch.toLowerCase();
-          // пробіли та розділові — в дефіс
           if (/[\s\-_/\\]/.test(ch)) return '-';
-          // решту (символи, емодзі тощо) — прибираємо
           return '';
         })
         .join('')
-        // прибираємо дефіси на початку/кінці та подвійні дефіси
         .replace(/-{2,}/g, '-')
         .replace(/^-+|-+$/g, '');
     }
 
-    // ── Авто-заповнення slug при зміні title ────────────────────────────────
-    // Decap CMS рендерить форму в Shadow DOM або у звичайний DOM залежно від версії.
-    // Використовуємо MutationObserver, щоб зачепитися після того, як форма з'явиться.
-    function attachSlugAutofill() {
-      // Шукаємо інпут заголовка та slug за їх id-атрибутами (Decap генерує id="title" і id="slug")
-      const titleInput = document.querySelector('[id$="-title"]') ||
-                         document.querySelector('input[name="title"]') ||
-                         document.querySelector('[data-testid="title-field"] input') ||
-                         [...document.querySelectorAll('label')].find(l => /заголовок/i.test(l.textContent))?.nextElementSibling?.querySelector('input');
+    // ── Авто-slug через нативний API Decap CMS ───────────────────────────────
+    // CMS.registerEventListener('change') спрацьовує всередині React-стану CMS,
+    // тому не залежить від DOM-селекторів.
+    // entry.getIn(['data','slug']) — поточне значення поля slug у стані форми.
+    // Якщо воно вже не порожнє (користувач редагував вручну) — не чіпаємо.
 
-      const slugInput  = document.querySelector('[id$="-slug"]') ||
-                         document.querySelector('input[name="slug"]') ||
-                         document.querySelector('[data-testid="slug-field"] input') ||
-                         [...document.querySelectorAll('label')].find(l => /^slug/i.test(l.textContent))?.nextElementSibling?.querySelector('input');
+    // Прапор: чи редагував користувач slug вручну для поточного запису
+    let _userEditedSlug = false;
+    let _lastEntryPath  = null;   // відстежуємо перехід до нового запису
 
-      if (!titleInput || !slugInput) return false; // ще не змонтовано
-
-      // Прапор: якщо користувач сам редагував slug — не перезаписуємо
-      let userEditedSlug = false;
-
-      slugInput.addEventListener('input', () => { userEditedSlug = true; });
-
-      titleInput.addEventListener('input', () => {
-        if (userEditedSlug) return;
-        const generated = toSlug(titleInput.value);
-        // Оновлюємо значення через нативний setter (React/Preact контролює значення)
-        const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-        nativeSetter.call(slugInput, generated);
-        slugInput.dispatchEvent(new Event('input', { bubbles: true }));
-      });
-
-      // Скидаємо прапор при відкритті нового допису (кнопка "Новий")
-      const observer = new MutationObserver(() => {
-        if (!document.contains(slugInput)) {
-          userEditedSlug = false;
-          observer.disconnect();
-          // Пробуємо перепідключитися після наступного рендеру
-          setTimeout(() => tryAttach(), 800);
-        }
-      });
-      observer.observe(document.body, { childList: true, subtree: true });
-
-      return true;
-    }
-
-    function tryAttach(attempts) {
-      attempts = attempts || 0;
-      if (attachSlugAutofill()) return;
-      if (attempts < 30) setTimeout(() => tryAttach(attempts + 1), 400);
-    }
-
-    // Запускаємо після того, як CMS ініціалізується
     CMS.registerEventListener({
-      name: 'preSave',
-      handler: () => {} // порожній — потрібен лише щоб переконатись, що CMS API підхоплено
+      name: 'change',
+      handler: ({ entry }) => {
+        // Якщо відкрили новий запис — скидаємо прапор
+        const currentPath = entry.get('path') || entry.get('slug') || '';
+        if (currentPath !== _lastEntryPath) {
+          _userEditedSlug = false;
+          _lastEntryPath  = currentPath;
+        }
+
+        const title   = entry.getIn(['data', 'title']) || '';
+        const slugNow = entry.getIn(['data', 'slug'])  || '';
+
+        // Якщо slug вже заповнений вручну — не перезаписуємо
+        if (_userEditedSlug && slugNow !== '') return;
+
+        // Якщо slug відрізняється від транслітерованого title — значить
+        // користувач сам його змінив; фіксуємо прапор
+        const generated = toSlug(title);
+        if (slugNow !== '' && slugNow !== generated && slugNow !== toSlug(title)) {
+          _userEditedSlug = true;
+          return;
+        }
+
+        // Якщо slug порожній або збігається з попередньою генерацією — оновлюємо
+        if (!_userEditedSlug) {
+          // Записуємо slug назад у стан через DOM (CMS.updateEntry недоступний
+          // в Decap 3.x, тому знаходимо інпут і форсуємо React-подію)
+          setTimeout(() => {
+            const slugInput = findSlugInput();
+            if (!slugInput) return;
+
+            const currentVal = slugInput.value;
+            // Якщо поле порожнє або рівне попередньому auto-slug — перезаписуємо
+            if (currentVal === '' || currentVal === generated) {
+              forceInputValue(slugInput, generated);
+            } else {
+              // Користувач вписав щось інше — більше не чіпаємо
+              _userEditedSlug = true;
+            }
+          }, 0);
+        }
+      }
     });
 
-    window.addEventListener('load', () => setTimeout(tryAttach, 600));
-
-    // Ловимо кліки по навігації CMS (перехід до нового поста) і перепідключаємося
-    document.addEventListener('click', (e) => {
-      if (e.target && e.target.closest && e.target.closest('[data-testid="new-entry-button"], a[href*="/new"], button')) {
-        userEditedSlug = false;
-        setTimeout(tryAttach, 800);
+    function findSlugInput() {
+      // Decap 3.x: поле slug рендериться як <input> всередині блоку з label "SLUG…"
+      // Намагаємося знайти за кількома стратегіями — від специфічного до загального
+      const byLabel = [...document.querySelectorAll('label, [class*="label"]')]
+        .find(el => /^slug/i.test(el.textContent.trim()));
+      if (byLabel) {
+        const inp = byLabel.closest('[class*="control"], [class*="field"], div')
+                           ?.querySelector('input[type="text"], input:not([type])');
+        if (inp) return inp;
       }
+      // Fallback: другий текстовий input у формі (перший — title)
+      const allInputs = [...document.querySelectorAll(
+        'input[type="text"]:not([readonly]), input:not([type]):not([readonly])'
+      )];
+      return allInputs[1] || null;
+    }
+
+    function forceInputValue(input, value) {
+      const nativeSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype, 'value'
+      ).set;
+      nativeSetter.call(input, value);
+      input.dispatchEvent(new Event('input',  { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    // Скидаємо прапор при кліку «Новий допис» або навігації
+    document.addEventListener('click', (e) => {
+      const btn = e.target && e.target.closest &&
+                  e.target.closest('a[href*="/new"], [data-testid*="new"]');
+      if (btn) { _userEditedSlug = false; _lastEntryPath = null; }
     }, true);
 
     // ── Кастомний EditorComponent для вставки медіа ──────────────────────────
