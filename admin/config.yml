@@ -2,7 +2,10 @@ backend:
   name: git-gateway
   branch: main
 
-# Вимкнули агресивні глобальні налаштування, щоб не конфліктували зі скриптом
+# Вимкнено кодування, щоб дозволити транслітерацію через скрипт
+slug:
+  sanitize_replacement: "-"
+
 media_library:
   name: cloudinary
   config:
@@ -21,7 +24,7 @@ collections:
     slug: "{{slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "URL (латиницею)", name: "slug", widget: "string", required: false, hint: "Генерується автоматично з заголовка" }
+      - { label: "URL (латиницею)", name: "slug", widget: "string", required: false }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       - { label: "Тег", name: "tag", widget: "select", options: ["PKM", "ШІ та автоматизація", "Спорт та дисципліна", "Життя сканера", "Інструменти", "Нотатки"] }
