@@ -2,8 +2,8 @@ backend:
   name: git-gateway
   branch: main
 
+# Конфігурація посилань (slug)
 slug:
-  encoding: "ascii"
   clean_accents: true
   sanitize_replacement: "-"
 
@@ -25,9 +25,10 @@ collections:
     folder: "posts"
     create: true
     # Це автоматично конвертує заголовок у назву файлу без кирилиці
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" 
+    slug: "{{slug}}" 
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Коротке посилання (URL)", name: "slug", widget: "slug", from_field: "title" }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       - label: "Тег"
