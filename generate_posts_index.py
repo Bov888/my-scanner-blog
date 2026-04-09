@@ -17,13 +17,22 @@ def parse_markdown_meta(content):
 
 def generate_posts_index(posts_dir="posts", output_file="posts.json"):
     all_posts_meta = []
+    
+    if not os.path.exists(posts_dir):
+        print(f"Error: Directory {posts_dir} not found.")
+        return
 
     for filename in os.listdir(posts_dir):
         if not filename.endswith(".md"):
             continue
+            
         filepath = os.path.join(posts_dir, filename)
-        with open(filepath, "r", encoding="utf-8") as f:
-            content = f.read()
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                content = f.read()
+        except Exception as e:
+            print(f"Skipping file {filename} due to error: {e}")
+            continue
 
         meta = parse_markdown_meta(content)
         slug = filename.replace(".md", "")
@@ -49,12 +58,13 @@ def generate_posts_index(posts_dir="posts", output_file="posts.json"):
             "tag": tag
         })
 
-    all_posts_meta.sort(key=lambda x: x.get('date', '0000-00-00'), reverse=True)
+    # Сортування: спочатку за датою, потім за назвою для стабільності
+    all_posts_meta.sort(key=lambda x: (x.get('date', '0000-00-00'), x.get('slug', '')), reverse=True)
 
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(all_posts_meta, f, ensure_ascii=False, indent=2)
 
-    print(f"Generated {output_file} with {len(all_posts_meta)} posts")
+    print(f"Successfully generated {output_file} with {len(all_posts_meta)} posts.")
 
 if __name__ == "__main__":
     generate_posts_index()
