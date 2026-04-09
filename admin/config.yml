@@ -25,11 +25,11 @@ collections:
     label: "Дописи"
     folder: "posts"
     create: true
-    # Це автоматично конвертує заголовок у назву файлу без кирилиці
+    # Використовуємо значення з поля 'slug' для назви файлу
     slug: "{{slug}}" 
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Коротке посилання (URL)", name: "slug", widget: "string", hint: "Тільки латиниця та дефіси (наприклад: miy-dopys). Якщо залишити порожнім, згенерується із заголовка.", required: false }
+      - { label: "Коротке посилання (URL латиницею)", name: "slug", widget: "string", hint: "ОБОВ'ЯЗКОВО. Тільки латиниця та дефіси (наприклад: miy-noviy-dopys).", pattern: ['^[a-z0-9-]+$', "Тільки латиниця, цифри та дефіси!"], required: true }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       - label: "Тег"
