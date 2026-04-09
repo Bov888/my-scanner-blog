@@ -25,23 +25,13 @@ collections:
     label: "Дописи"
     folder: "posts"
     create: true
-    # Використовуємо значення з поля 'slug' для назви файлу
-    slug: "{{slug}}" 
+    slug: "{{slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Коротке посилання (URL латиницею)", name: "slug", widget: "string", hint: "Можна залишити порожнім — тоді згенерується автоматично латиницею.", required: false }
+      - { label: "URL (латиницею)", name: "slug", widget: "string", required: false }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
-      - label: "Тег"
-        name: "tag"
-        widget: "select"
-        options:
-          - { label: "PKM", value: "PKM" }
-          - { label: "ШІ та автоматизація", value: "ШІ та автоматизація" }
-          - { label: "Спорт та дисципліна", value: "Спорт та дисципліна" }
-          - { label: "Життя сканера", value: "Життя сканера" }
-          - { label: "Інструменти", value: "Інструменти" }
-          - { label: "Нотатки", value: "Нотатки" }
+      - { label: "Тег", name: "tag", widget: "select", options: ["PKM", "ШІ та автоматизація", "Спорт та дисципліна", "Життя сканера", "Інструменти", "Нотатки"] }
       - { label: "Вміст", name: "body", widget: "markdown" }
 
   - name: "pages"
