@@ -42,10 +42,11 @@
         if (!data.get('slug')) {
           const title = data.get('title');
           if (title) {
-            return data.set('slug', transliterate(title));
+            // Повертаємо оновлений entry з новим slug
+            return entry.set('data', data.set('slug', transliterate(title)));
           }
         }
-        return data;
+        return entry;
       },
     });
 
