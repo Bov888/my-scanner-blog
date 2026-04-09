@@ -1,9 +1,3 @@
 [build]
-  # Команда, що запускається перед розгортанням.
-  # Вона просто запускає ваш Python-скрипт для генерації posts.json.
-  command = "python generate_posts_index.py" 
-
-  # Публікаційна директорія. Вказуємо '.' (корінь проєкту),
-  # тому що скрипт генерує posts.json у корені, а ваш HTML/CSS/JS,
-  # ймовірно, теж знаходяться у корені.
-  publish = "." 
+  command = "python generate_posts_index.py"
+  publish = "."

@@ -23,11 +23,11 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'><rect width='32' height='32' rx='6' fill='%231e2e1c'/><line x1='16' y1='15' x2='6' y2='6' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='16' y1='15' x2='26' y2='6' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='16' y1='15' x2='27' y2='18' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='16' y1='15' x2='22' y2='27' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='16' y1='15' x2='9' y2='26' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='16' y1='15' x2='5' y2='18' stroke='%236ab05f' stroke-width='0.9' opacity='0.35'/><line x1='6' y1='6' x2='26' y2='6' stroke='%236ab05f' stroke-width='0.6' opacity='0.15'/><line x1='27' y1='18' x2='22' y2='27' stroke='%236ab05f' stroke-width='0.6' opacity='0.15'/><line x1='9' y1='26' x2='5' y2='18' stroke='%236ab05f' stroke-width='0.6' opacity='0.15'/><circle cx='6' cy='6' r='1.8' fill='%236ab05f' opacity='0.4'/><circle cx='26' cy='6' r='2.4' fill='%236ab05f' opacity='0.55'/><circle cx='27' cy='18' r='1.6' fill='%236ab05f' opacity='0.4'/><circle cx='22' cy='27' r='2' fill='%236ab05f' opacity='0.45'/><circle cx='9' cy='26' r='1.5' fill='%236ab05f' opacity='0.38'/><circle cx='5' cy='18' r='1.8' fill='%236ab05f' opacity='0.42'/><circle cx='16' cy='15' r='5' stroke='%236ab05f' stroke-width='0.8' fill='none' opacity='0.25'/><circle cx='16' cy='15' r='4' fill='%236ab05f'/><circle cx='16' cy='15' r='2.2' fill='%231e2e1c'/><circle cx='16' cy='15' r='1.2' fill='%236ab05f'/></svg>">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap&font-display=swap">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap&font-display=swap" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
 
 <style>
 :root {
@@ -292,7 +292,6 @@ const POSTS_FOLDER = 'posts';
 const SITE_TITLE = 'Як стати успішним сканером';
 const CACHE_TTL = 5 * 60 * 1000;
 
-const MONTHS = ["СІЧ","ЛЮТ","БЕР","КВІ","ТРА","ЧЕР","ЛИП","СЕР","ВЕР","ЖОВ","ЛИС","ГРУ"];
 const MONTHS_UA = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
 const ABOUT_TAGS = ['PKM','ШІ та автоматизація','Спорт та дисципліна','Життя сканера','Інструменти','Нотатки'];
 
@@ -302,7 +301,6 @@ let allPosts = [];
 let activeTag = null;
 let searchQuery = '';
 let searchDebounce = null;
-// Прапор чи вже підписались на tagFilters — щоб не дублювати обробник
 let tagFiltersListenerAdded = false;
 
 const $ = id => document.getElementById(id);
@@ -363,8 +361,6 @@ function toggleTheme() {
 
 // --- Бургер ---
 function initBurger() {
-  // Фікс подвійного спрацювання: stopPropagation на кнопці
-  // щоб document click не закривав одразу після відкриття
   els.burgerBtn.addEventListener('click', e => {
     e.stopPropagation();
     toggleBurger();
@@ -383,7 +379,6 @@ function toggleBurger() {
   els.burgerMenu.classList.toggle('open', !isOpen);
   els.header.classList.toggle('menu-open', !isOpen);
   els.burgerBtn.setAttribute('aria-expanded', String(!isOpen));
-
   if (!isOpen) {
     requestAnimationFrame(() => {
       const h = els.burgerMenu.offsetHeight;
@@ -403,7 +398,7 @@ function closeBurger() {
   document.documentElement.style.setProperty('--menu-height', '0px');
 }
 
-// --- Scroll top ---
+// --- Scroll top + reading progress ---
 function initScrollTop() {
   window.addEventListener('scroll', () => {
     els.scrollTop.classList.toggle('visible', window.scrollY > 400);
@@ -413,33 +408,17 @@ function initScrollTop() {
 }
 
 function updateReadingProgress() {
-  const isPostActive = $('page-post').classList.contains('active');
   const bar = $('reading-progress');
-  if (isPostActive) {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  if (!bar) return;
+  if ($('page-post').classList.contains('active')) {
+    const winScroll = document.documentElement.scrollTop;
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    bar.style.width = scrolled + "%";
+    bar.style.width = height > 0 ? (winScroll / height * 100) + '%' : '0%';
     bar.style.opacity = '1';
   } else {
-    bar.style.width = "0%";
+    bar.style.width = '0%';
     bar.style.opacity = '0';
   }
-}
-
-function slugify(text) {
-  const ua = 'абвгґдеєжзиіїйклмнопрстуфхцчшщьюя';
-  const en = 'abvhgdeiezhzyiiiklmnoprstufkhtschshshch_iuia';
-  const map = {
-    'а':'a','б':'b','в':'v','г':'h','ґ':'g','д':'d','е':'e','є':'ie','ж':'zh','з':'z','и':'y','і':'i','ї':'i','й':'i','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'kh','ц':'ts','ч':'ch','ш':'sh','щ':'shch','ь':'','ю':'iu','я':'ia'
-  };
-  return text.toString().toLowerCase().trim()
-    .replace(/[а-яєіїґ]/g, char => map[char] || char)
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-')
-    .replace(/^-+/, '')
-    .replace(/-+$/, '');
 }
 
 // --- Події ---
@@ -458,9 +437,7 @@ function initEvents() {
     const btn = e.target.closest('.about-tag');
     if (btn) filterByTag(btn.dataset.tag, true);
   });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeBurger();
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBurger(); });
   window.addEventListener('hashchange', routeHandler);
 }
 
@@ -486,12 +463,10 @@ function parseMeta(text, key) {
 }
 
 // --- Медіа хелпер ---
-// Єдина функція для перетворення посилань на плеєри
 function processMediaLinks(container) {
   container.querySelectorAll('a').forEach(link => {
     const href = link.getAttribute('href') || '';
 
-    // YouTube
     const yt = href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     if (yt) {
       const wrap = document.createElement('div');
@@ -501,7 +476,6 @@ function processMediaLinks(container) {
       return;
     }
 
-    // Spotify
     const sp = href.match(/open\.spotify\.com\/(track|episode|playlist|show)\/([a-zA-Z0-9]+)/);
     if (sp) {
       const frame = document.createElement('div');
@@ -511,7 +485,6 @@ function processMediaLinks(container) {
       return;
     }
 
-    // Cloudinary embed плеєр (https://player.cloudinary.com/embed/...)
     if (href.includes('player.cloudinary.com')) {
       const p = new URLSearchParams(href.split('?')[1]);
       const cn = p.get('cloud_name'), pi = p.get('public_id');
@@ -523,7 +496,6 @@ function processMediaLinks(container) {
           wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cn}&public_id=${encodeURIComponent(pi)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy" title="Відео"></iframe>`;
           link.parentNode.replaceChild(wrap, link);
         } else {
-          // Аудіо — нативний браузерний плеєр
           const audioSrc = `https://res.cloudinary.com/${cn}/video/upload/${pi}.mp3`;
           const wrap = document.createElement('div');
           wrap.style.margin = '1.2rem 0';
@@ -534,24 +506,18 @@ function processMediaLinks(container) {
       return;
     }
 
-    // Cloudinary пряме посилання (https://res.cloudinary.com/...)
-    // Формат: res.cloudinary.com/{cloud_name}/video/upload/{version}/{public_id}.mp4
     if (href.includes('res.cloudinary.com')) {
       const m = href.match(/res\.cloudinary\.com\/([^/]+)\/(?:video|image|raw)\/upload\/(?:v\d+\/)?(.+)$/);
       if (m) {
         const cn = m[1];
-        // public_id — без розширення в кінці
         const pi = m[2].replace(/\.[^/.]+$/, '');
-        const fileName = pi.split('/').pop();
-        // Відео визначаємо по префіксу VID_ в назві файлу
-        const isVideo = /^VID_/i.test(fileName);
+        const isVideo = /^VID_/i.test(pi.split('/').pop());
         if (isVideo) {
           const wrap = document.createElement('div');
           wrap.className = 'video-wrap';
           wrap.innerHTML = `<iframe src="https://player.cloudinary.com/embed/?cloud_name=${cn}&public_id=${encodeURIComponent(pi)}&fluid=true&controls=true" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy" title="Відео"></iframe>`;
           link.parentNode.replaceChild(wrap, link);
         } else {
-          // Аудіо — нативний браузерний плеєр з прямим посиланням
           const wrap = document.createElement('div');
           wrap.style.margin = '1.2rem 0';
           wrap.innerHTML = `<audio controls style="width:100%;"><source src="${href}" type="audio/mp4">Браузер не підтримує аудіо.</audio>`;
@@ -561,7 +527,6 @@ function processMediaLinks(container) {
       return;
     }
 
-    // Прямий MP3
     if (href.toLowerCase().endsWith('.mp3') || href.toLowerCase().includes('.mp3?')) {
       const wrap = document.createElement('div');
       wrap.style.margin = '1.2rem 0';
@@ -681,54 +646,26 @@ function renderPostsList() {
   els.postsContainer.appendChild(fragment);
 }
 
-// --- Завантаження дописів ---
+// --- Завантаження дописів з posts.json ---
 async function loadPosts() {
   if (postsCachedAt && Date.now() - postsCachedAt < CACHE_TTL && allPosts.length > 0) {
     renderPostsList();
     return;
   }
   try {
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
-    if (res.status === 403) {
-      els.postsContainer.innerHTML = `<div class="empty-state"><p>GitHub API обмеження — спробуйте пізніше</p></div>`;
-      return;
-    }
-    if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+    const res = await fetch('/posts.json');
+    if (!res.ok) throw new Error(`posts.json error: ${res.status}`);
+    const posts = await res.json();
 
-    const files = await res.json();
-    const mdFiles = files.filter(f => f.name.endsWith('.md')).reverse();
-
-    if (mdFiles.length === 0) {
+    if (posts.length === 0) {
       els.postsContainer.innerHTML = `<div class="empty-state"><p>Поки що дописів немає</p></div>`;
       return;
     }
 
-    const results = await Promise.all(mdFiles.map(async file => {
-      const r = await fetch(file.download_url);
-      if (!r.ok) throw new Error(`Fetch error: ${file.name}`);
-      const text = await r.text();
-      return { file, text };
-    }));
-
-    allPosts = [];
-    const tags = new Set();
-
-    for (const { file, text } of results) {
-      const slug = file.name.replace('.md', '');
-      postsCache[slug] = { text };
-      const title = parseMeta(text, 'title') || 'Без назви';
-      const excerpt = parseMeta(text, 'excerpt') || '';
-      const dateStr = parseMeta(text, 'date') || '';
-      const tag = parseMeta(text, 'tag') || 'Допис';
-      const date = new Date(dateStr);
-      const displayDate = isNaN(date.getTime()) ? 'НОВЕ' : `${MONTHS[date.getMonth()]}<br>${date.getFullYear()}`;
-      tags.add(tag);
-      allPosts.push({ slug, title, excerpt, tag, displayDate });
-    }
-
+    allPosts = posts;
     postsCachedAt = Date.now();
 
-    // Фікс: обробник на tagFilters додається лише один раз
+    const tags = new Set(posts.map(p => p.tag));
     els.tagFilters.innerHTML = [...tags].map(tag =>
       `<button class="tag-filter" data-tag="${tag}">${tag}</button>`
     ).join('');
@@ -816,7 +753,6 @@ async function openPostBySlug(slug) {
   els.shareBtn.textContent = '↗ поділитись';
   els.shareBtn.classList.remove('copied');
 
-  // Фікс: очищаємо попередній обробник тегу через заміну елемента
   const newTag = els.postTag.cloneNode(true);
   els.postTag.parentNode.replaceChild(newTag, els.postTag);
   els.postTag = newTag;
