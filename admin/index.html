@@ -23,6 +23,32 @@
       });
     }
 
+    // Функція транслітерації
+    function transliterate(text) {
+      const rus = "щ   ш  ч  ц  ю  я  є  і  ї  ґ  а б в г д е ж з и й к л м н о п р с т у ф х".split(/\s+/);
+      const eng = "shch sh ch ts yu ya ye i yi g  a b v h d e zh z y y k l m n o p r s t u f kh".split(/\s+/);
+      let res = text.toLowerCase();
+      for (let i = 0; i < rus.length; i++) {
+        res = res.split(rus[i]).join(eng[i]);
+      }
+      return res.replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    // Автозаповнення slug при зміні заголовка
+    CMS.registerEventListener({
+      name: 'preSave',
+      handler: ({ entry }) => {
+        const data = entry.get('data');
+        if (!data.get('slug')) {
+          const title = data.get('title');
+          if (title) {
+            return data.set('slug', transliterate(title));
+          }
+        }
+        return data;
+      },
+    });
+
     // Кастомний EditorComponent для вставки медіа з Cloudinary
     CMS.registerEditorComponent({
       id: "cloudinary-media",
