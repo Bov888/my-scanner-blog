@@ -6,16 +6,12 @@
   <title>Адмін-панель | Успішний Сканер</title>
   <meta name="robots" content="noindex, nofollow">
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="https://unpkg.com/decap-cms@3.11.0/dist/decap-cms.js"></script>
+  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@1.0.3/dist/netlify-cms-media-library-cloudinary.js"></script>
 </head>
 <body>
-  <!-- Фіксована версія Decap CMS -->
-  <script src="https://unpkg.com/decap-cms@3.11.0/dist/decap-cms.js"></script>
-
-  <!-- Cloudinary media library -->
-  <script src="https://unpkg.com/netlify-cms-media-library-cloudinary@1.0.3/dist/netlify-cms-media-library-cloudinary.js"></script>
-
   <script>
-    // Netlify Identity
+    // Netlify Identity — редирект після логіну
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
@@ -27,7 +23,6 @@
     }
 
     // Кастомний EditorComponent для вставки медіа з Cloudinary
-    // Додає кнопку "Відео / Аудіо" в тулбар редактора
     CMS.registerEditorComponent({
       id: "cloudinary-media",
       label: "Відео / Аудіо",
@@ -51,14 +46,11 @@
         }
       ],
 
-      // Вставляється в markdown як звичайне посилання
-      // Сайт автоматично розпізнає і замінює на плеєр
       toBlock: ({ url, label }) => {
         if (!url) return '';
         return `[${label || 'Медіа'}](${url})`;
       },
 
-      // Превʼю в редакторі
       toPreview: ({ url, label }) => {
         if (!url) return '';
         const name = label || url.split('/').pop();
@@ -70,7 +62,6 @@
         </div>`;
       },
 
-      // Розпізнає вже вставлені посилання на cloudinary/mp3/mp4
       pattern: /^\[([^\]]*)\]\((https?:\/\/[^)]*(?:cloudinary\.com|\.mp3|\.mp4|\.mov|\.webm)[^)]*)\)$/,
       fromBlock: match => ({
         label: match[1],
