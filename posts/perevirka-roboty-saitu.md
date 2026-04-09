@@ -1,7 +1,7 @@
 ---
 title: Як я підлючив сайт до ШІ
-slug: Yak ya pidliuchyv sait do AI
-excerpt: Підключаємо сайт до штучгого інтелекту
+slug: yak-ya-pidlyuchyv-sayt-do-shi
+excerpt: Підключаємо сайт до штучного інтелекту
 date: 2026-04-09
 tag: Інструменти
 ---
