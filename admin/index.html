@@ -54,93 +54,95 @@
         .replace(/^-+|-+$/g, '');
     }
 
-    // ── Авто-slug через нативний API Decap CMS ───────────────────────────────
-    // CMS.registerEventListener('change') спрацьовує всередині React-стану CMS,
-    // тому не залежить від DOM-селекторів.
-    // entry.getIn(['data','slug']) — поточне значення поля slug у стані форми.
-    // Якщо воно вже не порожнє (користувач редагував вручну) — не чіпаємо.
-
-    // Прапор: чи редагував користувач slug вручну для поточного запису
-    let _userEditedSlug = false;
-    let _lastEntryPath  = null;   // відстежуємо перехід до нового запису
-
-    CMS.registerEventListener({
-      name: 'change',
-      handler: ({ entry }) => {
-        // Якщо відкрили новий запис — скидаємо прапор
-        const currentPath = entry.get('path') || entry.get('slug') || '';
-        if (currentPath !== _lastEntryPath) {
-          _userEditedSlug = false;
-          _lastEntryPath  = currentPath;
-        }
-
-        const title   = entry.getIn(['data', 'title']) || '';
-        const slugNow = entry.getIn(['data', 'slug'])  || '';
-
-        // Якщо slug вже заповнений вручну — не перезаписуємо
-        if (_userEditedSlug && slugNow !== '') return;
-
-        // Якщо slug відрізняється від транслітерованого title — значить
-        // користувач сам його змінив; фіксуємо прапор
-        const generated = toSlug(title);
-        if (slugNow !== '' && slugNow !== generated && slugNow !== toSlug(title)) {
-          _userEditedSlug = true;
-          return;
-        }
-
-        // Якщо slug порожній або збігається з попередньою генерацією — оновлюємо
-        if (!_userEditedSlug) {
-          // Записуємо slug назад у стан через DOM (CMS.updateEntry недоступний
-          // в Decap 3.x, тому знаходимо інпут і форсуємо React-подію)
-          setTimeout(() => {
-            const slugInput = findSlugInput();
-            if (!slugInput) return;
-
-            const currentVal = slugInput.value;
-            // Якщо поле порожнє або рівне попередньому auto-slug — перезаписуємо
-            if (currentVal === '' || currentVal === generated) {
-              forceInputValue(slugInput, generated);
-            } else {
-              // Користувач вписав щось інше — більше не чіпаємо
-              _userEditedSlug = true;
-            }
-          }, 0);
-        }
-      }
-    });
-
-    function findSlugInput() {
-      // Decap 3.x: поле slug рендериться як <input> всередині блоку з label "SLUG…"
-      // Намагаємося знайти за кількома стратегіями — від специфічного до загального
-      const byLabel = [...document.querySelectorAll('label, [class*="label"]')]
-        .find(el => /^slug/i.test(el.textContent.trim()));
-      if (byLabel) {
-        const inp = byLabel.closest('[class*="control"], [class*="field"], div')
-                           ?.querySelector('input[type="text"], input:not([type])');
-        if (inp) return inp;
-      }
-      // Fallback: другий текстовий input у формі (перший — title)
-      const allInputs = [...document.querySelectorAll(
-        'input[type="text"]:not([readonly]), input:not([type]):not([readonly])'
-      )];
-      return allInputs[1] || null;
-    }
-
-    function forceInputValue(input, value) {
-      const nativeSetter = Object.getOwnPropertyDescriptor(
-        window.HTMLInputElement.prototype, 'value'
-      ).set;
-      nativeSetter.call(input, value);
+    // ── Форсуємо значення в React-контрольований інпут ──────────────────────
+    function forceValue(input, value) {
+      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+      setter.call(input, value);
       input.dispatchEvent(new Event('input',  { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
-    // Скидаємо прапор при кліку «Новий допис» або навігації
-    document.addEventListener('click', (e) => {
-      const btn = e.target && e.target.closest &&
-                  e.target.closest('a[href*="/new"], [data-testid*="new"]');
-      if (btn) { _userEditedSlug = false; _lastEntryPath = null; }
-    }, true);
+    // ── Знаходимо пару (titleInput, slugInput) у формі ──────────────────────
+    // Decap 3.x рендерить форму як набір <div> з <label> і <input>.
+    // Шукаємо label з текстом "ЗАГОЛОВОК" і "SLUG" — вони є в DOM після монтування.
+    function findInputs() {
+      const labels = [...document.querySelectorAll('label')];
+
+      const titleLabel = labels.find(l => /^заголовок/i.test(l.textContent.trim()));
+      const slugLabel  = labels.find(l => /^slug/i.test(l.textContent.trim()));
+
+      if (!titleLabel || !slugLabel) return null;
+
+      // Шукаємо input в батьківському блоці кожного label
+      const titleInput = titleLabel.closest('[class]')?.querySelector('input') ||
+                         titleLabel.parentElement?.querySelector('input');
+      const slugInput  = slugLabel.closest('[class]')?.querySelector('input') ||
+                         slugLabel.parentElement?.querySelector('input');
+
+      if (!titleInput || !slugInput) return null;
+      return { titleInput, slugInput };
+    }
+
+    // ── Прикріплюємо слухачі до знайденої пари інпутів ──────────────────────
+    let _attached = false;    // чи вже прикріплені слухачі до поточної форми
+    let _userEdited = false;  // чи редагував користувач slug вручну
+
+    function attach(titleInput, slugInput) {
+      _attached = true;
+      _userEdited = false;
+
+      // Якщо при першому знаходженні title вже заповнений — одразу генеруємо slug
+      if (titleInput.value && !slugInput.value) {
+        forceValue(slugInput, toSlug(titleInput.value));
+      }
+
+      // Слухаємо зміни title → оновлюємо slug
+      titleInput.addEventListener('input', () => {
+        if (_userEdited) return;
+        forceValue(slugInput, toSlug(titleInput.value));
+      });
+
+      // Якщо користувач сам торкнувся slug — більше не перезаписуємо
+      slugInput.addEventListener('input', () => {
+        // Вважаємо "ручне редагування" тільки якщо значення відрізняється від
+        // того, що ми б згенерували — це відсіює наші власні forceValue-дзвінки
+        const expected = toSlug(titleInput.value);
+        if (slugInput.value !== expected) {
+          _userEdited = true;
+        }
+      });
+
+      // Слідкуємо: якщо інпути зникли з DOM (перехід на інший запис) —
+      // скидаємо прапор і починаємо пошук знову
+      const guard = new MutationObserver(() => {
+        if (!document.body.contains(titleInput)) {
+          _attached = false;
+          _userEdited = false;
+          guard.disconnect();
+          poll();
+        }
+      });
+      guard.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // ── Поллінг: чекаємо появи форми і прикріплюємо слухачі ─────────────────
+    // Запускається при завантаженні і після кожного переходу між записами.
+    function poll() {
+      const timer = setInterval(() => {
+        if (_attached) { clearInterval(timer); return; }
+        const found = findInputs();
+        if (found) {
+          clearInterval(timer);
+          attach(found.titleInput, found.slugInput);
+        }
+      }, 300);
+
+      // Страховка: якщо за 30 секунд форма не з'явилась — зупиняємось
+      setTimeout(() => clearInterval(timer), 30000);
+    }
+
+    // Запускаємо після завантаження сторінки
+    window.addEventListener('load', () => setTimeout(poll, 500));
 
     // ── Кастомний EditorComponent для вставки медіа ──────────────────────────
     CMS.registerEditorComponent({
