@@ -11,9 +11,8 @@ def parse_markdown_meta(content):
 ---''', content)
     if match:
         front_matter = match.group(1)
-        # ВИПРАВЛЕНО: Використовуємо правильний синтаксис для розбиття рядка за символом нового рядка.
-        for line in front_matter.split('
-'): 
+        # ВИПРАВЛЕНО: Використовуємо splitlines() для надійного розбиття рядка на окремі рядки.
+        for line in front_matter.splitlines(): 
             if ':' in line:
                 key, value = line.split(':', 1)
                 meta[key.strip()] = value.strip().strip('"')
