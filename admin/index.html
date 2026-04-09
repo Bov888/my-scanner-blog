@@ -23,30 +23,28 @@
       });
     }
 
-    // Функція транслітерації
-    function transliterate(text) {
-      const rus = "щ   ш  ч  ц  ю  я  є  і  ї  ґ  а б в г д е ж з и й к л м н о п р с т у ф х".split(/\s+/);
-      const eng = "shch sh ch ts yu ya ye i yi g  a b v h d e zh z y y k l m n o p r s t u f kh".split(/\s+/);
-      let res = text.toLowerCase();
-      for (let i = 0; i < rus.length; i++) {
-        res = res.split(rus[i]).join(eng[i]);
-      }
-      return res.replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    // Транслітерація кирилиці в латиницю
+    function slugify(text) {
+      const tr = {
+        "а":"a", "б":"b", "в":"v", "г":"h", "ґ":"g", "д":"d", "е":"e", "є":"ye", "ж":"zh",
+        "з":"z", "и":"y", "і":"i", "ї":"yi", "й":"y", "к":"k", "л":"l", "м":"m", "н":"n",
+        "о":"o", "п":"p", "р":"r", "с":"s", "т":"t", "у":"u", "ф":"f", "х":"kh", "ц":"ts",
+        "ч":"ch", "ш":"sh", "щ":"shch", "ю":"yu", "я":"ya"
+      };
+      return text.toLowerCase()
+        .replace(/[а-щьюяґєії]/g, m => tr[m] || "")
+        .replace(/[^a-z0-9]/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
     }
 
-    // Автозаповнення slug при зміні заголовка
+    // Автоматичне оновлення slug
     CMS.registerEventListener({
-      name: 'preSave',
-      handler: ({ entry }) => {
-        const data = entry.get('data');
-        if (!data.get('slug')) {
-          const title = data.get('title');
-          if (title) {
-            // Повертаємо оновлений entry з новим slug
-            return entry.set('data', data.set('slug', transliterate(title)));
-          }
+      name: 'change',
+      handler: ({ entry, field, value }) => {
+        if (field === 'title') {
+          return entry.get('data').set('slug', slugify(value));
         }
-        return entry;
       },
     });
 
