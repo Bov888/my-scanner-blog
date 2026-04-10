@@ -1,5 +1,13 @@
 [
   {
+    "slug": "test-formatu-posylan-na-storinku",
+    "title": "Тест формату посилань на сторінку",
+    "excerpt": "Тестую правильність адрес на дописи",
+    "date": "2026-04-10",
+    "displayDate": "КВІ<br>2026",
+    "tag": "Інструменти"
+  },
+  {
     "slug": "miy-dosvid-stvorennya-onlayn-mahazynu-na-olx",
     "title": "Мій досвід створення онлайн-магазину на OLX",
     "excerpt": "Як у торгівлю подався...",
@@ -17,7 +25,7 @@
   },
   {
     "slug": "perevirka-roboty-saitu",
-    "title": "Як я підлючив сайт до ШІ",
+    "title": "Як я підключив сайт до ШІ",
     "excerpt": "Підключаємо сайт до штучного інтелекту",
     "date": "2026-04-09",
     "displayDate": "КВІ<br>2026",
@@ -33,7 +41,7 @@
   },
   {
     "slug": "subota-den-poriadkiv",
-    "title": "Субота - день порядків",
+    "title": "Субота — день порядків",
     "excerpt": "Як ми робили порядки",
     "date": "2026-04-04",
     "displayDate": "КВІ<br>2026",
@@ -73,7 +81,7 @@
   },
   {
     "slug": "ne-vykhodyt-boroty-problemy",
-    "title": "Щоденник боротьби з проблеми на сайті",
+    "title": "Щоденник боротьби з проблемами на сайті",
     "excerpt": "Як я покращую свій сайт",
     "date": "2026-04-02",
     "displayDate": "КВІ<br>2026",
@@ -89,8 +97,8 @@
   },
   {
     "slug": "onovlennia-evernote",
-    "title": "Оновлення evernote",
-    "excerpt": "Свіже оновлення evernote за березень 2026 року",
+    "title": "Оновлення Evernote",
+    "excerpt": "Свіже оновлення Evernote за березень 2026 року",
     "date": "2026-04-01",
     "displayDate": "КВІ<br>2026",
     "tag": "Нотатки"
