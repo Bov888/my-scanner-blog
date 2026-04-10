@@ -2,7 +2,7 @@ backend:
   name: git-gateway
   branch: main
 
-# Стандартне налаштування для автоматичної транслітерації
+# Decap генерує ім'я файлу з поля slug у frontmatter
 slug:
   encoding: "ascii"
   clean_accents: true
@@ -26,13 +26,7 @@ collections:
     slug: "{{fields.slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      - label: "Slug (адреса посту латиницею)"
-        name: "slug"
-        widget: "string"
-        hint: "Тільки латинські літери, цифри та дефіси. Наприклад: miy-pershyi-post"
-        pattern:
-          - "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-          - "Лише малі латинські літери, цифри та дефіси (-)"
+      - { label: "slug", name: "slug", widget: "hidden", default: "" }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       - label: "Теги"
@@ -51,13 +45,7 @@ collections:
     slug: "{{fields.slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      - label: "Slug (адреса сторінки латиницею)"
-        name: "slug"
-        widget: "string"
-        hint: "Тільки латинські літери, цифри та дефіси"
-        pattern:
-          - "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-          - "Лише малі латинські літери, цифри та дефіси (-)"
+      - { label: "slug", name: "slug", widget: "hidden", default: "" }
       - { label: "Опис", name: "description", widget: "string", required: false }
       - { label: "Вміст", name: "body", widget: "markdown" }
 
@@ -70,10 +58,4 @@ collections:
     identifier_field: "name"
     fields:
       - { label: "Назва тегу", name: "name", widget: "string" }
-      - label: "Slug тегу (латиницею)"
-        name: "slug"
-        widget: "string"
-        hint: "Наприклад: pkm, zhyttia-skanera, sport"
-        pattern:
-          - "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-          - "Лише малі латинські літери, цифри та дефіси (-)"
+      - { label: "slug", name: "slug", widget: "hidden", default: "" }

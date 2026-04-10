@@ -54,95 +54,22 @@
         .replace(/^-+|-+$/g, '');
     }
 
-    // ── Форсуємо значення в React-контрольований інпут ──────────────────────
-    function forceValue(input, value) {
-      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
-      setter.call(input, value);
-      input.dispatchEvent(new Event('input',  { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-
-    // ── Знаходимо пару (titleInput, slugInput) у формі ──────────────────────
-    // Decap 3.x рендерить форму як набір <div> з <label> і <input>.
-    // Шукаємо label з текстом "ЗАГОЛОВОК" і "SLUG" — вони є в DOM після монтування.
-    function findInputs() {
-      const labels = [...document.querySelectorAll('label')];
-
-      const titleLabel = labels.find(l => /^заголовок/i.test(l.textContent.trim()));
-      const slugLabel  = labels.find(l => /^slug/i.test(l.textContent.trim()));
-
-      if (!titleLabel || !slugLabel) return null;
-
-      // Шукаємо input в батьківському блоці кожного label
-      const titleInput = titleLabel.closest('[class]')?.querySelector('input') ||
-                         titleLabel.parentElement?.querySelector('input');
-      const slugInput  = slugLabel.closest('[class]')?.querySelector('input') ||
-                         slugLabel.parentElement?.querySelector('input');
-
-      if (!titleInput || !slugInput) return null;
-      return { titleInput, slugInput };
-    }
-
-    // ── Прикріплюємо слухачі до знайденої пари інпутів ──────────────────────
-    let _attached = false;    // чи вже прикріплені слухачі до поточної форми
-    let _userEdited = false;  // чи редагував користувач slug вручну
-
-    function attach(titleInput, slugInput) {
-      _attached = true;
-      _userEdited = false;
-
-      // Якщо при першому знаходженні title вже заповнений — одразу генеруємо slug
-      if (titleInput.value && !slugInput.value) {
-        forceValue(slugInput, toSlug(titleInput.value));
+    // ── preSave: записуємо транслітерований slug у frontmatter перед збереженням
+    // Це гарантований момент — Decap 3.x підтримує preSave.
+    // entry.getIn / entry.setIn — Immutable.js API, доступний у Decap.
+    CMS.registerEventListener({
+      name: 'preSave',
+      handler: ({ entry }) => {
+        const title = entry.getIn(['data', 'title']) || '';
+        const existingSlug = entry.getIn(['data', 'slug']) || '';
+        // Якщо slug вже є (редагування існуючого допису) — не міняємо
+        if (existingSlug && existingSlug !== '') {
+          return entry;
+        }
+        const slug = toSlug(title) || 'post-' + Date.now();
+        return entry.setIn(['data', 'slug'], slug);
       }
-
-      // Слухаємо зміни title → оновлюємо slug
-      titleInput.addEventListener('input', () => {
-        if (_userEdited) return;
-        forceValue(slugInput, toSlug(titleInput.value));
-      });
-
-      // Якщо користувач сам торкнувся slug — більше не перезаписуємо
-      slugInput.addEventListener('input', () => {
-        // Вважаємо "ручне редагування" тільки якщо значення відрізняється від
-        // того, що ми б згенерували — це відсіює наші власні forceValue-дзвінки
-        const expected = toSlug(titleInput.value);
-        if (slugInput.value !== expected) {
-          _userEdited = true;
-        }
-      });
-
-      // Слідкуємо: якщо інпути зникли з DOM (перехід на інший запис) —
-      // скидаємо прапор і починаємо пошук знову
-      const guard = new MutationObserver(() => {
-        if (!document.body.contains(titleInput)) {
-          _attached = false;
-          _userEdited = false;
-          guard.disconnect();
-          poll();
-        }
-      });
-      guard.observe(document.body, { childList: true, subtree: true });
-    }
-
-    // ── Поллінг: чекаємо появи форми і прикріплюємо слухачі ─────────────────
-    // Запускається при завантаженні і після кожного переходу між записами.
-    function poll() {
-      const timer = setInterval(() => {
-        if (_attached) { clearInterval(timer); return; }
-        const found = findInputs();
-        if (found) {
-          clearInterval(timer);
-          attach(found.titleInput, found.slugInput);
-        }
-      }, 300);
-
-      // Страховка: якщо за 30 секунд форма не з'явилась — зупиняємось
-      setTimeout(() => clearInterval(timer), 30000);
-    }
-
-    // Запускаємо після завантаження сторінки
-    window.addEventListener('load', () => setTimeout(poll, 500));
+    });
 
     // ── Кастомний EditorComponent для вставки медіа ──────────────────────────
     CMS.registerEditorComponent({
