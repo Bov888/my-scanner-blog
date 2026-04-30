@@ -2,16 +2,16 @@ backend:
   name: git-gateway
   branch: main
 
-# Увімкнено режим чернеток (Editorial Workflow)
+# Увімкнення режиму чернеток
 publish_mode: editorial_workflow
 
-# Налаштування очищення URL
+# Налаштування очищення URL (хоча основну роботу робить ваш JS-скрипт)
 slug:
   encoding: "ascii"
   clean_accents: true
   sanitize_replacement: "-"
 
-# Ваша медіа-бібліотека Cloudinary (без змін)
+# Медіа-бібліотека Cloudinary
 media_library:
   name: cloudinary
   config:
@@ -22,10 +22,6 @@ media_library:
 media_folder: "images"
 public_folder: "/images"
 
-# [НОВЕ] Підключення стилів для прев'ю. 
-# Замініть "/css/style.css" на шлях до вашого реального файлу стилів сайту.
-preview_styles: ["/css/style.css"]
-
 collections:
   # ==========================================
   # 1. КОЛЕКЦІЯ: ДОПИСИ БЛОГУ
@@ -34,10 +30,10 @@ collections:
     label: "Дописи"
     folder: "posts"
     create: true
-    # [НОВЕ] Автоматичне додавання дати в назву файлу для порядку в GitHub
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    # Файл буде мати вигляд: 2026-04-30-miy-slug.md
+    slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
     
-    # [НОВЕ] Групування дописів в адмінці за роком (зручно, коли їх стане багато)
+    # Групування дописів в адмінці за роком
     view_groups:
       - label: "Рік"
         field: "date"
@@ -45,17 +41,11 @@ collections:
 
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      
-      # [ЗМІНЕНО] Зробив slug видимим, але необов'язковим. Тепер можна правити URL вручну.
-      - { label: "URL (slug)", name: "slug", widget: "string", required: false, hint: "Якщо пусто — згенерується автоматично" }
-      
+      - { label: "URL (slug)", name: "slug", widget: "string", required: false, hint: "Генерується автоматично з заголовка, але можна змінити" }
       - { label: "Короткий опис", name: "excerpt", widget: "string", required: false }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       
-      # [НОВЕ] Приховане технічне поле (фіксує останнє оновлення, якщо потрібно для JS)
-      - { label: "Останнє оновлення", name: "updated_at", widget: "hidden", default: "" }
-      
-      # [ОНОВЛЕНО] Тепер можна обирати кілька тегів одночасно
+      # Мультитегінг (можна обрати кілька тегів)
       - label: "Теги"
         name: "tag"
         widget: "relation"
@@ -65,9 +55,8 @@ collections:
         display_fields: ["name"]
         multiple: true 
       
-      # [НОВЕ] Вставка посилань на інші статті. 
-      # Обираєте зі списку — на сайті виводите як блок "Читайте також"
-      - label: "Пов'язані матеріали (Лінки)"
+      # Пов'язані дописи (вставка лінків на інші статті)
+      - label: "Пов'язані матеріали"
         name: "related"
         widget: "relation"
         collection: "posts"
@@ -76,11 +65,12 @@ collections:
         display_fields: ["title"]
         multiple: true
         required: false
-        hint: "Оберіть статті, які хочете порадити в кінці допису"
+        hint: "Оберіть статті для блоку 'Читайте також'"
       
+      # Основне текстове поле
       - { label: "Вміст", name: "body", widget: "markdown" }
       
-      # [НОВЕ] Окреме поле для чистого коду (Python, JS, AHK) з підсвіткою
+      # Поле для коду (Python, AHK тощо)
       - label: "Скрипт / Код (Опціонально)"
         name: "code_snippet"
         widget: "code"
@@ -95,7 +85,8 @@ collections:
     label: "Сторінки"
     folder: "pages"
     create: true
-    slug: "{{slug}}"
+    # Для сторінок дата в назві файлу не потрібна
+    slug: "{{fields.slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
       - { label: "URL (slug)", name: "slug", widget: "string", required: false }
@@ -110,28 +101,28 @@ collections:
     label_singular: "Тег"
     folder: "tags"
     create: true
-    slug: "{{slug}}"
+    slug: "{{fields.slug}}"
     identifier_field: "name"
     fields:
       - { label: "Назва тегу", name: "name", widget: "string" }
       - { label: "URL (slug)", name: "slug", widget: "string", required: false }
 
   # ==========================================
-  # 4. КОЛЕКЦІЯ: НАЛАШТУВАННЯ ТА МЕНЮ (НОВЕ)
+  # 4. КОЛЕКЦІЯ: КЕРУВАННЯ МЕНЮ
   # ==========================================
   - name: "settings"
-    label: "Налаштування сайту"
-    delete: false # Забороняє видаляти ці файли з адмінки
+    label: "Налаштування меню"
+    delete: false
     editor:
-      preview: false # Для меню прев'ю не потрібне
+      preview: false
     files:
       - name: "menu"
         label: "Головне меню"
-        file: "data/menu.json" # Створить JSON файл у папці data
+        file: "data/menu.json"
         fields:
           - label: "Пункти меню"
             name: "items"
             widget: "list"
             fields:
               - { label: "Назва", name: "title", widget: "string" }
-              - { label: "Посилання", name: "url", widget: "string", hint: "Наприклад: /about або https://..." }
+              - { label: "Посилання", name: "url", widget: "string", hint: "Наприклад: /about.html або /tags/python" }
