@@ -3,8 +3,7 @@ title: Тест формату посилань на сторінку
 slug: test-formatu-posylan-na-storinku
 excerpt: Тестую правильність адрес на дописи
 date: 2026-04-10
-tag:
-  - Інструменти
+tag: Життя сканера
 related:
   - iak-ia-khotiv-vprovadyty-cloudflare-ale-zrozumiv-shcho-tse-zaive
 ---
