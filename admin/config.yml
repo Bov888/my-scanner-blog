@@ -2,16 +2,14 @@ backend:
   name: git-gateway
   branch: main
 
-# Увімкнення режиму чернеток
+# Чернетки: Draft → In Review → Ready → Published
 publish_mode: editorial_workflow
 
-# Налаштування очищення URL (хоча основну роботу робить ваш JS-скрипт)
 slug:
   encoding: "ascii"
   clean_accents: true
   sanitize_replacement: "-"
 
-# Медіа-бібліотека Cloudinary
 media_library:
   name: cloudinary
   config:
@@ -23,29 +21,21 @@ media_folder: "images"
 public_folder: "/images"
 
 collections:
-  # ==========================================
-  # 1. КОЛЕКЦІЯ: ДОПИСИ БЛОГУ
-  # ==========================================
+  # ── 1. ДОПИСИ ──────────────────────────────────────────────────────────────
   - name: "posts"
     label: "Дописи"
     folder: "posts"
     create: true
-    # Файл буде мати вигляд: 2026-04-30-miy-slug.md
-    slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
-    
-    # Групування дописів в адмінці за роком
+    slug: "{{fields.slug}}"
     view_groups:
       - label: "Рік"
-        field: "date"
+        field: date
         pattern: '(?P<year>\d{4})-\d{2}-\d{2}'
-
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "URL (slug)", name: "slug", widget: "string", required: false, hint: "Генерується автоматично з заголовка, але можна змінити" }
+      - { label: "slug", name: "slug", widget: "hidden", default: "" }
       - { label: "Короткий опис", name: "excerpt", widget: "string", required: false }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
-      
-      # Мультитегінг (можна обрати кілька тегів)
       - label: "Теги"
         name: "tag"
         widget: "relation"
@@ -53,49 +43,21 @@ collections:
         search_fields: ["name"]
         value_field: "name"
         display_fields: ["name"]
-        multiple: true 
-      
-      # Пов'язані дописи (вставка лінків на інші статті)
-      - label: "Пов'язані матеріали"
-        name: "related"
-        widget: "relation"
-        collection: "posts"
-        search_fields: ["title"]
-        value_field: "slug"
-        display_fields: ["title"]
-        multiple: true
-        required: false
-        hint: "Оберіть статті для блоку 'Читайте також'"
-      
-      # Основне текстове поле
       - { label: "Вміст", name: "body", widget: "markdown" }
-      
-      # Поле для коду (Python, AHK тощо)
-      - label: "Скрипт / Код (Опціонально)"
-        name: "code_snippet"
-        widget: "code"
-        required: false
-        default_language: "python"
-        allow_language_selection: true
 
-  # ==========================================
-  # 2. КОЛЕКЦІЯ: СТОРІНКИ
-  # ==========================================
+  # ── 2. СТОРІНКИ ────────────────────────────────────────────────────────────
   - name: "pages"
     label: "Сторінки"
     folder: "pages"
     create: true
-    # Для сторінок дата в назві файлу не потрібна
     slug: "{{fields.slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "URL (slug)", name: "slug", widget: "string", required: false }
+      - { label: "slug", name: "slug", widget: "hidden", default: "" }
       - { label: "Опис", name: "description", widget: "string", required: false }
       - { label: "Вміст", name: "body", widget: "markdown" }
 
-  # ==========================================
-  # 3. КОЛЕКЦІЯ: ТЕГИ
-  # ==========================================
+  # ── 3. ТЕГИ ────────────────────────────────────────────────────────────────
   - name: "tags"
     label: "Теги"
     label_singular: "Тег"
@@ -105,24 +67,4 @@ collections:
     identifier_field: "name"
     fields:
       - { label: "Назва тегу", name: "name", widget: "string" }
-      - { label: "URL (slug)", name: "slug", widget: "string", required: false }
-
-  # ==========================================
-  # 4. КОЛЕКЦІЯ: КЕРУВАННЯ МЕНЮ
-  # ==========================================
-  - name: "settings"
-    label: "Налаштування меню"
-    delete: false
-    editor:
-      preview: false
-    files:
-      - name: "menu"
-        label: "Головне меню"
-        file: "data/menu.json"
-        fields:
-          - label: "Пункти меню"
-            name: "items"
-            widget: "list"
-            fields:
-              - { label: "Назва", name: "title", widget: "string" }
-              - { label: "Посилання", name: "url", widget: "string", hint: "Наприклад: /about.html або /tags/python" }
+      - { label: "slug", name: "slug", widget: "hidden", default: "" }
