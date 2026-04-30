@@ -2,9 +2,10 @@ backend:
   name: git-gateway
   branch: main
 
-# Чернетки: Draft → In Review → Ready → Published
 publish_mode: editorial_workflow
 
+
+# Decap генерує ім'я файлу з поля slug у frontmatter
 slug:
   encoding: "ascii"
   clean_accents: true
@@ -21,41 +22,25 @@ media_folder: "images"
 public_folder: "/images"
 
 collections:
-  # ── 1. ДОПИСИ ─────────────────────────────────────────────────────────
   - name: "posts"
     label: "Дописи"
     folder: "posts"
     create: true
     slug: "{{fields.slug}}"
-    view_groups:
-      - label: "Рік"
-        field: date
-        pattern: '(?P<year>\d{4})-\d{2}-\d{2}'
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
       - { label: "slug", name: "slug", widget: "hidden", default: "" }
-      - { label: "Короткий опис", name: "excerpt", widget: "string", required: false }
+      - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       - label: "Теги"
-        name: "tags"
+        name: "tag"
         widget: "relation"
         collection: "tags"
         search_fields: ["name"]
         value_field: "name"
         display_fields: ["name"]
-        multiple: true
-      - label: "Пов'язані дописи"
-        name: "related"
-        widget: "relation"
-        collection: "posts"
-        search_fields: ["title"]
-        value_field: "slug"
-        display_fields: ["title"]
-        multiple: true
-        required: false
       - { label: "Вміст", name: "body", widget: "markdown" }
 
-  # ── 2. СТОРІНКИ ────────────────────────────────────────────────────
   - name: "pages"
     label: "Сторінки"
     folder: "pages"
@@ -67,7 +52,6 @@ collections:
       - { label: "Опис", name: "description", widget: "string", required: false }
       - { label: "Вміст", name: "body", widget: "markdown" }
 
-  # ── 3. ТЕГИ ────────────────────────────────────────────────────────────
   - name: "tags"
     label: "Теги"
     label_singular: "Тег"
