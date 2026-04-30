@@ -14,3 +14,5 @@ tag: Інструменти
 <https://open.spotify.com/episode/6xGc4OZeaoYJuDPEELslF7>
 
 <https://open.spotify.com/episode/48N2S1eWYOCt5HLX5jRpkz>
+
+Отаке вийшло тестування нового коду сайту.
