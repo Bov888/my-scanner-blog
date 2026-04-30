@@ -1,9 +1,11 @@
 ---
-title: "🧠 Атомарні нотатки"
+title: 🧠 Атомарні нотатки
 slug: atomarni-notatky
 excerpt: Атомарні нотатки
 date: 2026-04-01
 tag: PKM
+related:
+  - stratehiia-skanera
 ---
 # Повний посібник
 
