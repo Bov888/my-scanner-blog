@@ -5,7 +5,7 @@ excerpt: Атомарні нотатки
 date: 2026-04-01
 tag: PKM
 related:
-  - stratehiia-skanera
+   stratehiia-skanera
 ---
 # Повний посібник
 
