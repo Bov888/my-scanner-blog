@@ -55,17 +55,17 @@
     }
 
     // ── preSave: записуємо транслітерований slug у frontmatter перед збереженням
+    // Це гарантований момент — Decap 3.x підтримує preSave.
+    // entry.getIn / entry.setIn — Immutable.js API, доступний у Decap.
     CMS.registerEventListener({
       name: 'preSave',
       handler: ({ entry }) => {
         const title = entry.getIn(['data', 'title']) || '';
         const existingSlug = entry.getIn(['data', 'slug']) || '';
-        
-        // Якщо slug вже є (редагування існуючого допису або введено вручну) — не міняємо
+        // Якщо slug вже є (редагування існуючого допису) — не міняємо
         if (existingSlug && existingSlug !== '') {
           return entry;
         }
-        
         const slug = toSlug(title) || 'post-' + Date.now();
         return entry.setIn(['data', 'slug'], slug);
       }
