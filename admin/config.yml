@@ -21,7 +21,7 @@ media_folder: "images"
 public_folder: "/images"
 
 collections:
-  # ── 1. ДОПИСИ ──────────────────────────────────────────────────────────────
+  # ── 1. ДОПИСИ ─────────────────────────────────────────────────────────
   - name: "posts"
     label: "Дописи"
     folder: "posts"
@@ -37,15 +37,25 @@ collections:
       - { label: "Короткий опис", name: "excerpt", widget: "string", required: false }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       - label: "Теги"
-        name: "tag"
+        name: "tags"
         widget: "relation"
         collection: "tags"
         search_fields: ["name"]
         value_field: "name"
         display_fields: ["name"]
+        multiple: true
+      - label: "Пов'язані дописи"
+        name: "related"
+        widget: "relation"
+        collection: "posts"
+        search_fields: ["title"]
+        value_field: "slug"
+        display_fields: ["title"]
+        multiple: true
+        required: false
       - { label: "Вміст", name: "body", widget: "markdown" }
 
-  # ── 2. СТОРІНКИ ────────────────────────────────────────────────────────────
+  # ── 2. СТОРІНКИ ────────────────────────────────────────────────────
   - name: "pages"
     label: "Сторінки"
     folder: "pages"
@@ -57,7 +67,7 @@ collections:
       - { label: "Опис", name: "description", widget: "string", required: false }
       - { label: "Вміст", name: "body", widget: "markdown" }
 
-  # ── 3. ТЕГИ ────────────────────────────────────────────────────────────────
+  # ── 3. ТЕГИ ────────────────────────────────────────────────────────────
   - name: "tags"
     label: "Теги"
     label_singular: "Тег"
