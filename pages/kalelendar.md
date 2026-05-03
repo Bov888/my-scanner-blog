@@ -3,4 +3,4 @@ title: Калелендар
 slug: kalelendar
 description: ""
 ---
-<script>window.location.href = "http://calendar.uspishnyskaner.pp.ua/";</script>
+<meta http-equiv="refresh" content="0; url=https://calendar.uspishnyskaner.pp.ua/">
