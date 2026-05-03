@@ -1,6 +1,6 @@
 ---
 title: Калелендар
 slug: kalelendar
-description: http://calendar.uspishnyskaner.pp.ua/
+description: ""
 ---
-календар
+<script>window.location.href = "http://calendar.uspishnyskaner.pp.ua/";</script>
