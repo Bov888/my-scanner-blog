@@ -1,6 +1,5 @@
 ---
-title: 🛠️ Як за вечір стати шкільним героєм, або Реанімація Dell Latitude «на
-  колінці»
+title: Як за вечір стати шкільним героєм, або Реанімація Dell «на колінці»
 slug: iak-za-vechir-staty-shkilnym-heroiem-abo-reanimatsiia-dell-latitude-na-kolintsi
 excerpt: Воскресіння мерця...
 date: 2026-05-18
