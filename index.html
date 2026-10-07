@@ -463,6 +463,16 @@ function parseMeta(text, key) {
   const m = text.match(new RegExp(`${key}:\\s*"?([^"\\n]+)"?`));
   return m ? m[1].trim() : null;
 }
+// Шукає ключ лише у frontmatter (або в початку тексту, якщо він обрізаний Range-запитом)
+function getFrontmatter(text) {
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  return m ? m[1] : text;
+}
+// Сторінка прихована, якщо у frontmatter є hidden: true
+function isHidden(text) {
+  const v = parseMeta(getFrontmatter(text), 'hidden');
+  return v !== null && /^(true|yes|1)$/i.test(v);
+}
 
 // --- Медіа хелпер ---
 function processMediaLinks(container) {
@@ -697,12 +707,14 @@ async function loadPages() {
     if (mdFiles.length === 0) return;
 
     const results = await Promise.all(mdFiles.map(async file => {
-      const r = await fetch(file.download_url, { headers: { Range: 'bytes=0-300' } });
+      const r = await fetch(file.download_url, { headers: { Range: 'bytes=0-600' } });
       const text = await r.text();
       return { file, text };
     }));
 
     for (const { file, text } of results) {
+      if (isHidden(text)) continue; // приховані сторінки не показуємо в меню
+
       const title = parseMeta(text, 'title') || file.name.replace('.md', '').replace(/-/g, ' ');
       const slug = file.name.replace('.md', '');
       const a = document.createElement('a');
@@ -729,6 +741,10 @@ async function openPageBySlug(slug) {
     const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/pages/${slug}.md`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
+
+    // прихована сторінка недоступна і за прямим посиланням
+    if (isHidden(text)) throw new Error('hidden');
+
     const title = parseMeta(text, 'title') || slug.replace(/-/g, ' ');
     const body = text.replace(/^---[\s\S]*?---\n?/, '');
     els.pageTitle.textContent = title;
@@ -769,6 +785,9 @@ async function openPostBySlug(slug) {
       text = await res.text();
       postsCache[slug] = { text };
     }
+
+    // прихований допис недоступний і за прямим посиланням
+    if (isHidden(text)) throw new Error('hidden');
 
     const title = parseMeta(text, 'title') || 'Без назви';
     const dateStr = parseMeta(text, 'date') || '';
