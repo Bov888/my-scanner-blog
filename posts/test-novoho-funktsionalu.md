@@ -1,5 +1,6 @@
 ---
 title: Тест нового функціоналу
+hidden: true
 slug: test-novoho-funktsionalu
 excerpt: Працюю над продуктивністю.
 date: 2026-04-09
