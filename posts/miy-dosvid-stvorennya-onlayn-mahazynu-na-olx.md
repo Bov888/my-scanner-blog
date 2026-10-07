@@ -1,5 +1,6 @@
 ---
 title: Мій досвід створення онлайн-магазину на OLX
+hidden: true
 slug: miy-dosvid-stvorennya-onlayn-mahazynu-na-olx
 excerpt: Як у торгівлю подався...
 date: 2026-04-10
