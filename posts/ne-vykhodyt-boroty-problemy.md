@@ -1,5 +1,6 @@
 ---
 title: Щоденник боротьби з проблеми на сайті
+hidden: true
 slug: ne-vykhodyt-boroty-problemy
 excerpt: Як я покращую свій сайт
 date: 2026-04-02
