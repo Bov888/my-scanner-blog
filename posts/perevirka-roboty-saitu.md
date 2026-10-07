@@ -1,5 +1,6 @@
 ---
 title: Як я підлючив сайт до ШІ
+hidden: true
 slug: perevirka-roboty-saitu
 excerpt: Підключаємо сайт до штучного інтелекту
 date: 2026-04-09
