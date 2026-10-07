@@ -1,5 +1,6 @@
 ---
 title: Стратегія сканера
+hidden: true
 slug: stratehiia-skanera
 excerpt: Як найти себе людині-сканеру
 date: 2026-04-02
