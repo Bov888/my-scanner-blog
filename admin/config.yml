@@ -26,6 +26,7 @@ collections:
     slug: "{{fields.slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Приховати на сайті", name: "hidden", widget: "boolean", default: false, required: false }
       - { label: "slug", name: "slug", widget: "hidden", default: "" }
       - { label: "Короткий опис", name: "excerpt", widget: "string" }
       - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
@@ -45,6 +46,7 @@ collections:
     slug: "{{fields.slug}}"
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Приховати на сайті", name: "hidden", widget: "boolean", default: false, required: false }
       - { label: "slug", name: "slug", widget: "hidden", default: "" }
       - { label: "Опис", name: "description", widget: "string", required: false }
       - { label: "Вміст", name: "body", widget: "markdown" }
