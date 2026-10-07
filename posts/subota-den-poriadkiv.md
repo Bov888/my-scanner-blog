@@ -1,5 +1,6 @@
 ---
 title: Субота - день порядків
+hidden: true
 slug: subota-den-poriadkiv
 excerpt: Як ми робили порядки
 date: 2026-04-04
