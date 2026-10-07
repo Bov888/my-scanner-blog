@@ -15,9 +15,13 @@ def parse_markdown_meta(content):
                 meta[key.strip()] = value.strip().strip('"')
     return meta
 
+def is_hidden(meta):
+    return meta.get("hidden", "").strip().lower() in ("true", "yes", "1")
+
 def generate_posts_index(posts_dir="posts", output_file="posts.json"):
     all_posts_meta = []
-    
+    hidden_count = 0
+
     if not os.path.exists(posts_dir):
         print(f"Error: Directory {posts_dir} not found.")
         return
@@ -25,7 +29,7 @@ def generate_posts_index(posts_dir="posts", output_file="posts.json"):
     for filename in os.listdir(posts_dir):
         if not filename.endswith(".md"):
             continue
-            
+
         filepath = os.path.join(posts_dir, filename)
         try:
             with open(filepath, "r", encoding="utf-8") as f:
@@ -35,6 +39,12 @@ def generate_posts_index(posts_dir="posts", output_file="posts.json"):
             continue
 
         meta = parse_markdown_meta(content)
+
+        # Приховані дописи не потрапляють у список
+        if is_hidden(meta):
+            hidden_count += 1
+            continue
+
         slug = filename.replace(".md", "")
         title = meta.get("title", "Без назви")
         excerpt = meta.get("excerpt", "")
@@ -64,7 +74,7 @@ def generate_posts_index(posts_dir="posts", output_file="posts.json"):
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(all_posts_meta, f, ensure_ascii=False, indent=2)
 
-    print(f"Successfully generated {output_file} with {len(all_posts_meta)} posts.")
+    print(f"Successfully generated {output_file} with {len(all_posts_meta)} posts ({hidden_count} hidden).")
 
 if __name__ == "__main__":
     generate_posts_index()
