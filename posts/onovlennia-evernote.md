@@ -1,5 +1,6 @@
 ---
 title: "Оновлення evernote "
+hidden: true
 slug: onovlennia-evernote
 excerpt: Свіже оновлення evernote за березень 2026 рлку
 date: 2026-04-01
