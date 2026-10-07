@@ -1,5 +1,6 @@
 ---
 title: Формат подкасту
+hidden: true
 slug: format-podkastu
 excerpt: Хочу перевірити роботу у форматі подкасту
 date: 2026-04-03
