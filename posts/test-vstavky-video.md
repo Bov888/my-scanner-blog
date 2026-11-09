@@ -1,6 +1,6 @@
 ---
 title: Тест функції вставки відео
-hidden: true
+hidden: false
 slug: test-vstavky-video
 excerpt: Тестую новий формат вставки відео на сайт
 date: 2026-04-05
