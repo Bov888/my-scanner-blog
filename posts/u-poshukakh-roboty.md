@@ -1,6 +1,6 @@
 ---
 title: "У пошуках роботи... "
-hidden: true
+hidden: false
 slug: u-poshukakh-roboty
 excerpt: Як я шукаю собі роботу
 date: 2026-04-02
